@@ -1,6 +1,6 @@
 package com.web.travel.service;
 
-import com.web.travel.model.ERole;
+import com.web.travel.model.enumeration.ERole;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.payload.request.LoginRequest;

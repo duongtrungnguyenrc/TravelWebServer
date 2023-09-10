@@ -1,20 +1,24 @@
 package com.web.travel.model;
 
-import com.web.travel.model.enumeration.ERole;
+import com.web.travel.model.enumeration.ERoom;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "role")
-@Data
+@Table
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+@Data
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Enumerated(EnumType.STRING)
-    private ERole name;
+    private ERoom type;
+    private double price;
+    @ManyToOne
+    @JoinColumn(name = "hotelId")
+    private Hotel hotel;
 }

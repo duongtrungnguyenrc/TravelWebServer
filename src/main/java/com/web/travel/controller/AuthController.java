@@ -1,24 +1,14 @@
 package com.web.travel.controller;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.web.travel.model.ERole;
-import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.AuthResponse;
-import com.web.travel.payload.response.JwtResponse;
 import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.service.AuthService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
