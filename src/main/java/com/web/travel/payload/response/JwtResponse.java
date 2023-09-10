@@ -1,5 +1,8 @@
 package com.web.travel.payload.response;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+
 import java.util.List;
 
 public class JwtResponse {

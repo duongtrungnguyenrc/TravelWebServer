@@ -5,11 +5,13 @@ import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.SignupRequest;
+import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.payload.response.JwtResponse;
 import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.security.jwt.JwtUtils;
 import com.web.travel.security.services.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -86,7 +88,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public JwtResponse signIn(LoginRequest loginRequest){
+    public AuthResponse signIn(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -97,12 +99,13 @@ public class AuthService {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
+        JwtResponse jwtResponse = new JwtResponse(
+                jwt,
+                userDetails.getId(),
+                userDetails.getEmail(),
+                roles
+        );
 
-        return new JwtResponse(
-                    jwt,
-                    userDetails.getId(),
-                    userDetails.getEmail(),
-                    roles
-                );
+        return new AuthResponse(HttpServletResponse.SC_OK, jwtResponse);
     }
 }
