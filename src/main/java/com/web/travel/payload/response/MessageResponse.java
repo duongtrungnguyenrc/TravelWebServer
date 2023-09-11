@@ -11,7 +11,7 @@ public class MessageResponse {
         this.message = message;
     }
 
-    public int isStatus() {
+    public int getStatus() {
         return status;
     }
 
