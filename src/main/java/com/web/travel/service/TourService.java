@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class TourService {
     @Autowired
     TourRepository tourRepository;
-    public List<ListTourDTO> getTourDTOList(){
+    public List<ListTourDTO> getTourDTOListGroupByType(){
         List<ListTourDTO> listTourDTOS = new ArrayList<>();
         List<TourDTO> list = new ArrayList<>();
 
@@ -67,5 +67,12 @@ public class TourService {
         listTourDTOS.add(dto4);
 
         return listTourDTOS;
+    }
+
+    public List<TourDTO> getAllTour(){
+        return tourRepository.findAll().stream().map(tour -> {
+            TourMapper tourMapper = new TourMapper();
+            return (TourDTO) tourMapper.mapToDTO(tour);
+        }).toList();
     }
 }

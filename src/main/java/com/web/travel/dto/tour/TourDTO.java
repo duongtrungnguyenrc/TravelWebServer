@@ -15,6 +15,7 @@ public class TourDTO {
     private int maxPeople;
     private int time;
     private String img;
+    private String type;
 
     public TourDTO(){
         id = 1L;

@@ -8,9 +8,8 @@ import com.web.travel.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -21,12 +20,21 @@ public class TourController {
     TourService tourService;
 
     @GetMapping("/all")
-    public ResponseEntity<ResDTO> getListTour(){
+    public Object getAll(){
         return ResponseEntity.ok(
                 new ResDTO(HttpStatus.OK.value(),
                         true,
                         "Lấy dữ liệu thành công",
-                        tourService.getTourDTOList())
+                        tourService.getAllTour())
+        );
+    }
+    @GetMapping("/all/type")
+    public Object getListTourByType(){
+        return ResponseEntity.ok(
+                new ResDTO(HttpStatus.OK.value(),
+                        true,
+                        "Lấy dữ liệu thành công",
+                        tourService.getTourDTOListGroupByType())
         );
     }
 }
