@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ListTourDTO {
     private String type;
-    private List<TourDTO> data;
+    private List<TourDTO> tours;
 }

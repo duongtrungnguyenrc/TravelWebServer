@@ -1,11 +1,16 @@
 package com.web.travel.controller;
 
+import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.UserResDTO;
+import com.web.travel.model.Role;
 import com.web.travel.model.User;
+import com.web.travel.model.enumeration.ERole;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -25,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        AuthResponse authResponse = authService.signIn(loginRequest);
+        ResDTO authResponse = authService.signIn(loginRequest);
         return ResponseEntity.ok(authResponse);
     }
 
@@ -34,11 +42,15 @@ public class AuthController {
         if (authService.userIsExistsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse(0,"Error: Email is already in use!"));
+                    .body(new ResDTO(HttpServletResponse.SC_BAD_REQUEST, false, "Email đã tồn tại!", null));
         }
 
         User savedUser = authService.saveUser(signUpRequest);
-        return savedUser != null ? ResponseEntity.ok(new MessageResponse(1, "User registered successfully!")) :
-                ResponseEntity.badRequest().body(new MessageResponse(0,"User registered unsuccessful!"));
+        List<ERole> eRoleList = savedUser.getRoles().stream().map(Role::getName).toList();
+        return ResponseEntity.ok(
+                        new ResDTO(HttpServletResponse.SC_OK
+                        , true, "Đăng ký tài khoản thành công!"
+                        , new UserResDTO(savedUser.getId(), savedUser.getEmail(), eRoleList))
+                );
     }
 }

@@ -1,10 +1,12 @@
 package com.web.travel.controller;
 
+import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.tour.ListTourDTO;
 import com.web.travel.dto.tour.TourDTO;
 import com.web.travel.model.Tour;
 import com.web.travel.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +21,12 @@ public class TourController {
     TourService tourService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ListTourDTO>> getListTour(){
+    public ResponseEntity<ResDTO> getListTour(){
         return ResponseEntity.ok(
-                tourService.getTourDTOList()
+                new ResDTO(HttpStatus.OK.value(),
+                        true,
+                        "Lấy dữ liệu thành công",
+                        tourService.getTourDTOList())
         );
     }
 }

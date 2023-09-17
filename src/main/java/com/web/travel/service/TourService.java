@@ -23,7 +23,7 @@ public class TourService {
 
         ListTourDTO dto1 = new ListTourDTO();
         dto1.setType("Popular");
-        dto1.setData(tourRepository.findByTourType(ETourType.TYPE_POPULAR)
+        dto1.setTours(tourRepository.findByTourType(ETourType.TYPE_POPULAR)
                 .stream().map(
                         tour -> {
                             TourMapper mapper = new TourMapper();
@@ -33,7 +33,7 @@ public class TourService {
 
         ListTourDTO dto2 = new ListTourDTO();
         dto2.setType("Normal");
-        dto2.setData(tourRepository.findByTourType(ETourType.TYPE_NORMAL)
+        dto2.setTours(tourRepository.findByTourType(ETourType.TYPE_NORMAL)
                 .stream().map(
                         tour -> {
                             TourMapper mapper = new TourMapper();
@@ -43,7 +43,7 @@ public class TourService {
 
         ListTourDTO dto3 = new ListTourDTO();
         dto3.setType("Special");
-        dto3.setData(tourRepository.findByTourType(ETourType.TYPE_SPECIAL)
+        dto3.setTours(tourRepository.findByTourType(ETourType.TYPE_SPECIAL)
                 .stream().map(
                         tour -> {
                             TourMapper mapper = new TourMapper();
@@ -53,7 +53,7 @@ public class TourService {
 
         ListTourDTO dto4 = new ListTourDTO();
         dto4.setType("Saving");
-        dto4.setData(tourRepository.findByTourType(ETourType.TYPE_SAVING)
+        dto4.setTours(tourRepository.findByTourType(ETourType.TYPE_SAVING)
                 .stream().map(
                         tour -> {
                             TourMapper mapper = new TourMapper();

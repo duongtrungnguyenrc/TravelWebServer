@@ -3,6 +3,7 @@ package com.web.travel.controller;
 import com.web.travel.model.Order;
 import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.repository.OrderRepository;
+import com.web.travel.service.AuthService;
 import com.web.travel.service.FileUploadService;
 import com.web.travel.service.cloudinary.EStatus;
 import com.web.travel.service.cloudinary.FilesValidation;
@@ -22,6 +23,8 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
+    @Autowired
+    private AuthService authService;
     @Autowired
     private FilesValidation filesValidation;
     @Autowired
@@ -45,8 +48,9 @@ public class TestController {
 
     @GetMapping("/admin")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public String adminAccess() {
-        return "Admin Board.";
+    public String adminAccess(@RequestHeader("Authorization") String token){
+        String email = authService.getEmailFromToken(token);
+        return "Admin Board." + email;
     }
 
     @PostMapping("/add/order")

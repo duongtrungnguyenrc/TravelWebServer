@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.web.travel.dto.ResDTO;
 import com.web.travel.payload.response.AuthResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,11 +33,18 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         final Map<String, Object> body = new HashMap<>();
+        String message = "";
+        if(authException.getMessage().equals("Bad credentials")){
+            message = "Sai email hoặc mật khẩu";
+        }else if (authException.getMessage().equals("Full authentication is required to access this resource")){
+            message = "Chưa đăng nhập";
+        }
         body.put("error", "Unauthorized");
-        body.put("message", authException.getMessage());
         body.put("path", request.getServletPath());
-        AuthResponse authResponse = new AuthResponse(
+        ResDTO authResponse = new ResDTO(
                 HttpServletResponse.SC_UNAUTHORIZED,
+                false,
+                message,
                 body
         );
 
