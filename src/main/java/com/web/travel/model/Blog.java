@@ -15,7 +15,6 @@ public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String backgroundImg;
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude

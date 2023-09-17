@@ -17,9 +17,7 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String name;
-    @NotBlank
     private String address;
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private Collection<Room> rooms;

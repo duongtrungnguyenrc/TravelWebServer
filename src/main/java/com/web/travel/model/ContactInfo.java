@@ -16,14 +16,10 @@ public class ContactInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String customerFullName;
-    @NotBlank
     private String customerPhone;
     @Email
-    @NotBlank
     private String customerEmail;
-    @NotBlank
     private String customerAddress;
     private String customerNation;
 

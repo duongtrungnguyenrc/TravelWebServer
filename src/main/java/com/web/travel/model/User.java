@@ -20,19 +20,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     @Column(length = 100)
     private String fullName;
-    @NotBlank
     private String address;
-    @NotBlank
     @Email
     @Column(unique = true)
     private String email;
-    @NotBlank
     @Column
     private String password;
-    @NotBlank
     @Column(length = 13)
     private String phone;
     @ManyToMany(fetch = FetchType.LAZY)

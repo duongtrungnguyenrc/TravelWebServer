@@ -13,9 +13,7 @@ public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String time;
-    @NotBlank
     private String content;
     @ManyToOne
     @JoinColumn(name = "tourId")

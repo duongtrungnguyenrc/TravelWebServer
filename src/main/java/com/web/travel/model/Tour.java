@@ -1,6 +1,7 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.web.travel.model.enumeration.ETourType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -17,30 +18,22 @@ public class Tour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String name;
-    @NotBlank
     private double adultPrice;
-    @NotBlank
     private double childPrice;
-    @NotBlank
     private String vehical;
-    @NotBlank
+    @Enumerated(EnumType.STRING)
+    private ETourType tourType;
     private String depart;
-    @NotBlank
     private String destination;
     @JsonFormat(pattern = "dd-MM-yyyy")
     @Column
-    @NotBlank
     private Date departDate;
     @JsonFormat(pattern = "dd-MM-yyyy")
     @Column
-    @NotBlank
     private Date endDate;
-    @NotBlank
     private int maxPeople;
     private int currentPeople;
-    @NotBlank
     private String img;
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude

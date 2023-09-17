@@ -1,6 +1,8 @@
 package com.web.travel.controller;
 
+import com.web.travel.dto.tour.ListTourDTO;
 import com.web.travel.dto.tour.TourDTO;
+import com.web.travel.model.Tour;
 import com.web.travel.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,7 @@ public class TourController {
     TourService tourService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<TourDTO>> getListTour(){
+    public ResponseEntity<List<ListTourDTO>> getListTour(){
         return ResponseEntity.ok(
                 tourService.getTourDTOList()
         );

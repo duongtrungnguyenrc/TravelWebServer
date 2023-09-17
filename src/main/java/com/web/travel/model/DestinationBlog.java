@@ -18,10 +18,8 @@ public class DestinationBlog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String tittle;
     @JsonFormat(pattern = "dd-MM-yyyy")
-    @NotBlank
     private Date postDate;
     @OneToOne
     @JoinColumn(name = "blog_id")

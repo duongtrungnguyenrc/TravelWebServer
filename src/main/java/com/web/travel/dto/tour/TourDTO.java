@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-@Component
 @AllArgsConstructor
 @Data
 public class TourDTO {
+    private Long id;
     private String name;
     private double price;
     private double ratedStar;
@@ -17,6 +17,7 @@ public class TourDTO {
     private String img;
 
     public TourDTO(){
+        id = 1L;
         name = "Deluxe Double with New York City View";
         price = 59;
         img = "/images/home-slider-3.jpg";

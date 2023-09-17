@@ -1,8 +1,9 @@
 package com.web.travel.repository;
 
-import com.web.travel.model.Order;
+import com.web.travel.model.Rate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface RateRepository extends JpaRepository<Rate, Long> {
 }

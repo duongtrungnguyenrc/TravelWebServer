@@ -15,7 +15,6 @@ public class Paragraph {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     private String content;
 
     @ManyToOne

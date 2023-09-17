@@ -22,4 +22,10 @@ public class Rate {
     @ManyToOne
     @JoinColumn(name = "tourId")
     private Tour tour;
+
+    public Rate(int point, String comment, Tour tour) {
+        this.point = point;
+        this.comment = comment;
+        this.tour = tour;
+    }
 }
