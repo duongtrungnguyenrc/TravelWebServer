@@ -75,4 +75,8 @@ public class TourService {
             return (TourDTO) tourMapper.mapToDTO(tour);
         }).toList();
     }
+
+    public Tour findTourById(Long id){
+        return tourRepository.findById(id).orElse(null);
+    }
 }

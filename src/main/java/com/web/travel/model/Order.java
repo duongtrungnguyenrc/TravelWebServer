@@ -1,6 +1,7 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.enumeration.EOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonFormat(pattern = "dd-MM-yyyy")
+//    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date orderDate = new Date();
     private int adults;
     private int children;

@@ -1,6 +1,7 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.enumeration.EPaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,10 +21,12 @@ public class Payment {
     private Long id;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date paymentDate;
-    private double amount;
+    private long amount;
+    private String method;
     @Enumerated(EnumType.STRING)
     private EPaymentStatus status;
     @OneToOne
     @JoinColumn(name = "orderId")
+    @JsonIgnore
     private Order order;
 }

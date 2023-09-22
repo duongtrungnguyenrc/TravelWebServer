@@ -3,7 +3,6 @@ package com.web.travel.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.web.travel.model.enumeration.ETourType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Collection;
@@ -21,7 +20,7 @@ public class Tour {
     private String name;
     private double adultPrice;
     private double childPrice;
-    private String vehical;
+    private String vehicle;
     @Enumerated(EnumType.STRING)
     private ETourType tourType;
     private String depart;
@@ -54,7 +53,7 @@ public class Tour {
     public Tour(String name,
                 double adultPrice,
                 double childPrice,
-                String vehical,
+                String vehicle,
                 String depart,
                 String destination,
                 Date departDate,
@@ -65,7 +64,7 @@ public class Tour {
         this.name = name;
         this.adultPrice = adultPrice;
         this.childPrice = childPrice;
-        this.vehical = vehical;
+        this.vehicle = vehicle;
         this.depart = depart;
         this.destination = destination;
         this.departDate = departDate;
