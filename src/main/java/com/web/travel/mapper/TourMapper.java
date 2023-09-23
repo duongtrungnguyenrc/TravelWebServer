@@ -28,7 +28,16 @@ public class TourMapper implements Mapper {
         Date end = ((Tour) obj).getEndDate();
         tourDTO.setTime(dateHandler.getDiffDay(end, depart));
         tourDTO.setMaxPeople(((Tour) obj).getMaxPeople());
-        tourDTO.setType(((Tour) obj).getTourType().toString());
+        String typeDto = "";
+        switch (((Tour) obj).getTourType().toString()) {
+            case "TYPE_SAVING" -> typeDto = "saving";
+            case "TYPE_SPECIAL" -> typeDto = "special";
+            case "TYPE_NORMAL" -> typeDto = "normal";
+            case "TYPE_POPULAR" -> typeDto = "popular";
+            default -> {
+            }
+        }
+        tourDTO.setType(typeDto);
 
         Collection<Rate> rates = ((Tour) obj).getRates();
 

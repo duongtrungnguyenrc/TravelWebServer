@@ -1,6 +1,7 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -18,15 +19,19 @@ public class DestinationBlog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String tittle;
+    private String title;
+    private String type;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date postDate;
     @OneToOne
     @JoinColumn(name = "blog_id")
     private Blog blog;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public DestinationBlog(String tittle, Date postDate, Blog blog) {
-        this.tittle = tittle;
+    public DestinationBlog(String title, Date postDate, Blog blog) {
+        this.title = title;
         this.postDate = postDate;
         this.blog = blog;
     }

@@ -44,6 +44,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Rate> rates;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<DestinationBlog> destinationBlogs;
     public User(String fullName, String address, String email, String password, String phone) {
         this.fullName = fullName;
         this.address = address;
