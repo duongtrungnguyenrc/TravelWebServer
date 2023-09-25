@@ -7,6 +7,7 @@ import com.web.travel.model.Tour;
 import com.web.travel.model.enumeration.ETourType;
 import com.web.travel.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -69,8 +70,8 @@ public class TourService {
         return listTourDTOS;
     }
 
-    public List<TourDTO> getAllTour(){
-        return tourRepository.findAll().stream().map(tour -> {
+    public List<TourDTO> getAllTour(int page, int limit){
+        return tourRepository.findAll(PageRequest.of(page, limit)).stream().map(tour -> {
             TourMapper tourMapper = new TourMapper();
             return (TourDTO) tourMapper.mapToDTO(tour);
         }).toList();
@@ -78,5 +79,25 @@ public class TourService {
 
     public Tour findTourById(Long id){
         return tourRepository.findById(id).orElse(null);
+    }
+
+    public List<Tour> findTourByType(String type){
+        switch (type){
+            case "normal" -> {
+                return tourRepository.findByTourType(ETourType.TYPE_NORMAL);
+            }
+            case "popular" -> {
+                return tourRepository.findByTourType(ETourType.TYPE_POPULAR);
+            }
+            case "special" -> {
+                return tourRepository.findByTourType(ETourType.TYPE_SPECIAL);
+            }
+            case "saving" -> {
+                return tourRepository.findByTourType(ETourType.TYPE_SAVING);
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 }

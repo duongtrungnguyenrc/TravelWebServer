@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -20,8 +21,11 @@ public class BlogController {
     BlogService blogService;
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAll(){
-        List<DestinationBlogResDTO> destinationBlogList = blogService.getAllDestinationBlog();
+    public ResponseEntity<?> getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit){
+        page = page != null ? page : 1;
+        limit = limit != null ? limit : 10;
+
+        List<DestinationBlogResDTO> destinationBlogList = blogService.getAllDestinationBlog(page - 1, limit);
         return ResponseEntity.ok(
                 new ResDTO(HttpServletResponse.SC_OK, true, "Blog fetched successfully", destinationBlogList)
         );

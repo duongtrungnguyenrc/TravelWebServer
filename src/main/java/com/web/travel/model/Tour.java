@@ -1,6 +1,7 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.enumeration.ETourType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +49,7 @@ public class Tour {
             joinColumns = @JoinColumn(name = "tourId"),
             inverseJoinColumns = @JoinColumn(name = "hotelId")
     )
+    @JsonIgnore
     private Collection<Hotel> hotels;
 
     public Tour(String name,

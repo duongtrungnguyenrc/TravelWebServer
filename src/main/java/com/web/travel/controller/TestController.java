@@ -1,5 +1,6 @@
 package com.web.travel.controller;
 
+import com.web.travel.dto.ResDTO;
 import com.web.travel.model.Order;
 import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.repository.OrderRepository;
@@ -25,8 +26,6 @@ import java.util.Objects;
 public class TestController {
     @Autowired
     private AuthService authService;
-    @Autowired
-    private FilesValidation filesValidation;
     @Autowired
     private FileUploadService fileUploadService;
     @Autowired
@@ -59,25 +58,13 @@ public class TestController {
         return "oK";
     }
     @PostMapping("/upload")
-    public ResponseEntity<AuthResponse> uploadFiles(@RequestParam("files") MultipartFile[] files) throws IOException {
-        EStatus eStatus = filesValidation.validate(files);
-        switch (eStatus){
-            case STATUS_EMPTY_FILE -> {
-                return ResponseEntity.badRequest().body(
-                        new AuthResponse(HttpServletResponse.SC_BAD_REQUEST, "Lack of images")
-                );
-            }
-            case STATUS_WRONG_EXT -> {
-                return ResponseEntity.badRequest().body(
-                        new AuthResponse(HttpServletResponse.SC_BAD_REQUEST, "Format is not supported")
-                );
-            }
-            default -> {
-                List<String> fileNames = fileUploadService.uploadMultiFile(files);
-                return ResponseEntity.ok(
-                        new AuthResponse(HttpServletResponse.SC_OK, fileNames)
-                );
-            }
-        }
+    public ResponseEntity<ResDTO> uploadFiles(@RequestParam("files") MultipartFile[] files) throws IOException {
+        List<String> fileNames = fileUploadService.uploadMultiFile(files);
+        return ResponseEntity.ok(
+                new ResDTO(HttpServletResponse.SC_OK,
+                        true,
+                        "Files uploaded successfully",
+                        fileNames)
+        );
     }
 }
