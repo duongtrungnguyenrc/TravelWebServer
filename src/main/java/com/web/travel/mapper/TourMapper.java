@@ -27,7 +27,7 @@ public class TourMapper implements Mapper {
         Date depart = ((Tour) obj).getDepartDate();
         Date end = ((Tour) obj).getEndDate();
         tourDTO.setTime(dateHandler.getDiffDay(end, depart));
-        tourDTO.setMaxPeople(((Tour) obj).getMaxPeople());
+        tourDTO.setMaxPeople(((Tour) obj).getMaxPeople());  
         String typeDto = "";
         switch (((Tour) obj).getTourType().toString()) {
             case "TYPE_SAVING" -> typeDto = "saving";
