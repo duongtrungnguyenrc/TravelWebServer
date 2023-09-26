@@ -9,17 +9,29 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BlogService {
     @Autowired
     DestinationBlogRepository desRepository;
-    public List<DestinationBlogResDTO> getAllDestinationBlog(int page, int limit){
+    public Map<String, Object> getAllDestinationBlog(int page, int limit, int pages){
         Page<DestinationBlog> list = desRepository.findAll(PageRequest.of(page, limit));
-        return list.stream().map(blog -> {
+        Map<String, Object> result = new HashMap<>();
+
+        List<DestinationBlogResDTO> listDTO = list.stream().map(blog -> {
             DestinationBlogResMapper mapper = new DestinationBlogResMapper();
             return (DestinationBlogResDTO) mapper.mapToDTO(blog);
         }).toList();
+
+        result.put("pages", pages == 0 ? 1 : pages);
+        result.put("blogs", listDTO);
+        return result;
+    }
+
+    public long getDesBlogCount(){
+        return desRepository.count();
     }
 }

@@ -78,7 +78,7 @@ public class TourService {
             TourMapper tourMapper = new TourMapper();
             return (TourDTO) tourMapper.mapToDTO(tour);
         }).toList());
-        result.put("pages", pages);
+        result.put("pages", pages == 0 ? 1 : pages);
         return result;
     }
 

@@ -25,9 +25,19 @@ public class BlogController {
         page = page != null ? page : 1;
         limit = limit != null ? limit : 10;
 
-        List<DestinationBlogResDTO> destinationBlogList = blogService.getAllDestinationBlog(page - 1, limit);
+        long recordNumber = blogService.getDesBlogCount();
+        int pageNumber = Math.round((float) recordNumber/limit);
+
         return ResponseEntity.ok(
-                new ResDTO(HttpServletResponse.SC_OK, true, "Blog fetched successfully", destinationBlogList)
+                new ResDTO(HttpServletResponse.SC_OK,
+                        true,
+                        "Blog fetched successfully",
+                        blogService.getAllDestinationBlog(
+                                page - 1,
+                                limit,
+                                pageNumber
+                        )
+                )
         );
     }
 }
