@@ -11,7 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,11 +72,14 @@ public class TourService {
         return listTourDTOS;
     }
 
-    public List<TourDTO> getAllTour(int page, int limit){
-        return tourRepository.findAll(PageRequest.of(page, limit)).stream().map(tour -> {
+    public Map<String, Object> getAllTour(int page, int limit, int pages){
+        Map<String, Object> result = new HashMap<>();
+        result.put("tours", tourRepository.findAll(PageRequest.of(page, limit)).stream().map(tour -> {
             TourMapper tourMapper = new TourMapper();
             return (TourDTO) tourMapper.mapToDTO(tour);
-        }).toList();
+        }).toList());
+        result.put("pages", pages);
+        return result;
     }
 
     public Tour findTourById(Long id){
@@ -99,5 +104,9 @@ public class TourService {
                 return null;
             }
         }
+    }
+
+    public long getCount(){
+        return tourRepository.count();
     }
 }
