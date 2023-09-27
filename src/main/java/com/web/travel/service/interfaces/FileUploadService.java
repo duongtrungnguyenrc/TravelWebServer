@@ -1,4 +1,4 @@
-package com.web.travel.service;
+package com.web.travel.service.interfaces;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,9 +1,10 @@
-package com.web.travel.mapper;
+package com.web.travel.mapper.response;
 
-import com.web.travel.dto.blog.DestinationBlogResDTO;
+import com.web.travel.dto.response.DestinationBlogResDTO;
+import com.web.travel.mapper.Mapper;
 import com.web.travel.model.DestinationBlog;
 
-public class DestinationBlogResMapper implements Mapper{
+public class DestinationBlogResMapper implements Mapper {
     @Override
     public Object mapToDTO(Object obj) {
         DestinationBlogResDTO dto = new DestinationBlogResDTO();

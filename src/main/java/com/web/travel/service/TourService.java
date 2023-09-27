@@ -1,8 +1,9 @@
 package com.web.travel.service;
 
-import com.web.travel.dto.tour.ListTourDTO;
-import com.web.travel.dto.tour.TourDTO;
-import com.web.travel.mapper.TourMapper;
+import com.web.travel.dto.response.ListTourResDTO;
+import com.web.travel.dto.response.TourResDTO;
+import com.web.travel.mapper.Mapper;
+import com.web.travel.mapper.response.TourResMapper;
 import com.web.travel.model.Tour;
 import com.web.travel.model.enumeration.ETourType;
 import com.web.travel.repository.TourRepository;
@@ -14,69 +15,68 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class TourService {
     @Autowired
     TourRepository tourRepository;
-    public List<ListTourDTO> getTourDTOListGroupByType(){
-        List<ListTourDTO> listTourDTOS = new ArrayList<>();
-        List<TourDTO> list = new ArrayList<>();
+    public List<ListTourResDTO> getTourDTOListGroupByType(){
+        List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
+        List<TourResDTO> list = new ArrayList<>();
 
-        ListTourDTO dto1 = new ListTourDTO();
+        ListTourResDTO dto1 = new ListTourResDTO();
         dto1.setType("Popular");
         dto1.setTours(tourRepository.findByTourType(ETourType.TYPE_POPULAR)
                 .stream().map(
                         tour -> {
-                            TourMapper mapper = new TourMapper();
-                            return (TourDTO) mapper.mapToDTO(tour);
+                            TourResMapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
-        ListTourDTO dto2 = new ListTourDTO();
+        ListTourResDTO dto2 = new ListTourResDTO();
         dto2.setType("Normal");
         dto2.setTours(tourRepository.findByTourType(ETourType.TYPE_NORMAL)
                 .stream().map(
                         tour -> {
-                            TourMapper mapper = new TourMapper();
-                            return (TourDTO) mapper.mapToDTO(tour);
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
-        ListTourDTO dto3 = new ListTourDTO();
+        ListTourResDTO dto3 = new ListTourResDTO();
         dto3.setType("Special");
         dto3.setTours(tourRepository.findByTourType(ETourType.TYPE_SPECIAL)
                 .stream().map(
                         tour -> {
-                            TourMapper mapper = new TourMapper();
-                            return (TourDTO) mapper.mapToDTO(tour);
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
-        ListTourDTO dto4 = new ListTourDTO();
+        ListTourResDTO dto4 = new ListTourResDTO();
         dto4.setType("Saving");
         dto4.setTours(tourRepository.findByTourType(ETourType.TYPE_SAVING)
                 .stream().map(
                         tour -> {
-                            TourMapper mapper = new TourMapper();
-                            return (TourDTO) mapper.mapToDTO(tour);
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
-        listTourDTOS.add(dto1);
-        listTourDTOS.add(dto2);
-        listTourDTOS.add(dto3);
-        listTourDTOS.add(dto4);
+        listTourResDTOS.add(dto1);
+        listTourResDTOS.add(dto2);
+        listTourResDTOS.add(dto3);
+        listTourResDTOS.add(dto4);
 
-        return listTourDTOS;
+        return listTourResDTOS;
     }
 
     public Map<String, Object> getAllTour(int page, int limit, int pages){
         Map<String, Object> result = new HashMap<>();
         result.put("tours", tourRepository.findAll(PageRequest.of(page, limit)).stream().map(tour -> {
-            TourMapper tourMapper = new TourMapper();
-            return (TourDTO) tourMapper.mapToDTO(tour);
+            Mapper tourMapper = new TourResMapper();
+            return (TourResDTO) tourMapper.mapToDTO(tour);
         }).toList());
         result.put("pages", pages == 0 ? 1 : pages);
         return result;

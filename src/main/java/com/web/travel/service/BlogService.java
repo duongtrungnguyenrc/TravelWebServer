@@ -1,7 +1,8 @@
 package com.web.travel.service;
 
-import com.web.travel.dto.blog.DestinationBlogResDTO;
-import com.web.travel.mapper.DestinationBlogResMapper;
+import com.web.travel.dto.response.DestinationBlogResDTO;
+import com.web.travel.mapper.response.DestinationBlogResMapper;
+import com.web.travel.mapper.Mapper;
 import com.web.travel.model.DestinationBlog;
 import com.web.travel.repository.DestinationBlogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class BlogService {
         Map<String, Object> result = new HashMap<>();
 
         List<DestinationBlogResDTO> listDTO = list.stream().map(blog -> {
-            DestinationBlogResMapper mapper = new DestinationBlogResMapper();
+            Mapper mapper = new DestinationBlogResMapper();
             return (DestinationBlogResDTO) mapper.mapToDTO(blog);
         }).toList();
 

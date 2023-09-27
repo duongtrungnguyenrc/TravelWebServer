@@ -1,4 +1,4 @@
-package com.web.travel.dto.user;
+package com.web.travel.dto.response;
 
 import com.web.travel.model.Role;
 import com.web.travel.model.enumeration.ERole;

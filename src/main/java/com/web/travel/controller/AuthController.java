@@ -1,7 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.dto.user.UserResDTO;
+import com.web.travel.dto.response.UserResDTO;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.ERole;

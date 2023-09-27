@@ -1,12 +1,11 @@
-package com.web.travel.dto.tour;
+package com.web.travel.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @Data
-public class TourDTO {
+public class TourResDTO {
     private Long id;
     private String name;
     private double price;
@@ -17,7 +16,7 @@ public class TourDTO {
     private String img;
     private String type;
 
-    public TourDTO(){
+    public TourResDTO(){
         id = 1L;
         name = "Deluxe Double with New York City View";
         price = 59;

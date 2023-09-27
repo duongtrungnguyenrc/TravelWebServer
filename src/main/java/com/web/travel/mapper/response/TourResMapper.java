@@ -1,11 +1,10 @@
-package com.web.travel.mapper;
+package com.web.travel.mapper.response;
 
 import com.web.travel.core.DateHandler;
-import com.web.travel.dto.tour.TourDTO;
+import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
 import com.web.travel.model.Tour;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -14,20 +13,20 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 
 @Component
-public class TourMapper implements Mapper {
-    TourDTO tourDTO = new TourDTO();
+public class TourResMapper implements Mapper {
+    TourResDTO tourResDTO = new TourResDTO();
     DateHandler dateHandler = new DateHandler();
     @Override
     public Object mapToDTO(Object obj) {
-        tourDTO.setId(((Tour) obj).getId());
-        tourDTO.setImg(((Tour) obj).getImg());
-        tourDTO.setName(((Tour) obj).getName());
-        tourDTO.setLocation(((Tour) obj).getDestination());
-        tourDTO.setPrice(((Tour) obj).getAdultPrice());
+        tourResDTO.setId(((Tour) obj).getId());
+        tourResDTO.setImg(((Tour) obj).getImg());
+        tourResDTO.setName(((Tour) obj).getName());
+        tourResDTO.setLocation(((Tour) obj).getDestination());
+        tourResDTO.setPrice(((Tour) obj).getAdultPrice());
         Date depart = ((Tour) obj).getDepartDate();
         Date end = ((Tour) obj).getEndDate();
-        tourDTO.setTime(dateHandler.getDiffDay(end, depart));
-        tourDTO.setMaxPeople(((Tour) obj).getMaxPeople());  
+        tourResDTO.setTime(dateHandler.getDiffDay(end, depart));
+        tourResDTO.setMaxPeople(((Tour) obj).getMaxPeople());
         String typeDto = "";
         switch (((Tour) obj).getTourType().toString()) {
             case "TYPE_SAVING" -> typeDto = "saving";
@@ -37,7 +36,7 @@ public class TourMapper implements Mapper {
             default -> {
             }
         }
-        tourDTO.setType(typeDto);
+        tourResDTO.setType(typeDto);
 
         Collection<Rate> rates = ((Tour) obj).getRates();
 
@@ -50,8 +49,8 @@ public class TourMapper implements Mapper {
                 .mapToInt(point -> point)
                 .summaryStatistics();
 
-        tourDTO.setRatedStar(intSummaryStatistics.getAverage());
-        return tourDTO;
+        tourResDTO.setRatedStar(intSummaryStatistics.getAverage());
+        return tourResDTO;
     }
 
     @Override

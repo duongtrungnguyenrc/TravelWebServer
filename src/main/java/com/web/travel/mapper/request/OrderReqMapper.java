@@ -1,6 +1,7 @@
-package com.web.travel.mapper;
+package com.web.travel.mapper.request;
 
-import com.web.travel.dto.order.OrderDTO;
+import com.web.travel.dto.request.OrderReqDTO;
+import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Order;
 import com.web.travel.model.Tour;
 import com.web.travel.model.User;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderMapper implements Mapper{
+public class OrderReqMapper implements Mapper {
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -24,18 +25,18 @@ public class OrderMapper implements Mapper{
 
     @Override
     public Object mapToObject(Object obj) {
-        OrderDTO orderDTO = new OrderDTO();
-        if(obj instanceof OrderDTO){
-            orderDTO = (OrderDTO) obj;
+        OrderReqDTO orderReqDTO = new OrderReqDTO();
+        if(obj instanceof OrderReqDTO){
+            orderReqDTO = (OrderReqDTO) obj;
         }
         Order order = new Order();
-        order.setAdults(orderDTO.getAdults());
+        order.setAdults(orderReqDTO.getAdults());
         order.setChildren(order.getChildren());
-        order.setContactInfo(orderDTO.getContactInfo());
-        order.setOrderDate(orderDTO.getOrderDate());
-        User user = userRepository.findById(orderDTO.getUserId()).orElseGet(User::new);
+        order.setContactInfo(orderReqDTO.getContactInfo());
+        order.setOrderDate(orderReqDTO.getOrderDate());
+        User user = userRepository.findById(orderReqDTO.getUserId()).orElseGet(User::new);
         order.setUser(user);
-        Tour tour = tourRepository.findById(orderDTO.getTourId()).orElseGet(Tour::new);
+        Tour tour = tourRepository.findById(orderReqDTO.getTourId()).orElseGet(Tour::new);
         order.setTour(tour);
         order.setTotalPrice(0);
         order.setStatus(EOrderStatus.STATUS_PENDING);

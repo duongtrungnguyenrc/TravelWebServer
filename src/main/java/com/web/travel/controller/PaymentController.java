@@ -1,7 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.mapper.OrderMapper;
+import com.web.travel.mapper.request.OrderReqMapper;
 import com.web.travel.model.ContactInfo;
 import com.web.travel.model.Order;
 import com.web.travel.model.Payment;
@@ -26,7 +26,7 @@ public class PaymentController {
     @Autowired
     VnPayService vnPayService;
     @Autowired
-    OrderMapper orderMapper;
+    OrderReqMapper orderReqMapper;
     @Autowired
     PaymentService paymentService;
     @Autowired
@@ -40,7 +40,7 @@ public class PaymentController {
         long amount = (long) Math.round(body.getAmount());
         String ipAddress = request.getRemoteAddr();
 
-        Order order = (Order) orderMapper.mapToObject(body.getOrder());
+        Order order = (Order) orderReqMapper.mapToObject(body.getOrder());
         order.setTotalPrice(body.getAmount());
 
         ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());

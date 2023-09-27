@@ -2,12 +2,9 @@ package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.model.Order;
-import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.repository.OrderRepository;
 import com.web.travel.service.AuthService;
-import com.web.travel.service.FileUploadService;
-import com.web.travel.service.cloudinary.EStatus;
-import com.web.travel.service.cloudinary.FilesValidation;
+import com.web.travel.service.interfaces.FileUploadService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

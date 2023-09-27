@@ -1,4 +1,4 @@
-package com.web.travel.dto.blog;
+package com.web.travel.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

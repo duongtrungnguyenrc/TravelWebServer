@@ -1,12 +1,8 @@
 package com.web.travel.service.cloudinary;
 
 import com.cloudinary.Cloudinary;
-import com.web.travel.payload.response.AuthResponse;
-import com.web.travel.service.FileUploadService;
-import jakarta.servlet.http.HttpServletResponse;
+import com.web.travel.service.interfaces.FileUploadService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
