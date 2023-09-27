@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 public class TourController {
     @Autowired
     TourService tourService;
-
     @GetMapping("/all")
     public Object getAll(@RequestParam(value = "page", required =false) Integer page, @RequestParam(value = "limit", required =false) Integer limit){
         page = page != null ? page : 1;
