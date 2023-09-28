@@ -25,18 +25,32 @@ public class TourResMapper implements Mapper {
         tourResDTO.setPrice(((Tour) obj).getAdultPrice());
         Date depart = ((Tour) obj).getDepartDate();
         Date end = ((Tour) obj).getEndDate();
-        tourResDTO.setTime(dateHandler.getDiffDay(end, depart));
+        tourResDTO.setDuration(dateHandler.getDiffDay(end, depart));
         tourResDTO.setMaxPeople(((Tour) obj).getMaxPeople());
         String typeDto = "";
+        String typeTitle = "";
         switch (((Tour) obj).getTourType().toString()) {
-            case "TYPE_SAVING" -> typeDto = "saving";
-            case "TYPE_SPECIAL" -> typeDto = "special";
-            case "TYPE_NORMAL" -> typeDto = "normal";
-            case "TYPE_POPULAR" -> typeDto = "popular";
+            case "TYPE_SAVING" -> {
+                typeDto = "saving";
+                typeTitle = "Tour tiết kiệm";
+            }
+            case "TYPE_SPECIAL" -> {
+                typeDto = "special";
+                typeTitle = "Tour đặc biệt";
+            }
+            case "TYPE_NORMAL" -> {
+                typeTitle = "Tour thông thường";
+                typeDto = "normal";
+            }
+            case "TYPE_POPULAR" -> {
+                typeTitle = "Tour phổ biến";
+                typeDto = "popular";
+            }
             default -> {
             }
         }
         tourResDTO.setType(typeDto);
+        tourResDTO.setTypeTitle(typeTitle);
 
         Collection<Rate> rates = ((Tour) obj).getRates();
 

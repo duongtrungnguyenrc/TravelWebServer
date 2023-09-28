@@ -86,19 +86,39 @@ public class TourService {
         return tourRepository.findById(id).orElse(null);
     }
 
-    public List<Tour> findTourByType(String type){
+    public List<TourResDTO> findTourByType(String type){
         switch (type){
             case "normal" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_NORMAL);
+                return tourRepository.findByTourType(ETourType.TYPE_NORMAL).stream().map(
+                        tour -> {
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
+                        }
+                ).toList();
             }
             case "popular" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_POPULAR);
+                return tourRepository.findByTourType(ETourType.TYPE_POPULAR).stream().map(
+                        tour -> {
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
+                        }
+                ).toList();
             }
             case "special" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_SPECIAL);
+                return tourRepository.findByTourType(ETourType.TYPE_SPECIAL).stream().map(
+                        tour -> {
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
+                        }
+                ).toList();
             }
             case "saving" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_SAVING);
+                return tourRepository.findByTourType(ETourType.TYPE_SAVING).stream().map(
+                        tour -> {
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
+                        }
+                ).toList();
             }
             default -> {
                 return null;

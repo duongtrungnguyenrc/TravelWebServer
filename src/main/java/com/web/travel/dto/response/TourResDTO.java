@@ -12,9 +12,10 @@ public class TourResDTO {
     private double ratedStar;
     private String location;
     private int maxPeople;
-    private int time;
+    private int duration;
     private String img;
     private String type;
+    private String typeTitle;
 
     public TourResDTO(){
         id = 1L;
@@ -24,6 +25,6 @@ public class TourResDTO {
         ratedStar = 4.9;
         location = "Phu Quy";
         maxPeople = 3;
-        time = 3;
+        duration = 3;
     }
 }

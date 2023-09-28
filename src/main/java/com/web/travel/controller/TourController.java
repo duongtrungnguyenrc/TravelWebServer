@@ -42,7 +42,7 @@ public class TourController {
     }
 
     @GetMapping("/type")
-    public Object getListTourByType(@RequestParam(name = "type") String type){
+    public ResponseEntity<?> getListTourByType(@RequestParam(name = "type") String type){
         return ResponseEntity.ok(
                 new ResDTO(HttpStatus.OK.value(),
                         true,
