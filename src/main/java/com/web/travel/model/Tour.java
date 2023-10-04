@@ -38,10 +38,13 @@ public class Tour {
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Collection<Schedule> schedules;
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Collection<Order> orders;
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Collection<Rate> rates;
     @ManyToMany
     @JoinTable(
@@ -51,7 +54,6 @@ public class Tour {
     )
     @JsonIgnore
     private Collection<Hotel> hotels;
-
     public Tour(String name,
                 double adultPrice,
                 double childPrice,

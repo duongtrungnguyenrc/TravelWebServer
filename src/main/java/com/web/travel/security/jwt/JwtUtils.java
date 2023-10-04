@@ -36,6 +36,15 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateJwtMailToken(String email){
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + 600000))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }

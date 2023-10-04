@@ -2,6 +2,7 @@ package com.web.travel.service.email;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.web.travel.dto.ResDTO;
@@ -25,10 +26,12 @@ public class EmailService {
     private JavaMailSender sender;
     @Autowired
     private Configuration config;
-    public ResDTO sendWelcomeEmail(MailRequest request, Map<String, Object> model) {
+    public ResDTO sendWelcomeEmail(MailRequest request) {
         ResDTO response = new ResDTO();
         response.setData(null);
         MimeMessage message = sender.createMimeMessage();
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", request.getName());
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
@@ -40,7 +43,35 @@ public class EmailService {
             helper.setTo(request.getTo());
             helper.setText(html, true);
             helper.setSubject(request.getSubject());
-            helper.setFrom(request.getFrom());
+            helper.setFrom(request.getFrom(), "Travel Vn");
+            sender.send(message);
+            response.setCode(HttpServletResponse.SC_OK);
+            response.setMessage("Mail sent to: " + request.getTo());
+            response.setStatus(Boolean.TRUE);
+        } catch (MessagingException | IOException | TemplateException e) {
+            response.setMessage("Mail sent failure : " + e.getMessage());
+            response.setStatus(Boolean.FALSE);
+            response.setCode(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        return response;
+    }
+
+    public ResDTO sendResetPasswordEmail(MailRequest request, Map<String, Object> model) {
+        ResDTO response = new ResDTO();
+        response.setData(null);
+        MimeMessage message = sender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+            //add attachment
+            //helper.addAttachment("logo.jpg", new ClassPathResource("logo.jpg"));
+            //render template
+            Template t = config.getTemplate("reset-password/reset-password-template.ftl");
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+            helper.setTo(request.getTo());
+            helper.setText(html, true);
+            helper.setSubject(request.getSubject());
+            helper.setFrom(request.getFrom(), "Travel Vn");
             sender.send(message);
             response.setCode(HttpServletResponse.SC_OK);
             response.setMessage("Mail sent to: " + request.getTo());

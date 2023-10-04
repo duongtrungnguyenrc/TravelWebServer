@@ -1,5 +1,6 @@
 package com.web.travel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -22,10 +23,12 @@ public class Paragraph {
     @JoinColumn(name = "blogId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Blog blog;
 
-    @OneToMany(mappedBy = "paragraph", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paragraph", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+//    @JsonIgnore
     private Collection<ParagraphImg> paragraphImgs;
 }

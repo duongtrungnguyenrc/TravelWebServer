@@ -1,11 +1,18 @@
 package com.web.travel.service;
 
 import com.web.travel.dto.response.ListTourResDTO;
+import com.web.travel.dto.response.TourDetailResDTO;
 import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
+import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourResMapper;
+import com.web.travel.model.Blog;
+import com.web.travel.model.Paragraph;
 import com.web.travel.model.Tour;
+import com.web.travel.model.TourBlog;
 import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.repository.BlogRepository;
+import com.web.travel.repository.TourBlogRepository;
 import com.web.travel.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +27,10 @@ import java.util.Map;
 public class TourService {
     @Autowired
     TourRepository tourRepository;
+    @Autowired
+    TourBlogRepository tourBlogRepository;
+    @Autowired
+    BlogRepository blogRepository;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourResDTO> list = new ArrayList<>();
@@ -128,5 +139,19 @@ public class TourService {
 
     public long getCount(){
         return tourRepository.count();
+    }
+    public Object getTourById(Long id){
+        Tour tour = tourRepository.findById(id).orElse(new Tour());
+        TourBlog tourBlog = tourBlogRepository.findByTour(tour).orElse(new TourBlog());
+        Blog blog = tourBlog.getBlog();
+        Map<String, Object> result = new HashMap<>();
+        List<Paragraph> paragraphs = (List<Paragraph>) blog.getParagraphs();
+
+        result.put("blog", blog);
+        result.put("tour", tour);
+        result.put("tourBlog", tourBlog);
+        result.put("paragraphs", paragraphs);
+        Mapper mapper = new TourDetailResMapper();
+        return (TourDetailResDTO) mapper.mapToDTO(result);
     }
 }

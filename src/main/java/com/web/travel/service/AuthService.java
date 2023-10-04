@@ -5,6 +5,7 @@ import com.web.travel.model.enumeration.ERole;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.payload.request.LoginRequest;
+import com.web.travel.payload.request.ResetPasswordRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.payload.response.JwtResponse;
@@ -112,6 +113,23 @@ public class AuthService {
         return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", jwtResponse);
     }
 
+    public ResDTO resetPassword(ResetPasswordRequest request){
+        String userEmail = getEmailFromToken(request.getToken());
+        User user = userRepository.findByEmail(userEmail).orElse(null);
+        if(user != null){
+            user.setPassword(encoder.encode(request.getPassword()));
+            userRepository.save(user);
+            return new ResDTO(HttpServletResponse.SC_OK,
+                    true,
+                    "Changed password successfully",
+                    "");
+        }
+        return new ResDTO(HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Changed password unsuccessfully",
+                "");
+    }
+
     public String getEmailFromToken(String token){
         token = parseToken(token);
         return jwtUtils.getEmailFromJwtToken(token);
@@ -122,5 +140,13 @@ public class AuthService {
             return token.substring(7);
         }
         return null;
+    }
+
+    public String createResetPasswordToken(String email){
+        return jwtUtils.generateJwtMailToken(email);
+    }
+
+    public boolean resetPasswordTokenIsValid(String token){
+        return jwtUtils.validateJwtToken(token);
     }
 }

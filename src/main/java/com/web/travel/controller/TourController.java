@@ -50,4 +50,16 @@ public class TourController {
                         tourService.findTourByType(type))
         );
     }
+
+    @GetMapping("/detail")
+    public ResponseEntity<?> getTourDetail(@RequestParam("id") Long id){
+        return ResponseEntity.ok(
+                new ResDTO(
+                        HttpStatus.OK.value(),
+                        true,
+                        "Get tour successfully",
+                        tourService.getTourById(id)
+                )
+        );
+    }
 }

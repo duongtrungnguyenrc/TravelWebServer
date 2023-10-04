@@ -18,9 +18,7 @@ public class MailSendingController {
     private EmailService service;
     @PostMapping("/send")
     public ResponseEntity<?> sendWelcomeEmail(@RequestBody MailRequest request) {
-        Map<String, Object> model = new HashMap<>();
-        model.put("name", request.getName());
-        ResDTO response = service.sendWelcomeEmail(request, model);
+        ResDTO response = service.sendWelcomeEmail(request);
         boolean isOk = response.isStatus();
         return isOk ? ResponseEntity.ok(response) :
                 ResponseEntity.badRequest().body(response);
