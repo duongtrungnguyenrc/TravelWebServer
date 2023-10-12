@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/reset-password")
@@ -126,7 +127,8 @@ public class ResetPasswordController {
         String token = authService.decodeResetPasswordToken(encodedToken);
         if (authService.resetPasswordTokenIsValid(token)) {
             String url  = clientHost + "/auth/reset-password?token=" + authService.encodeResetPasswordToken(token);
-            ResponseEntity.status(HttpStatus.FOUND)
+
+            return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(url)).build();
         }
         return ResponseEntity.status(HttpStatus.FOUND)
