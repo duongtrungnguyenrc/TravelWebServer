@@ -32,7 +32,7 @@ public class ResetPasswordController {
     @GetMapping("/check")
     public ResponseEntity<?> validateToken(@RequestParam(value = "token", required = true) String encodedToken){
         String token = authService.decodeResetPasswordToken(encodedToken);
-        if(authService.resetPasswordTokenIsValid(token)){
+        if(!authService.resetPasswordTokenIsValid(token)){
             return ResponseEntity.ok(
                 new ResDTO(
                         HttpServletResponse.SC_BAD_REQUEST,
