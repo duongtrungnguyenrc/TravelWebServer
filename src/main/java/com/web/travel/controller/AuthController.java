@@ -59,10 +59,8 @@ public class AuthController {
                     .badRequest()
                     .body(new ResDTO(HttpServletResponse.SC_BAD_REQUEST, false, "Xác thực đăng nhập thất bại!", null));
         }
-        else {
-            return ResponseEntity
-                    .ok()
-                    .body(new ResDTO(HttpServletResponse.SC_OK, true, "Xác thực đăng nhập thành công!", null));
-        }
+        return ResponseEntity
+                .ok()
+                .body(new ResDTO(HttpServletResponse.SC_OK, true, "Xác thực đăng nhập thành công!", null));
     }
 }
