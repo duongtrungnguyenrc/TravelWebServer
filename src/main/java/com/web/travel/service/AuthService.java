@@ -114,6 +114,11 @@ public class AuthService {
         return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", jwtResponse);
     }
 
+
+    public boolean loginVerify(String token) {
+        return jwtUtils.validateJwtToken(token);
+    }
+
     public ResDTO resetPassword(String password, String token){
         String userEmail = getEmailFromTokenForReset(token);
         User user = userRepository.findByEmail(userEmail).orElse(null);
