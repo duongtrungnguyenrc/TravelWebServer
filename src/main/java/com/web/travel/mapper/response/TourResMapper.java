@@ -5,6 +5,7 @@ import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
 import com.web.travel.model.Tour;
+import com.web.travel.model.TourDate;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -22,10 +23,18 @@ public class TourResMapper implements Mapper {
         tourResDTO.setImg(((Tour) obj).getImg());
         tourResDTO.setName(((Tour) obj).getName());
         tourResDTO.setLocation(((Tour) obj).getDestination());
-        tourResDTO.setPrice(((Tour) obj).getAdultPrice());
-        Date depart = ((Tour) obj).getDepartDate();
-        Date end = ((Tour) obj).getEndDate();
-        tourResDTO.setDuration(dateHandler.getDiffDay(end, depart));
+        TourDate tourDate = ((Tour) obj).getTourDate().stream().findFirst().orElse(null);
+        double price = 0;
+        int duration = 0;
+        if(tourDate != null){
+            Date depart = tourDate.getDepartDate(),
+                    end = tourDate.getEndDate();
+            duration = dateHandler.getDiffDay(end, depart);
+
+            price = tourDate.getAdultPrice();
+        }
+        tourResDTO.setPrice(price);
+        tourResDTO.setDuration(duration);
         tourResDTO.setMaxPeople(((Tour) obj).getMaxPeople());
         String typeDto = "";
         String typeTitle = "";

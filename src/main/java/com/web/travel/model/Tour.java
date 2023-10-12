@@ -19,31 +19,26 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private double adultPrice;
-    private double childPrice;
     private String vehicle;
     @Enumerated(EnumType.STRING)
     private ETourType tourType;
     private String depart;
     private String destination;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    @Column
-    private Date departDate;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    @Column
-    private Date endDate;
+    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Collection<TourDate> tourDate;
     private int maxPeople;
     private int currentPeople;
     private String img;
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     private Collection<Schedule> schedules;
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
     @JsonIgnore
     private Collection<Order> orders;
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Collection<Rate> rates;
     @ManyToMany
@@ -55,24 +50,18 @@ public class Tour {
     @JsonIgnore
     private Collection<Hotel> hotels;
     public Tour(String name,
-                double adultPrice,
-                double childPrice,
                 String vehicle,
                 String depart,
                 String destination,
-                Date departDate,
-                Date endDate,
+                Collection<TourDate> tourDate,
                 int maxPeople,
                 int currentPeople,
                 String img) {
         this.name = name;
-        this.adultPrice = adultPrice;
-        this.childPrice = childPrice;
         this.vehicle = vehicle;
         this.depart = depart;
         this.destination = destination;
-        this.departDate = departDate;
-        this.endDate = endDate;
+        this.tourDate = tourDate;
         this.maxPeople = maxPeople;
         this.currentPeople = currentPeople;
         this.img = img;

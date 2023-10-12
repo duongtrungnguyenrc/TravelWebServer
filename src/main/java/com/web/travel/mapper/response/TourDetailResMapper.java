@@ -1,12 +1,12 @@
 package com.web.travel.mapper.response;
 
+import com.web.travel.core.DateHandler;
 import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TourDetailResMapper implements Mapper {
     @Override
@@ -20,13 +20,32 @@ public class TourDetailResMapper implements Mapper {
             tourDto.setId(tour.getId());
             tourDto.setName(tour.getName());
             tourDto.setTourType(tour.getTourType());
-            tourDto.setAdultPrice(tour.getAdultPrice());
-            tourDto.setChildPrice(tour.getChildPrice());
             tourDto.setVehicle(tour.getVehicle());
             tourDto.setDepart(tour.getDepart());
             tourDto.setDestination(tour.getDestination());
-            tourDto.setDepartDate(tour.getDepartDate());
-            tourDto.setEndDate(tour.getEndDate());
+
+            List<TourDateResDTO> tourDateResDTOs = new ArrayList<>();
+            tour.getTourDate().forEach(date -> {
+                TourDateResDTO tourDateResDTO = new TourDateResDTO();
+                Date departDate = date.getDepartDate(),
+                        endDate = date.getEndDate();
+                tourDateResDTO.setDepartDate(departDate);
+                tourDateResDTO.setEndDate(endDate);
+                tourDateResDTO.setAdultPrice(date.getAdultPrice());
+                tourDateResDTO.setChildPrice(date.getChildPrice());
+
+                String type = date.getDateType().toString();
+                if(type.equals("TYPE_PLUS"))
+                    type = "Plus";
+                else
+                    type = "Essential";
+                tourDateResDTO.setType(type);
+                int duration = new DateHandler().getDiffDay(endDate, departDate);
+                tourDateResDTO.setDuration(duration);
+                tourDateResDTOs.add(tourDateResDTO);
+            });
+            tourDto.setTourDate(tourDateResDTOs);
+
             tourDto.setMaxPeople(tour.getMaxPeople());
             tourDto.setCurrentPeople(tour.getCurrentPeople());
             tourDto.setImg(tour.getImg());

@@ -141,17 +141,21 @@ public class TourService {
         return tourRepository.count();
     }
     public Object getTourById(Long id){
-        Tour tour = tourRepository.findById(id).orElse(new Tour());
-        TourBlog tourBlog = tourBlogRepository.findByTour(tour).orElse(new TourBlog());
-        Blog blog = tourBlog.getBlog();
-        Map<String, Object> result = new HashMap<>();
-        List<Paragraph> paragraphs = (List<Paragraph>) blog.getParagraphs();
-
-        result.put("blog", blog);
-        result.put("tour", tour);
-        result.put("tourBlog", tourBlog);
-        result.put("paragraphs", paragraphs);
+        Tour tour = tourRepository.findById(id).orElse(null);
         Mapper mapper = new TourDetailResMapper();
-        return (TourDetailResDTO) mapper.mapToDTO(result);
+        Map<String, Object> result = new HashMap<>();
+
+        if(tour != null){
+            TourBlog tourBlog = tourBlogRepository.findByTour(tour).orElse(new TourBlog());
+            Blog blog = tourBlog.getBlog();
+            List<Paragraph> paragraphs = (List<Paragraph>) blog.getParagraphs();
+
+            result.put("blog", blog);
+            result.put("tour", tour);
+            result.put("tourBlog", tourBlog);
+            result.put("paragraphs", paragraphs);
+            return (TourDetailResDTO) mapper.mapToDTO(result);
+        }
+        return null;
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -113,11 +114,11 @@ public class AuthService {
         return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", jwtResponse);
     }
 
-    public ResDTO resetPassword(ResetPasswordRequest request){
-        String userEmail = getEmailFromToken(request.getToken());
+    public ResDTO resetPassword(String password, String token){
+        String userEmail = getEmailFromTokenForReset(token);
         User user = userRepository.findByEmail(userEmail).orElse(null);
         if(user != null){
-            user.setPassword(encoder.encode(request.getPassword()));
+            user.setPassword(encoder.encode(password));
             userRepository.save(user);
             return new ResDTO(HttpServletResponse.SC_OK,
                     true,
@@ -135,6 +136,10 @@ public class AuthService {
         return jwtUtils.getEmailFromJwtToken(token);
     }
 
+    public String getEmailFromTokenForReset(String token){
+        return jwtUtils.getEmailFromJwtToken(token);
+    }
+
     private String parseToken(String token){
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             return token.substring(7);
@@ -148,5 +153,23 @@ public class AuthService {
 
     public boolean resetPasswordTokenIsValid(String token){
         return jwtUtils.validateJwtToken(token);
+    }
+    public String encodeResetPasswordToken(String token){
+        Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
+        return encoder.encodeToString(token.getBytes());
+    }
+
+    public String decodeResetPasswordToken(String encodedToken){
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] tokenBytes = decoder.decode(encodedToken);
+        return new String(tokenBytes);
+    }
+
+    public String getUserFullNameFromEmail(String email){
+        User user = userRepository.findByEmail(email).orElse(null);
+        if(user != null){
+            return user.getFullName();
+        }
+        return "";
     }
 }

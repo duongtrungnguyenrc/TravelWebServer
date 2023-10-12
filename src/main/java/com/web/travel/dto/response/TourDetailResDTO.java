@@ -20,16 +20,11 @@ import java.util.List;
 public class TourDetailResDTO {
     private Long id;
     private String name;
-    private double adultPrice;
-    private double childPrice;
     private String vehicle;
     private ETourType tourType;
     private String depart;
     private String destination;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date departDate;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date endDate;
+    private List<TourDateResDTO> tourDate;
     private int maxPeople;
     private int currentPeople;
     private String img;

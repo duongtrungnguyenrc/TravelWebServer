@@ -21,7 +21,6 @@ public class ResourceAccessingExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Object handleNoHandlerFoundException(NoHandlerFoundException ex) {
         log.error("404 situation detected.",ex);
-        return new ModelAndView("error/404");
-//        return new ResDTO(HttpStatus.NOT_FOUND.value(), false, "Đường dẫn sai rồi ba", null);
+        return "error";
     }
 }
