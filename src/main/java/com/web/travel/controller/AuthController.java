@@ -6,6 +6,7 @@ import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.ERole;
 import com.web.travel.payload.request.LoginRequest;
+import com.web.travel.payload.request.LoginVerifyRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,5 +50,19 @@ public class AuthController {
                         , true, "Đăng ký tài khoản thành công!"
                         , new UserResDTO(savedUser.getId(), savedUser.getEmail(), eRoleList))
                 );
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> loginVerify(@Valid @RequestBody LoginVerifyRequest loginVerifyRequest) {
+        if (!authService.loginVerify(loginVerifyRequest.getToken())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ResDTO(HttpServletResponse.SC_BAD_REQUEST, false, "Xác thực đăng nhập thất bại!", null));
+        }
+        else {
+            return ResponseEntity
+                    .ok()
+                    .body(new ResDTO(HttpServletResponse.SC_OK, true, "Xác thực đăng nhập thành công!", null));
+        }
     }
 }
