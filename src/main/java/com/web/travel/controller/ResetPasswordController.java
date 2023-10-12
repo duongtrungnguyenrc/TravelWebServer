@@ -73,15 +73,15 @@ public class ResetPasswordController {
     @PostMapping("/send-mail")
     public ResponseEntity<?> mailSending(@RequestBody MailResetPasswordRequest mail){
         String url = "http://localhost:8080/api/reset-password?token=";
-        String token = authService.createResetPasswordToken(mail.getMail());
-        String userFullName = authService.getUserFullNameFromEmail(mail.getMail());
+        String token = authService.createResetPasswordToken(mail.getEmail());
+        String userFullName = authService.getUserFullNameFromEmail(mail.getEmail());
 
         if(userFullName.isEmpty()){
             return ResponseEntity.badRequest().body(
                     new ResDTO(
                             HttpServletResponse.SC_BAD_REQUEST,
                             false,
-                            "User not found with email: " + mail.getMail()
+                            "User not found with email: " + mail.getEmail()
                                 ,
                             null
                     )
@@ -91,7 +91,7 @@ public class ResetPasswordController {
         url += encodedToken;
         MailRequest mailRequest = new MailRequest();
         mailRequest.setSubject("RESET PASSWORD");
-        mailRequest.setTo(mail.getMail());
+        mailRequest.setTo(mail.getEmail());
         mailRequest.setFrom("travel-vn");
         Map<String, Object> model = new HashMap<>();
         model.put("url", url);
