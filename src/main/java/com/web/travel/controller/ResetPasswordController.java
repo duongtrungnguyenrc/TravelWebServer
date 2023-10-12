@@ -2,6 +2,7 @@ package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.model.User;
+import com.web.travel.payload.request.ChangePasswordRequest;
 import com.web.travel.payload.request.MailRequest;
 import com.web.travel.payload.request.MailResetPasswordRequest;
 import com.web.travel.payload.request.ResetPasswordRequest;
@@ -9,6 +10,7 @@ import com.web.travel.service.AuthService;
 import com.web.travel.service.email.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -27,6 +29,9 @@ public class ResetPasswordController {
     EmailService emailService;
     @Autowired
     AuthService authService;
+
+    @Value("{travel.app.client.host}")
+    String clientHost;
 
 
 
@@ -54,11 +59,11 @@ public class ResetPasswordController {
     }
 
     @PostMapping("/change/{token}")
-    public ResponseEntity<?> changePassword(@RequestParam("password") String password, @PathVariable("token") String encodedToken){
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest password, @PathVariable("token") String encodedToken){
         String token = authService.decodeResetPasswordToken(encodedToken);
         if(authService.resetPasswordTokenIsValid(token)){
             return ResponseEntity.ok(
-                    authService.resetPassword(password, token)
+                    authService.resetPassword(password.getNewPassword(), token)
             );
         }
         return ResponseEntity.badRequest().body(
@@ -72,7 +77,7 @@ public class ResetPasswordController {
     }
     @PostMapping("/send-mail")
     public ResponseEntity<?> mailSending(@RequestBody MailResetPasswordRequest mail){
-        String url = "http://localhost:8080/api/reset-password?token=";
+        String url = "http://localhost:8080/api/reset-password/redirect?token=";
         String token = authService.createResetPasswordToken(mail.getEmail());
         String userFullName = authService.getUserFullNameFromEmail(mail.getEmail());
 
@@ -116,14 +121,15 @@ public class ResetPasswordController {
         );
     }
 
-    @GetMapping("")
-    public Object resetPassword(@RequestParam("token") String encodedToken, Model model){
+    @GetMapping("/redirect")
+    public Object resetPassword(@RequestParam("token") String encodedToken){
         String token = authService.decodeResetPasswordToken(encodedToken);
         if (authService.resetPasswordTokenIsValid(token)) {
-            model.addAttribute("token", authService.encodeResetPasswordToken(token));
-            return new ModelAndView("reset-password");
+            String url  = clientHost + "/auth/reset-password?token=" + authService.encodeResetPasswordToken(token);
+            ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(url)).build();
         }
         return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create("https://travel-web-client.vercel.app/")).build();
+                .location(URI.create(clientHost)).build();
     }
 }
