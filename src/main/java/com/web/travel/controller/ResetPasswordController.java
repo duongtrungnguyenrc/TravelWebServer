@@ -30,7 +30,7 @@ public class ResetPasswordController {
     @Autowired
     AuthService authService;
 
-    @Value("{travel.app.client.host}")
+    @Value("${travel.app.client.host}")
     String clientHost;
 
 
