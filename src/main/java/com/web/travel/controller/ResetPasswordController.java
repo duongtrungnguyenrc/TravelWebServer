@@ -21,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reset-password")
+@CrossOrigin(origins = "*")
 public class ResetPasswordController {
     @Autowired
     EmailService emailService;
