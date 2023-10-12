@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserByEmailResDTO {
     private String name;
-    private String mail;
+    private String email;
 }
