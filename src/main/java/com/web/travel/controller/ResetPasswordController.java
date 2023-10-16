@@ -1,11 +1,9 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.model.User;
 import com.web.travel.payload.request.ChangePasswordRequest;
 import com.web.travel.payload.request.MailRequest;
 import com.web.travel.payload.request.MailResetPasswordRequest;
-import com.web.travel.payload.request.ResetPasswordRequest;
 import com.web.travel.service.AuthService;
 import com.web.travel.service.email.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,14 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/reset-password")
@@ -30,11 +25,8 @@ public class ResetPasswordController {
     EmailService emailService;
     @Autowired
     AuthService authService;
-
     @Value("${travel.app.client.host}")
     String clientHost;
-
-
 
     @GetMapping("/check")
     public ResponseEntity<?> validateToken(@RequestParam(value = "token", required = true) String encodedToken){
@@ -87,8 +79,7 @@ public class ResetPasswordController {
                     new ResDTO(
                             HttpServletResponse.SC_BAD_REQUEST,
                             false,
-                            "User not found with email: " + mail.getEmail()
-                                ,
+                            "User not found with email: " + mail.getEmail(),
                             null
                     )
             );
@@ -102,6 +93,7 @@ public class ResetPasswordController {
         Map<String, Object> model = new HashMap<>();
         model.put("url", url);
         model.put("name", userFullName);
+        model.put("clientHost", clientHost);
         if(emailService.sendResetPasswordEmail(mailRequest, model).isStatus()){
             return ResponseEntity.ok(
                     new ResDTO(

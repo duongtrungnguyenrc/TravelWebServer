@@ -19,10 +19,10 @@ public class TourDetailResMapper implements Mapper {
             TourDetailResDTO tourDto = new TourDetailResDTO();
             tourDto.setId(tour.getId());
             tourDto.setName(tour.getName());
-            tourDto.setTourType(tour.getTourType());
+            tourDto.setType(tour.getTourType());
             tourDto.setVehicle(tour.getVehicle());
             tourDto.setDepart(tour.getDepart());
-            tourDto.setDestination(tour.getDestination());
+            tourDto.setLocation(tour.getDestination());
 
             List<TourDateResDTO> tourDateResDTOs = new ArrayList<>();
             tour.getTourDate().forEach(date -> {
@@ -58,7 +58,7 @@ public class TourDetailResMapper implements Mapper {
                 List<ParagraphImageResDTO> images = new ArrayList<>();
                 paragraph.getParagraphImgs().forEach(image -> {
                     ParagraphImageResDTO paragraphImageResDTO = new ParagraphImageResDTO();
-                    paragraphImageResDTO.setImg(image.getImg());
+                    paragraphImageResDTO.setSrc(image.getSrc());
                     paragraphImageResDTO.setName(image.getName());
                     images.add(paragraphImageResDTO);
                 });
@@ -71,7 +71,7 @@ public class TourDetailResMapper implements Mapper {
             tourBlogResDTO.setParagraphs(paragraphDTO);
             tourBlogResDTO.setBackgroundImage(blog.getBackgroundImg());
 
-            tourDto.setBlog(tourBlogResDTO);
+            tourDto.setOverview(tourBlogResDTO);
             List<HotelResDTO> hotels = new ArrayList<>();
             tour.getHotels().forEach(hotel -> {
                 HotelResDTO hotelResDTO = new HotelResDTO();

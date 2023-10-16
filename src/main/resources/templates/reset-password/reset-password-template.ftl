@@ -102,7 +102,7 @@
                     <span>Lưu ý:</span> liên kết chỉ khả dụng trong vòng 10 phút, sau 10 phút, bạn không thể truy cập vào được link ở trên!
                 </p>
                 <p class="thank">Best regards,</p>
-                <a class="site-name" href="https://travel-web-client.vercel.app/">Travel VN</a>
+                <a class="site-name" href="${clientHost}">Travel VN</a>
             </div>
         </div>
     </body>

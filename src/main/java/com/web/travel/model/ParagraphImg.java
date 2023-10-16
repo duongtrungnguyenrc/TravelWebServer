@@ -13,7 +13,7 @@ public class ParagraphImg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String img;
+    private String src;
     @ManyToOne
     @JoinColumn(name = "paragraphId")
     @EqualsAndHashCode.Exclude

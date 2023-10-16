@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParagraphImageResDTO {
-    private String img;
+    private String src;
     private String name;
 }
