@@ -4,6 +4,7 @@ import com.web.travel.core.DateHandler;
 import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
+import com.web.travel.model.enumeration.ETourDateType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.text.html.Option;
@@ -39,7 +40,7 @@ public class TourDetailResMapper implements Mapper {
                 tourDateResDTO.setChildPrice(date.getChildPrice());
 
                 String type = date.getDateType().toString();
-                if(type.equals("TYPE_PLUS"))
+                if(type.equals(ETourDateType.TYPE_PLUS.toString()))
                     type = "Plus";
                 else
                     type = "Essential";
