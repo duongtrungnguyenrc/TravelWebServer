@@ -4,10 +4,8 @@ import com.web.travel.core.DateHandler;
 import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
+import com.web.travel.model.enumeration.ERoom;
 import com.web.travel.model.enumeration.ETourDateType;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.swing.text.html.Option;
 import java.util.*;
 
 public class TourDetailResMapper implements Mapper {
@@ -55,7 +53,6 @@ public class TourDetailResMapper implements Mapper {
             tourDto.setCurrentPeople(tour.getCurrentPeople());
             tourDto.setImg(tour.getImg());
 
-
             List<ParagraphResDTO> paragraphDTO = new ArrayList<ParagraphResDTO>();
             paragraphs.forEach(paragraph -> {
                 ParagraphResDTO paragraphResDTO = new ParagraphResDTO();
@@ -72,6 +69,7 @@ public class TourDetailResMapper implements Mapper {
             tourBlogResDTO.setBackgroundImage(blog.getBackgroundImg());
 
             tourDto.setOverview(tourBlogResDTO);
+
             List<HotelResDTO> hotels = new ArrayList<>();
             tour.getHotels().forEach(hotel -> {
                 HotelResDTO hotelResDTO = new HotelResDTO();
@@ -83,7 +81,11 @@ public class TourDetailResMapper implements Mapper {
                     room -> {
                         RoomResDTO roomResDTO = new RoomResDTO();
                         roomResDTO.setId(room.getId());
-                        roomResDTO.setType(room.getType().toString());
+                        switch (room.getType()){
+                            case TYPE_MEDIUM -> roomResDTO.setType("Trung bình");
+                            case TYPE_NORMAL -> roomResDTO.setType("Bình thường");
+                            case TYPE_VIP -> roomResDTO.setType("Vip");
+                        }
                         roomResDTO.setPrice(room.getPrice());
                         roomResDTOS.add(roomResDTO);
                     }
@@ -93,14 +95,14 @@ public class TourDetailResMapper implements Mapper {
                 hotels.add(hotelResDTO);
             });
 
+            tourDto.setHotels(hotels);
+
             List<ScheduleResDTO> scheduleResDTOS = new ArrayList<>();
             schedules.forEach(schedule -> {
                 scheduleResDTOS.add(new ScheduleResDTO(schedule.getId(), schedule.getTime(), schedule.getContent()));
             });
 
             tourDto.setSchedules(scheduleResDTOS);
-
-            tourDto.setHotels(hotels);
 
             return tourDto;
         }
