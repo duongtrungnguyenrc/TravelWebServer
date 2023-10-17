@@ -6,12 +6,10 @@ import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourResMapper;
-import com.web.travel.model.Blog;
-import com.web.travel.model.Paragraph;
-import com.web.travel.model.Tour;
-import com.web.travel.model.TourBlog;
+import com.web.travel.model.*;
 import com.web.travel.model.enumeration.ETourType;
 import com.web.travel.repository.BlogRepository;
+import com.web.travel.repository.ParagraphImgRepository;
 import com.web.travel.repository.TourBlogRepository;
 import com.web.travel.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ public class TourService {
     @Autowired
     TourBlogRepository tourBlogRepository;
     @Autowired
-    BlogRepository blogRepository;
+    ParagraphImgRepository paragraphImgRepository;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourResDTO> list = new ArrayList<>();
@@ -149,11 +147,18 @@ public class TourService {
             TourBlog tourBlog = tourBlogRepository.findByTour(tour).orElse(new TourBlog());
             Blog blog = tourBlog.getBlog();
             List<Paragraph> paragraphs = (List<Paragraph>) blog.getParagraphs();
+            List<Schedule> schedules = (List<Schedule>) tour.getSchedules();
+            Map<Long, ParagraphImg> paragraphImgMap = new HashMap<>();
+            paragraphs.forEach(paragraph -> {
+                paragraphImgMap.put(paragraph.getId(), paragraphImgRepository.findByParagraph(paragraph).orElse(new ParagraphImg()));
+            });
 
             result.put("blog", blog);
             result.put("tour", tour);
             result.put("tourBlog", tourBlog);
             result.put("paragraphs", paragraphs);
+            result.put("schedules", schedules);
+            result.put("images", paragraphImgMap);
             return (TourDetailResDTO) mapper.mapToDTO(result);
         }
         return null;

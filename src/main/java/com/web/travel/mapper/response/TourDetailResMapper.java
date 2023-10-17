@@ -6,6 +6,7 @@ import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 public class TourDetailResMapper implements Mapper {
@@ -16,6 +17,9 @@ public class TourDetailResMapper implements Mapper {
             TourBlog tourBlog = (TourBlog) ((Map<?, ?>) obj).get("tourBlog");
             Blog blog = (Blog) ((Map<?, ?>) obj).get("blog");
             List<Paragraph> paragraphs = (List<Paragraph>) ((Map<?, ?>) obj).get("paragraphs");
+            List<Schedule> schedules = (List<Schedule>) ((Map<?, ?>) obj).get("schedules");
+            Map<Long, ParagraphImg> paragraphImgMap = (Map<Long, ParagraphImg>) ((Map<?, ?>) obj).get("images");
+
             TourDetailResDTO tourDto = new TourDetailResDTO();
             tourDto.setId(tour.getId());
             tourDto.setName(tour.getName());
@@ -50,19 +54,14 @@ public class TourDetailResMapper implements Mapper {
             tourDto.setCurrentPeople(tour.getCurrentPeople());
             tourDto.setImg(tour.getImg());
 
+
             List<ParagraphResDTO> paragraphDTO = new ArrayList<ParagraphResDTO>();
             paragraphs.forEach(paragraph -> {
                 ParagraphResDTO paragraphResDTO = new ParagraphResDTO();
                 paragraphResDTO.setId(paragraph.getId());
                 paragraphResDTO.setContent(paragraph.getContent());
-                List<ParagraphImageResDTO> images = new ArrayList<>();
-                paragraph.getParagraphImgs().forEach(image -> {
-                    ParagraphImageResDTO paragraphImageResDTO = new ParagraphImageResDTO();
-                    paragraphImageResDTO.setSrc(image.getImg());
-                    paragraphImageResDTO.setName(image.getName());
-                    images.add(paragraphImageResDTO);
-                });
-                paragraphResDTO.setImages(images);
+                ParagraphImg paragraphImg = paragraphImgMap.get(paragraph.getId());
+                paragraphResDTO.setImage(new ParagraphImageResDTO(paragraphImg.getImg(), paragraphImg.getName()));
                 paragraphDTO.add(paragraphResDTO);
             });
 
@@ -92,6 +91,14 @@ public class TourDetailResMapper implements Mapper {
 
                 hotels.add(hotelResDTO);
             });
+
+            List<ScheduleResDTO> scheduleResDTOS = new ArrayList<>();
+            schedules.forEach(schedule -> {
+                scheduleResDTOS.add(new ScheduleResDTO(schedule.getId(), schedule.getTime(), schedule.getContent()));
+            });
+
+            tourDto.setSchedules(scheduleResDTOS);
+
             tourDto.setHotels(hotels);
 
             return tourDto;

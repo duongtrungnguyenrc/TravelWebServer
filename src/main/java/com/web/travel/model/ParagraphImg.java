@@ -14,7 +14,7 @@ public class ParagraphImg {
     private Long id;
     private String name;
     private String img;
-    @ManyToOne
+    @OneToOne()
     @JoinColumn(name = "paragraphId")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

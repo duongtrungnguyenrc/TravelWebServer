@@ -25,10 +25,4 @@ public class Paragraph {
     @ToString.Exclude
     @JsonIgnore
     private Blog blog;
-
-    @OneToMany(mappedBy = "paragraph", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-//    @JsonIgnore
-    private Collection<ParagraphImg> paragraphImgs;
 }

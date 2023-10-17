@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ParagraphResDTO {
-    private Long id;
+public class ScheduleResDTO {
+    private long id;
+    private String time;
     private String content;
-    private ParagraphImageResDTO image;
 }
