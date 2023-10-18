@@ -37,8 +37,8 @@ public class BlogController {
         );
     }
 
-    @GetMapping("/top")
-    public ResponseEntity<?> getTop(){
+    @GetMapping("/latest")
+    public ResponseEntity<?> getLatest(){
         return ResponseEntity.ok(
                 new ResDTO(
                         HttpServletResponse.SC_OK,
