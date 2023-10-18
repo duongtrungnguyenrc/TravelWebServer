@@ -36,4 +36,28 @@ public class BlogController {
                 )
         );
     }
+
+    @GetMapping("/top")
+    public ResponseEntity<?> getTop(){
+        return ResponseEntity.ok(
+                new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        "Blog fetched succcessfully",
+                        blogService.getTopLatestPosts(4)
+                )
+        );
+    }
+
+    @GetMapping("/authors")
+    public ResponseEntity<?> getAuthorsDesc(){
+        return ResponseEntity.ok(
+            new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Authors fetched succcessfully",
+                    blogService.getListAuthorDesc()
+            )
+        );
+    }
 }
