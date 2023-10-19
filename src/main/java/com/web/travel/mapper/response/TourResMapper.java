@@ -1,6 +1,7 @@
 package com.web.travel.mapper.response;
 
 import com.web.travel.core.DateHandler;
+import com.web.travel.core.RateCalculator;
 import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
@@ -23,6 +24,7 @@ public class TourResMapper implements Mapper {
         tourResDTO.setImg(((Tour) obj).getImg());
         tourResDTO.setName(((Tour) obj).getName());
         tourResDTO.setLocation(((Tour) obj).getDestination());
+        tourResDTO.setDepart(((Tour) obj).getDepart());
         TourDate tourDate = ((Tour) obj).getTourDate().stream().findFirst().orElse(null);
         double price = 0;
         int duration = 0;
@@ -63,16 +65,7 @@ public class TourResMapper implements Mapper {
 
         Collection<Rate> rates = ((Tour) obj).getRates();
 
-        List<Integer> points = rates.stream().map(
-                Rate::getPoint
-        ).toList();
-
-        IntSummaryStatistics intSummaryStatistics = points
-                .stream()
-                .mapToInt(point -> point)
-                .summaryStatistics();
-
-        tourResDTO.setRatedStar(intSummaryStatistics.getAverage());
+        tourResDTO.setRatedStar(RateCalculator.getAverageRates(rates));
         return tourResDTO;
     }
 

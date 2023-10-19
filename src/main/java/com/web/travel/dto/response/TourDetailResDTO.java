@@ -13,7 +13,9 @@ import java.util.List;
 public class TourDetailResDTO {
     private Long id;
     private String name;
+    private double startFrom;
     private String vehicle;
+    private double ratedStar;
     private ETourType type;
     private String depart;
     private String location;
@@ -22,6 +24,8 @@ public class TourDetailResDTO {
     private int currentPeople;
     private String img;
     private TourBlogResDTO overview;
+    private List<RateResDTO> rates;
     private List<HotelResDTO> hotels;
     private List<ScheduleResDTO> schedules;
+    private List<TourResDTO> relevantTours;
 }

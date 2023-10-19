@@ -52,14 +52,19 @@ public class TestController {
         orderRepository.save(order);
         return "oK";
     }
+
+    @GetMapping("/get/order")
+    public List<Order> getOrder(){
+        return orderRepository.findAll();
+    }
     @PostMapping("/upload")
     public ResponseEntity<ResDTO> uploadFiles(@RequestParam("files") MultipartFile[] files) throws IOException {
         List<String> fileNames = fileUploadService.uploadMultiFile(files);
         return ResponseEntity.ok(
-                new ResDTO(HttpServletResponse.SC_OK,
-                        true,
-                        "Files uploaded successfully",
-                        fileNames)
+            new ResDTO(HttpServletResponse.SC_OK,
+                    true,
+                    "Files uploaded successfully",
+                    fileNames)
         );
     }
 }

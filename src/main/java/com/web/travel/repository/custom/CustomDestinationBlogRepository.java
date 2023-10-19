@@ -55,7 +55,7 @@ public class CustomDestinationBlogRepository {
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
         Root<User> root = criteriaQuery.from(User.class);
 
-        Join<User, DestinationBlog> userDestinationBlogJoin = root.join("destinationBlogs", JoinType.LEFT);
+        root.join("destinationBlogs", JoinType.LEFT);
         criteriaQuery.select(root)
                 .groupBy(root.get("id"))
                 .orderBy(builder.desc(builder.count(root)));

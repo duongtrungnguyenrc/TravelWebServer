@@ -1,6 +1,7 @@
 package com.web.travel.mapper.response;
 
 import com.web.travel.core.DateHandler;
+import com.web.travel.core.RateCalculator;
 import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
@@ -15,9 +16,11 @@ public class TourDetailResMapper implements Mapper {
             Tour tour = (Tour) ((Map<?, ?>) obj).get("tour");
             TourBlog tourBlog = (TourBlog) ((Map<?, ?>) obj).get("tourBlog");
             Blog blog = (Blog) ((Map<?, ?>) obj).get("blog");
+            List<TourResDTO> relevantTours = (List<TourResDTO>) ((Map<?, ?>) obj).get("relevantTours");
             List<Paragraph> paragraphs = (List<Paragraph>) ((Map<?, ?>) obj).get("paragraphs");
             List<Schedule> schedules = (List<Schedule>) ((Map<?, ?>) obj).get("schedules");
             Map<Long, ParagraphImg> paragraphImgMap = (Map<Long, ParagraphImg>) ((Map<?, ?>) obj).get("images");
+            double priceStartFrom = (double) ((Map<?, ?>) obj).get("price");
 
             TourDetailResDTO tourDto = new TourDetailResDTO();
             tourDto.setId(tour.getId());
@@ -26,6 +29,8 @@ public class TourDetailResMapper implements Mapper {
             tourDto.setVehicle(tour.getVehicle());
             tourDto.setDepart(tour.getDepart());
             tourDto.setLocation(tour.getDestination());
+            tourDto.setRelevantTours(relevantTours);
+            tourDto.setStartFrom(priceStartFrom);
 
             List<TourDateResDTO> tourDateResDTOs = new ArrayList<>();
             tour.getTourDate().forEach(date -> {
@@ -104,6 +109,18 @@ public class TourDetailResMapper implements Mapper {
 
             tourDto.setSchedules(scheduleResDTOS);
 
+            List<RateResDTO> rates;
+            List<Rate> rateObjects = tour.getRates().stream().toList();
+            rates = rateObjects.stream().map(rate -> {
+                RateResDTO rateResDTO = new RateResDTO();
+                rateResDTO.setRatedDate(rate.getDateRated());
+                rateResDTO.setStar(rate.getPoint());
+                rateResDTO.setComment(rate.getComment());
+                rateResDTO.setUsername(rate.getUser().getFullName());
+                return rateResDTO;
+            }).toList();
+            tourDto.setRates(rates);
+            tourDto.setRatedStar(RateCalculator.getAverageRates(tour.getRates()));
             return tourDto;
         }
         return null;

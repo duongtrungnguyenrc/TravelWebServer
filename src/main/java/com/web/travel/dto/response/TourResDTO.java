@@ -10,6 +10,7 @@ public class TourResDTO {
     private String name;
     private double price;
     private double ratedStar;
+    private String depart;
     private String location;
     private int maxPeople;
     private int duration;
@@ -21,6 +22,7 @@ public class TourResDTO {
         id = 1L;
         name = "Deluxe Double with New York City View";
         price = 59;
+        depart = "Ninh Thuan";
         img = "/images/home-slider-3.jpg";
         ratedStar = 4.9;
         location = "Phu Quy";
