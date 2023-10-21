@@ -43,7 +43,7 @@ public class BlogController {
                 new ResDTO(
                         HttpServletResponse.SC_OK,
                         true,
-                        "Blog fetched succcessfully",
+                        "Blog fetched successfully",
                         blogService.getTopLatestPosts(4)
                 )
         );
@@ -55,7 +55,7 @@ public class BlogController {
             new ResDTO(
                     HttpServletResponse.SC_OK,
                     true,
-                    "Authors fetched succcessfully",
+                    "Authors fetched successfully",
                     blogService.getListAuthorDesc()
             )
         );
