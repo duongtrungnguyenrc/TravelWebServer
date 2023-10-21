@@ -10,6 +10,7 @@ import com.web.travel.payload.request.ResetPasswordRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.AuthResponse;
 import com.web.travel.payload.response.JwtResponse;
+import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.security.jwt.JwtUtils;
@@ -41,11 +42,13 @@ public class AuthService {
     @Autowired
     JwtUtils jwtUtils;
     @Autowired
+    EmailService emailService;
+    @Autowired
     AuthenticationManager authenticationManager;
     public boolean userIsExistsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
-    public User saveUser(SignupRequest signUpRequest){
+    public Map<String, Object> saveUser(SignupRequest signUpRequest){
         // Create new user's account
         User user = new User(signUpRequest.getFullName(),
                 signUpRequest.getAddress(),
@@ -91,7 +94,22 @@ public class AuthService {
 
         user.setRoles(roles);
         user.setActive(EUserStatus.STATUS_NOT_ACTIVATED);
-        return userRepository.save(user);
+
+        String userFullName = signUpRequest.getFullName();
+        String confirmationCode = generateConfirmationCode();
+        String token = encodeResetPasswordToken(createConfirmationCodeToken(signUpRequest.getEmail(), confirmationCode));
+        MessageResponse messageResponse = emailService.sendConfirmationEmail(signUpRequest.getEmail(), userFullName, token, confirmationCode);
+        Map<String, Object> result = new HashMap<>();
+
+        if(messageResponse.isStatus()){
+            result.put("user", userRepository.save(user));
+            result.put("token", token);
+        }else{
+            result.put("user", null);
+            result.put("token", "");
+        }
+
+        return result;
     }
 
     public ResDTO signIn(LoginRequest loginRequest){

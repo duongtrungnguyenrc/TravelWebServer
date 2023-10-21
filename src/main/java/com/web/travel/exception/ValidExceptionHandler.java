@@ -15,7 +15,7 @@ public class ValidExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MessageResponse> methodArgumentNotValidExceptionHandler(){
         return ResponseEntity.badRequest().body(
-                new MessageResponse(0, "Invalid information")
+                new MessageResponse(false, "Invalid information", null)
         );
     }
 

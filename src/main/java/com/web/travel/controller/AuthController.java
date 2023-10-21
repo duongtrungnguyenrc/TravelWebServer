@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -43,12 +45,28 @@ public class AuthController {
                     .body(new ResDTO(HttpServletResponse.SC_BAD_REQUEST, false, "Email đã tồn tại!", null));
         }
 
-        User savedUser = authService.saveUser(signUpRequest);
+        Map<String, Object> result = authService.saveUser(signUpRequest);
+        User savedUser = (User) result.get("user");
+        String token = (String) result.get("token");
+
+        if(savedUser == null){
+            return ResponseEntity.ok(
+                    new ResDTO(HttpServletResponse.SC_OK
+                            , true, "Đăng ký tài khoản thất bại, hãy thử lại sau!"
+                            , null)
+            );
+        }
+
+        Map<String, Object> response = new HashMap<>();
         List<ERole> eRoleList = savedUser.getRoles().stream().map(Role::getName).toList();
+        response.put("user", new UserResDTO(savedUser.getId(), savedUser.getEmail(), eRoleList));
+        response.put("confirmToken", token);
         return ResponseEntity.ok(
-                        new ResDTO(HttpServletResponse.SC_OK
-                        , true, "Đăng ký tài khoản thành công!"
-                        , new UserResDTO(savedUser.getId(), savedUser.getEmail(), eRoleList))
+                    new ResDTO(HttpServletResponse.SC_OK,
+                            true,
+                            "Đăng ký tài khoản thành công!",
+                            response
+                    )
                 );
     }
 

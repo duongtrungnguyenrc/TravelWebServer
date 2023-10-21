@@ -18,7 +18,7 @@ public class AuthExceptionHandler{
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<MessageResponse> handleConstrainViolationException(ConstraintViolationException ex, WebRequest request) {
         return ResponseEntity.badRequest().body(
-                new MessageResponse(0, "Invalid information")
+                new MessageResponse(false, "Invalid information", null)
         );
     }
 }

@@ -20,14 +20,7 @@ public class ConfirmationController {
     AuthService authService;
     @Autowired
     EmailService emailService;
-    @PostMapping("/send")
-    public ResponseEntity<ResDTO> sendConfirmationMail(@RequestBody ConfirmCodeRequest request){
-        String email = request.getEmail();
 
-        return ResponseEntity.ok(
-                emailService.sendConfirmationEmail(email)
-        );
-    }
     @PostMapping("/validate")
     public ResponseEntity<ResDTO> validateConfirmCode(@RequestBody ConfirmCodeRequest request){
         String decodedToken = authService.decodeResetPasswordToken(request.getToken());
