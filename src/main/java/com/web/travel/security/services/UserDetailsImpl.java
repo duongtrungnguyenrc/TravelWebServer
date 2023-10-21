@@ -28,9 +28,11 @@ public class UserDetailsImpl implements UserDetails {
 
     private String phone;
 
+    private String active;
+
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String fullName, String address, String email, String password, String phone, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String fullName, String address, String email, String password, String phone, String active, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.fullName = fullName;
         this.address = address;
@@ -38,6 +40,7 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
         this.phone = phone;
         this.authorities = authorities;
+        this.active = active;
     }
 
     public static UserDetailsImpl build(User user) {
@@ -52,6 +55,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getEmail(),
                 user.getPassword(),
                 user.getPhone(),
+                user.getActive().toString(),
                 authorities);
     }
 

@@ -2,7 +2,9 @@ package com.web.travel.security.jwt;
 
 import java.io.IOException;
 
+import com.web.travel.security.services.UserDetailsImpl;
 import com.web.travel.security.services.UserDetailsServiceImpl;
+import com.web.travel.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private AuthService authService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
@@ -36,14 +40,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getEmailFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                if(authService.userIsActive((UserDetailsImpl) userDetails)){
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }else{
+                    logger.error("User is not active");
+                }
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);

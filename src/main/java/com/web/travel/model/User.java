@@ -1,5 +1,7 @@
 package com.web.travel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.web.travel.model.enumeration.EUserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +32,8 @@ public class User {
     private String password;
     @Column(length = 13)
     private String phone;
+    @Enumerated(EnumType.STRING)
+    private EUserStatus active;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role",

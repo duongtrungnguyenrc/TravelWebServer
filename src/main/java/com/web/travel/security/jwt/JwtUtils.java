@@ -45,6 +45,10 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateJwtConfirmationToken(String email, String confirmationCode){
+        return generateJwtMailToken(email+":"+confirmationCode);
+    }
+
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
@@ -52,6 +56,15 @@ public class JwtUtils {
     public String getEmailFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getTokenSubject(String token){
+        try{
+            return Jwts.parserBuilder().setSigningKey(key()).build()
+                    .parseClaimsJws(token).getBody().getSubject();
+        }catch (ExpiredJwtException e){
+            return e.getClaims().getSubject();
+        }
     }
 
     public boolean validateJwtToken(String authToken) {

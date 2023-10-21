@@ -18,4 +18,5 @@ public class DestinationBlogResDTO {
     private Date time;
     private String author;
     private String img;
+    private String description;
 }

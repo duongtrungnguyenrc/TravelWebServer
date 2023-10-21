@@ -4,6 +4,7 @@ import com.web.travel.dto.response.DestinationBlogResDTO;
 import com.web.travel.mapper.response.DestinationBlogResMapper;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.DestinationBlog;
+import com.web.travel.model.Paragraph;
 import com.web.travel.model.User;
 import com.web.travel.repository.DestinationBlogRepository;
 import com.web.travel.repository.custom.CustomDestinationBlogRepository;
@@ -30,7 +31,10 @@ public class BlogService {
 
         List<DestinationBlogResDTO> listDTO = list.stream().map(blog -> {
             Mapper mapper = new DestinationBlogResMapper();
-            return (DestinationBlogResDTO) mapper.mapToDTO(blog);
+            DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
+            Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
+            dto.setDescription(paragraph.getContent());
+            return dto;
         }).toList();
 
 
@@ -47,7 +51,10 @@ public class BlogService {
         List<DestinationBlog> top4LatestBlogs = customDesBlogRepository.findTopLatestPosts(4);
         return top4LatestBlogs.stream().map(blog -> {
             Mapper mapper = new DestinationBlogResMapper();
-            return (DestinationBlogResDTO) mapper.mapToDTO(blog);
+            DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
+            Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
+            dto.setDescription(paragraph.getContent());
+            return dto;
         }).toList();
     }
 

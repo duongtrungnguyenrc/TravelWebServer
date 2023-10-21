@@ -4,6 +4,7 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.model.enumeration.ERole;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
+import com.web.travel.model.enumeration.EUserStatus;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.ResetPasswordRequest;
 import com.web.travel.payload.request.SignupRequest;
@@ -13,6 +14,7 @@ import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.security.jwt.JwtUtils;
 import com.web.travel.security.services.UserDetailsImpl;
+import com.web.travel.service.email.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,10 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.security.SecureRandom;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,6 +90,7 @@ public class AuthService {
         }
 
         user.setRoles(roles);
+        user.setActive(EUserStatus.STATUS_NOT_ACTIVATED);
         return userRepository.save(user);
     }
 
@@ -176,5 +177,66 @@ public class AuthService {
             return user.getFullName();
         }
         return "";
+    }
+
+    public String createConfirmationCodeToken(String email, String confirmationCode){
+        return jwtUtils.generateJwtConfirmationToken(email, confirmationCode);
+    }
+
+    public String generateConfirmationCode(){
+        SecureRandom rd = new SecureRandom();
+        int min = 100000,
+        max = 999999;
+        int randomNumber = rd.nextInt(max - min + 1) + min;
+        return String.valueOf(randomNumber);
+    }
+
+    public ResDTO confirmationCodeValidate(String confirmCode, String token){
+        String[] jwtSubjects = jwtUtils.getTokenSubject(token).split(":");
+        String code = jwtSubjects[1];
+        String email = jwtSubjects[0];
+        if(code.equals(confirmCode)){
+            if(resetPasswordTokenIsValid(token)){
+                User user = userRepository.findByEmail(email).orElse(null);
+                if(user != null){
+                    user.setActive(EUserStatus.STATUS_ACTIVATED);
+                    userRepository.save(user);
+                    return new ResDTO(
+                            HttpServletResponse.SC_OK,
+                            true,
+                            "Confirmation code is valid",
+                            null
+                    );
+                }
+                return new ResDTO(
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        false,
+                        "Can't found user with email: " + email,
+                        null
+                );
+            }
+            return new ResDTO(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    false,
+                    "Confirmation code is expired",
+                    null
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Confirmation code is not correct",
+                null
+        );
+    }
+
+    public boolean userIsActive(UserDetailsImpl user){
+        String active = user.getActive();
+        return active.equals(EUserStatus.STATUS_ACTIVATED.toString());
+    }
+
+    public boolean userIsActive(User user){
+        String active = user.getActive().toString();
+        return active.equals(EUserStatus.STATUS_ACTIVATED.toString());
     }
 }

@@ -109,17 +109,8 @@ public class TourDetailResMapper implements Mapper {
 
             tourDto.setSchedules(scheduleResDTOS);
 
-            List<RateResDTO> rates;
             List<Rate> rateObjects = tour.getRates().stream().toList();
-            rates = rateObjects.stream().map(rate -> {
-                RateResDTO rateResDTO = new RateResDTO();
-                rateResDTO.setRatedDate(rate.getDateRated());
-                rateResDTO.setStar(rate.getPoint());
-                rateResDTO.setComment(rate.getComment());
-                rateResDTO.setUsername(rate.getUser().getFullName());
-                return rateResDTO;
-            }).toList();
-            tourDto.setRates(rates);
+            tourDto.setTotalRates(rateObjects.size());
             tourDto.setRatedStar(RateCalculator.getAverageRates(tour.getRates()));
             return tourDto;
         }
