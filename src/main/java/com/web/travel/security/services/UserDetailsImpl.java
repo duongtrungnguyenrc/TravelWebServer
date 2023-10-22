@@ -2,6 +2,7 @@ package com.web.travel.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.User;
+import com.web.travel.model.enumeration.EUserStatus;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -97,7 +98,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return getActive().equals(EUserStatus.STATUS_ACTIVATED.toString());
     }
 
     @Override

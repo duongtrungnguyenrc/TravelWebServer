@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConfirmationController {
     @Autowired
     AuthService authService;
-    @Autowired
-    EmailService emailService;
 
     @PostMapping("/validate")
     public ResponseEntity<ResDTO> validateConfirmCode(@RequestBody ConfirmCodeRequest request){
