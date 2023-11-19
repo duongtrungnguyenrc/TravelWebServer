@@ -1,4 +1,4 @@
-package com.web.travel.core.config;
+package com.web.travel.utils.config;
 
 import com.cloudinary.Cloudinary;
 import org.springframework.context.annotation.Bean;

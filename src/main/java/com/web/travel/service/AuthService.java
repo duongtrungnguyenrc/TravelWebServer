@@ -93,7 +93,7 @@ public class AuthService {
         }
 
         user.setRoles(roles);
-        user.setActive(EUserStatus.STATUS_NOT_ACTIVATED);
+        user.setActive(EUserStatus.STATUS_ACTIVATED);
 
         String userFullName = signUpRequest.getFullName();
         String confirmationCode = generateConfirmationCode();

@@ -1,4 +1,4 @@
-package com.web.travel.core;
+package com.web.travel.utils;
 
 import org.springframework.stereotype.Component;
 

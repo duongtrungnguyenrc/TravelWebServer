@@ -1,11 +1,10 @@
 package com.web.travel.mapper.response;
 
-import com.web.travel.core.DateHandler;
-import com.web.travel.core.RateCalculator;
+import com.web.travel.utils.DateHandler;
+import com.web.travel.utils.RateCalculator;
 import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
-import com.web.travel.model.enumeration.ERoom;
 import com.web.travel.model.enumeration.ETourDateType;
 import java.util.*;
 

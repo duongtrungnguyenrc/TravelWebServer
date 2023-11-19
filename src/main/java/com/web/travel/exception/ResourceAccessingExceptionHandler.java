@@ -1,6 +1,7 @@
 package com.web.travel.exception;
 
 import com.web.travel.dto.ResDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,12 @@ public class ResourceAccessingExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Object handleNoHandlerFoundException(NoHandlerFoundException ex) {
-        log.error("404 situation detected.",ex);
-        return "error";
+        log.error("404 situation detected.");
+        return new ResDTO(
+                HttpServletResponse.SC_NOT_FOUND,
+                false,
+                "Resource not found",
+                null
+        );
     }
 }

@@ -24,7 +24,7 @@ public class Tour {
     private ETourType tourType;
     private String depart;
     private String destination;
-    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Collection<TourDate> tourDate;
     private int maxPeople;
@@ -41,7 +41,7 @@ public class Tour {
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Collection<Rate> rates;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "tour_hotel",
             joinColumns = @JoinColumn(name = "tourId"),

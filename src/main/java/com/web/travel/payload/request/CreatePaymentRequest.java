@@ -1,6 +1,6 @@
 package com.web.travel.payload.request;
 
-import com.web.travel.dto.request.OrderReqDTO;
+import com.web.travel.dto.request.common.OrderReqDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

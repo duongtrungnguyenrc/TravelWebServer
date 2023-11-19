@@ -17,21 +17,17 @@ public class BlogController {
     BlogService blogService;
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit){
-        page = page != null ? page : 1;
-        limit = limit != null ? limit : 10;
-
-        long recordNumber = blogService.getDesBlogCount();
-        int pageNumber = Math.round((float) recordNumber/limit);
-
+    public ResponseEntity<?> getAll(
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
+    ){
         return ResponseEntity.ok(
                 new ResDTO(HttpServletResponse.SC_OK,
                         true,
                         "Blog fetched successfully",
                         blogService.getAllDestinationBlog(
                                 page - 1,
-                                limit,
-                                pageNumber
+                                limit
                         )
                 )
         );

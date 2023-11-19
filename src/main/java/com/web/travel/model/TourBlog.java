@@ -15,7 +15,7 @@ public class TourBlog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "blogId")
     @JsonIgnore
     private Blog blog;

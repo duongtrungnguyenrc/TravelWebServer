@@ -1,4 +1,4 @@
-package com.web.travel.core.config;
+package com.web.travel.utils.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 

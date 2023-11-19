@@ -1,7 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.dto.request.UserByEmailReqDTO;
+import com.web.travel.dto.request.common.UserByEmailReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
 import com.web.travel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

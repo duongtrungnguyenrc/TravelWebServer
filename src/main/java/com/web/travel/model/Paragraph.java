@@ -18,7 +18,8 @@ public class Paragraph {
     private Long id;
     @Column(length = 100000)
     private String content;
-
+    @Column(name = "paragraphOrder")
+    private Integer order;
     @ManyToOne
     @JoinColumn(name = "blogId")
     @EqualsAndHashCode.Exclude

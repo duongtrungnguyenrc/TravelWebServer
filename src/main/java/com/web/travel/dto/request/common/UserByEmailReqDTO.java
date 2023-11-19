@@ -1,4 +1,4 @@
-package com.web.travel.dto.request;
+package com.web.travel.dto.request.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

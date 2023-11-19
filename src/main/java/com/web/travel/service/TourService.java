@@ -1,25 +1,30 @@
 package com.web.travel.service;
 
+import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.admin.tour.TourAddingDTO;
 import com.web.travel.dto.response.ListTourResDTO;
 import com.web.travel.dto.response.TourDetailResDTO;
 import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
+import com.web.travel.mapper.request.TourAddingRequestMapper;
+import com.web.travel.mapper.request.TourParagraphsAddingMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourResMapper;
 import com.web.travel.model.*;
 import com.web.travel.model.enumeration.ETourType;
-import com.web.travel.repository.BlogRepository;
 import com.web.travel.repository.ParagraphImgRepository;
 import com.web.travel.repository.TourBlogRepository;
 import com.web.travel.repository.TourRepository;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
+import com.web.travel.service.cloudinary.FileUploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -32,6 +37,10 @@ public class TourService {
     ParagraphImgRepository paragraphImgRepository;
     @Autowired
     CustomTourRepository customTourRepository;
+    @Autowired
+    FileUploadServiceImpl fileUploadService;
+    @Autowired
+    TourAddingRequestMapper tourAddingRequestMapper;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourResDTO> list = new ArrayList<>();
@@ -163,6 +172,14 @@ public class TourService {
             TourBlog tourBlog = tourBlogRepository.findByTour(tour).orElse(new TourBlog());
             Blog blog = tourBlog.getBlog();
             List<Paragraph> paragraphs = (List<Paragraph>) blog.getParagraphs();
+            paragraphs.sort(new Comparator<Paragraph>() {
+                @Override
+                public int compare(Paragraph o1, Paragraph o2) {
+                    if(o1.getOrder() == null || o2.getOrder() == null)
+                        return 0;
+                    return o1.getOrder() - o2.getOrder();
+                }
+            });
             List<Schedule> schedules = (List<Schedule>) tour.getSchedules();
             Map<Long, ParagraphImg> paragraphImgMap = new HashMap<>();
             paragraphs.forEach(paragraph -> {
@@ -231,5 +248,65 @@ public class TourService {
                 return -1;
             });
         }
+    }
+
+    public ResDTO add(TourAddingDTO tour, MultipartFile thumbnail, MultipartFile[] images){
+        Mapper tourMapper = new TourAddingRequestMapper(),
+                paraMapper = new TourParagraphsAddingMapper();
+        Tour needAddTour = (Tour) tourAddingRequestMapper.mapToObject(tour);
+        List<Paragraph> needAddParagraphs = (List<Paragraph>) paraMapper.mapToObject(tour);
+
+        Tour addedTour = tourRepository.save(needAddTour);
+
+        String thumbnailName = null;
+        List<String> paragraphImages = null;
+        try {
+            thumbnailName = fileUploadService.uploadFile(thumbnail);
+            paragraphImages = fileUploadService.uploadMultiFile(images);
+
+        }catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        needAddTour.setImg(thumbnailName);
+
+        Blog blog = new Blog();
+        needAddParagraphs.forEach(para -> {
+            para.setBlog(blog);
+        });
+        blog.setBackgroundImg(thumbnailName);
+        blog.setParagraphs(needAddParagraphs);
+
+        TourBlog tourBlog = new TourBlog();
+        tourBlog.setTour(addedTour);
+        tourBlog.setBlog(blog);
+
+        TourBlog addedTourBlog = tourBlogRepository.save(tourBlog);
+
+        Blog addedBlog = addedTourBlog.getBlog();
+        List<Paragraph> addedParagraph = addedBlog
+                .getParagraphs()
+                .stream().toList();
+
+        if(paragraphImages != null && paragraphImages.size() <= needAddParagraphs.size()){
+            for (int i = 0; i < paragraphImages.size(); i++){
+                ParagraphImg paragraphImg = new ParagraphImg();
+
+                paragraphImg.setImg(paragraphImages.get(i));
+                paragraphImg.setName(tour.getParagraphs().get(i).getImageName());
+
+                paragraphImg.setParagraph(addedParagraph.get(i));
+
+                paragraphImgRepository.save(paragraphImg);
+            }
+        }
+
+        HashMap<String, Long> response = new HashMap<String, Long>();
+        response.put("tourId", addedTour.getId());
+        return new ResDTO(
+                200,
+                true,
+                "Thêm tour thành công!",
+                response
+            );
     }
 }

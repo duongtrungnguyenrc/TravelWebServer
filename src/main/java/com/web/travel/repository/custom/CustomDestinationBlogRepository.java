@@ -19,26 +19,6 @@ public class CustomDestinationBlogRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public Page<DestinationBlog> findAllOrderByDate(ESortType sortType, Pageable pageable){
-        List<DestinationBlog> blogs = new ArrayList<DestinationBlog>();
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<DestinationBlog> criteriaQuery = builder.createQuery(DestinationBlog.class);
-        Root<DestinationBlog> root = criteriaQuery.from(DestinationBlog.class);
-        if(sortType == ESortType.TYPE_ASC){
-            criteriaQuery.select(root).orderBy(builder.asc(root.get("postDate")));
-        }
-        criteriaQuery.select(root).orderBy(builder.desc(root.get("postDate")));
-
-        List<DestinationBlog> result = entityManager.createQuery(criteriaQuery)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
-
-        long total = result.stream().count();
-
-        return new PageImpl<>(result, pageable, total);
-    }
-
     public List<DestinationBlog> findTopLatestPosts(int top){
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<DestinationBlog> criteriaQuery = builder.createQuery(DestinationBlog.class);

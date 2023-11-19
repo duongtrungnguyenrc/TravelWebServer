@@ -1,6 +1,6 @@
 package com.web.travel.service.vnpay;
 
-import com.web.travel.core.config.VnPayConfig;
+import com.web.travel.utils.config.VnPayConfig;
 import com.web.travel.dto.ResDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
@@ -8,12 +8,8 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;

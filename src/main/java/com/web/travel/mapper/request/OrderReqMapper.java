@@ -1,6 +1,6 @@
 package com.web.travel.mapper.request;
 
-import com.web.travel.dto.request.OrderReqDTO;
+import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Order;
 import com.web.travel.model.Tour;

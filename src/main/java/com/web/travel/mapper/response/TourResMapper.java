@@ -1,7 +1,7 @@
 package com.web.travel.mapper.response;
 
-import com.web.travel.core.DateHandler;
-import com.web.travel.core.RateCalculator;
+import com.web.travel.utils.DateHandler;
+import com.web.travel.utils.RateCalculator;
 import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.IntSummaryStatistics;
-import java.util.List;
 
 @Component
 public class TourResMapper implements Mapper {

@@ -25,9 +25,11 @@ public class BlogService {
     DestinationBlogRepository desRepository;
     @Autowired
     CustomDestinationBlogRepository customDesBlogRepository;
-    public Map<String, Object> getAllDestinationBlog(int page, int limit, int pages){
-        Page<DestinationBlog> list = customDesBlogRepository.findAllOrderByDate(ESortType.TYPE_DESC, PageRequest.of(page, limit));
+    public Map<String, Object> getAllDestinationBlog(int page, int limit){
+        Page<DestinationBlog> list = desRepository.findAllByOrderByPostDateDesc(PageRequest.of(page, limit));
         Map<String, Object> result = new HashMap<>();
+
+        int pages = list.getTotalPages();
 
         List<DestinationBlogResDTO> listDTO = list.stream().map(blog -> {
             Mapper mapper = new DestinationBlogResMapper();
@@ -38,7 +40,7 @@ public class BlogService {
         }).toList();
 
 
-        result.put("pages", pages == 0 ? 1 : pages);
+        result.put("pages", pages);
         result.put("posts", listDTO);
         return result;
     }

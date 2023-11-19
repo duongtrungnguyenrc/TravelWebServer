@@ -1,4 +1,4 @@
-package com.web.travel.dto.request;
+package com.web.travel.dto.request.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
