@@ -15,6 +15,7 @@ import com.web.travel.repository.TourRepository;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -83,13 +84,16 @@ public class TourService {
         return listTourResDTOS;
     }
 
-    public Map<String, Object> getAllTour(int page, int limit, int pages){
+    public Map<String, Object> getAllTour(int page, int limit){
         Map<String, Object> result = new HashMap<>();
-        result.put("tours", tourRepository.findAll(PageRequest.of(page, limit)).stream().map(tour -> {
+        Page<Tour> tourPage = tourRepository.findAll(PageRequest.of(page, limit));
+        List<TourResDTO> tours = tourPage.stream().map(tour -> {
             Mapper tourMapper = new TourResMapper();
             return (TourResDTO) tourMapper.mapToDTO(tour);
-        }).toList());
-        result.put("pages", pages == 0 ? 1 : pages);
+        }).toList();
+        result.put("tours", tours);
+        int pages = tourPage.getTotalPages();
+        result.put("pages", pages);
         return result;
     }
 

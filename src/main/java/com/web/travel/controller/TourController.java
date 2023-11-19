@@ -16,19 +16,15 @@ public class TourController {
     @Autowired
     TourService tourService;
     @GetMapping("/all")
-    public Object getAll(@RequestParam(value = "page", required =false) Integer page, @RequestParam(value = "limit", required =false) Integer limit){
-        page = page != null ? page : 1;
-        limit = limit != null ? limit : 10;
-
-        long numberOfRecords = tourService.getCount();
-
-        int pageNumber = Math.round((float) numberOfRecords /limit);
+    public Object getAll(
+            @RequestParam(value = "page", required =false, defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", required =false, defaultValue = "10") Integer limit){
 
         return ResponseEntity.ok(
                 new ResDTO(HttpStatus.OK.value(),
                         true,
                         "Lấy dữ liệu thành công",
-                        tourService.getAllTour(page - 1, limit, pageNumber))
+                        tourService.getAllTour(page - 1, limit))
         );
     }
     @GetMapping("/all/type")
