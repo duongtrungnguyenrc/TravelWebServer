@@ -12,9 +12,7 @@ import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourResMapper;
 import com.web.travel.model.*;
 import com.web.travel.model.enumeration.ETourType;
-import com.web.travel.repository.ParagraphImgRepository;
-import com.web.travel.repository.TourBlogRepository;
-import com.web.travel.repository.TourRepository;
+import com.web.travel.repository.*;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FileUploadServiceImpl;
@@ -26,11 +24,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class TourService {
     @Autowired
     TourRepository tourRepository;
+    @Autowired
+    TourDateRepository tourDateRepository;
+    @Autowired
+    ParagraphRepository paragraphRepository;
     @Autowired
     TourBlogRepository tourBlogRepository;
     @Autowired
@@ -48,7 +51,9 @@ public class TourService {
         ListTourResDTO dto1 = new ListTourResDTO();
         dto1.setType("Popular");
         dto1.setTours(tourRepository.findByTourType(ETourType.TYPE_POPULAR)
-                .stream().map(
+                .stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(
                         tour -> {
                             TourResMapper mapper = new TourResMapper();
                             return (TourResDTO) mapper.mapToDTO(tour);
@@ -58,9 +63,11 @@ public class TourService {
         ListTourResDTO dto2 = new ListTourResDTO();
         dto2.setType("Normal");
         dto2.setTours(tourRepository.findByTourType(ETourType.TYPE_NORMAL)
-                .stream().map(
+                .stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(
                         tour -> {
-                            Mapper mapper = new TourResMapper();
+                            TourResMapper mapper = new TourResMapper();
                             return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
@@ -68,9 +75,11 @@ public class TourService {
         ListTourResDTO dto3 = new ListTourResDTO();
         dto3.setType("Special");
         dto3.setTours(tourRepository.findByTourType(ETourType.TYPE_SPECIAL)
-                .stream().map(
+                .stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(
                         tour -> {
-                            Mapper mapper = new TourResMapper();
+                            TourResMapper mapper = new TourResMapper();
                             return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
@@ -78,9 +87,11 @@ public class TourService {
         ListTourResDTO dto4 = new ListTourResDTO();
         dto4.setType("Saving");
         dto4.setTours(tourRepository.findByTourType(ETourType.TYPE_SAVING)
-                .stream().map(
+                .stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(
                         tour -> {
-                            Mapper mapper = new TourResMapper();
+                            TourResMapper mapper = new TourResMapper();
                             return (TourResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
@@ -96,10 +107,13 @@ public class TourService {
     public Map<String, Object> getAllTour(int page, int limit){
         Map<String, Object> result = new HashMap<>();
         Page<Tour> tourPage = tourRepository.findAll(PageRequest.of(page, limit));
-        List<TourResDTO> tours = tourPage.stream().map(tour -> {
-            Mapper tourMapper = new TourResMapper();
-            return (TourResDTO) tourMapper.mapToDTO(tour);
-        }).toList();
+        List<TourResDTO> tours = tourPage.stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(tour -> {
+                    Mapper tourMapper = new TourResMapper();
+                    return (TourResDTO) tourMapper.mapToDTO(tour);
+                }).toList();
+
         result.put("tours", tours);
         int pages = tourPage.getTotalPages();
         result.put("pages", pages);
@@ -113,36 +127,44 @@ public class TourService {
     public List<TourResDTO> findTourByType(String type){
         switch (type){
             case "normal" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_NORMAL).stream().map(
-                        tour -> {
-                            Mapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
-                        }
-                ).toList();
+                return tourRepository.findByTourType(ETourType.TYPE_NORMAL).stream()
+                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                        .map(
+                                tour -> {
+                                    Mapper mapper = new TourResMapper();
+                                    return (TourResDTO) mapper.mapToDTO(tour);
+                                }
+                        ).toList();
             }
             case "popular" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_POPULAR).stream().map(
-                        tour -> {
-                            Mapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
-                        }
-                ).toList();
+                return tourRepository.findByTourType(ETourType.TYPE_POPULAR).stream()
+                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                        .map(
+                                tour -> {
+                                    Mapper mapper = new TourResMapper();
+                                    return (TourResDTO) mapper.mapToDTO(tour);
+                                }
+                        ).toList();
             }
             case "special" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_SPECIAL).stream().map(
-                        tour -> {
-                            Mapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
-                        }
-                ).toList();
+                return tourRepository.findByTourType(ETourType.TYPE_SPECIAL).stream()
+                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                        .map(
+                                tour -> {
+                                    Mapper mapper = new TourResMapper();
+                                    return (TourResDTO) mapper.mapToDTO(tour);
+                                }
+                        ).toList();
             }
             case "saving" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_SAVING).stream().map(
-                        tour -> {
-                            Mapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
-                        }
-                ).toList();
+                return tourRepository.findByTourType(ETourType.TYPE_SAVING).stream()
+                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                        .map(
+                                tour -> {
+                                    Mapper mapper = new TourResMapper();
+                                    return (TourResDTO) mapper.mapToDTO(tour);
+                                }
+                        ).toList();
             }
             default -> {
                 return null;
@@ -153,9 +175,9 @@ public class TourService {
     public long getCount(){
         return tourRepository.count();
     }
-    public Object getTourById(Long id){
+    public Object getResponseTourById(Long id){
         Tour tour = tourRepository.findById(id).orElse(null);
-        if(tour != null){
+        if(tour != null && (tour.getIsRemoved() == null || !tour.getIsRemoved())){
             List<TourResDTO> relevantTours = getRelevantToursByDestination(tour.getDepart(), tour.getDestination(), 5);
             relevantTours = relevantTours.stream().filter(relevantTour -> !Objects.equals(tour.getId(), relevantTour.getId())).toList();
             Mapper mapper = new TourDetailResMapper();
@@ -203,10 +225,12 @@ public class TourService {
     public List<TourResDTO> getRelevantToursByDestination(String depart, String destination ,int numberOfTour){
         List<TourResDTO> result;
         List<Tour> relevantTours = customTourRepository.getRelevantTourByDestination(depart, destination, numberOfTour);
-        result = relevantTours.stream().map(tour -> {
-            Mapper mapper = new TourResMapper();
-            return (TourResDTO) mapper.mapToDTO(tour);
-        }).toList();
+        result = relevantTours.stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(tour -> {
+                    Mapper mapper = new TourResMapper();
+                    return (TourResDTO) mapper.mapToDTO(tour);
+                }).toList();
         return result;
     }
 
@@ -251,8 +275,7 @@ public class TourService {
     }
 
     public ResDTO add(TourAddingDTO tour, MultipartFile thumbnail, MultipartFile[] images){
-        Mapper tourMapper = new TourAddingRequestMapper(),
-                paraMapper = new TourParagraphsAddingMapper();
+        Mapper paraMapper = new TourParagraphsAddingMapper();
         Tour needAddTour = (Tour) tourAddingRequestMapper.mapToObject(tour);
         List<Paragraph> needAddParagraphs = (List<Paragraph>) paraMapper.mapToObject(tour);
 
@@ -263,7 +286,6 @@ public class TourService {
         try {
             thumbnailName = fileUploadService.uploadFile(thumbnail);
             paragraphImages = fileUploadService.uploadMultiFile(images);
-
         }catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -308,5 +330,130 @@ public class TourService {
                 "Thêm tour thành công!",
                 response
             );
+    }
+
+    public ResDTO updateTour(
+            long id, TourAddingDTO tour, MultipartFile thumbnail, MultipartFile[] images
+    ){
+        AtomicReference<Tour> updatedTour = new AtomicReference<>(null);
+
+        tourRepository.findById(id).ifPresent(foundTour -> {
+            if(foundTour.getIsRemoved() == null || !foundTour.getIsRemoved()){
+                Mapper paraMapper = new TourParagraphsAddingMapper();
+                Tour needUpdateTour = (Tour) tourAddingRequestMapper.mapToObject(tour);
+                List<Paragraph> newParagraphs = (List<Paragraph>) paraMapper.mapToObject(tour);
+
+                String thumbnailName = null;
+                List<String> paragraphImages = null;
+                try {
+                    thumbnailName = fileUploadService.uploadFile(thumbnail);
+                    paragraphImages = fileUploadService.uploadMultiFile(images);
+                }catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+
+                TourBlog needUpdateTourBlog = tourBlogRepository.findByTour(foundTour).orElse(null);
+
+                if(needUpdateTourBlog != null){
+                    needUpdateTourBlog.getBlog().setBackgroundImg(thumbnailName);
+
+                    needUpdateTourBlog.getBlog().getParagraphs().forEach(paragraph -> {
+                        paragraphImgRepository.deleteByParagraphId(paragraph.getId());
+                    });
+
+                    needUpdateTourBlog.getBlog().getParagraphs().clear();
+
+                    newParagraphs.forEach(paragraph -> {
+                        paragraph.setBlog(needUpdateTourBlog.getBlog());
+                    });
+
+                    tourBlogRepository.save(needUpdateTourBlog);
+                }
+
+                if(paragraphImages != null && paragraphImages.size() <= newParagraphs.size()){
+                    for(int i = 0; i < newParagraphs.size(); i++){
+                        ParagraphImg paragraphImg = new ParagraphImg();
+
+                        if(i < paragraphImages.size()){
+                            paragraphImg.setParagraph(newParagraphs.get(i));
+                            paragraphImg.setName(tour.getParagraphs().get(i).getImageName());
+                            paragraphImg.setImg(paragraphImages.get(i));
+
+                            paragraphImgRepository.save(paragraphImg);
+                        }else{
+                            paragraphRepository.save(newParagraphs.get(i));
+                        }
+                    }
+                }
+
+                foundTour.setName(needUpdateTour.getName());
+                foundTour.setVehicle(needUpdateTour.getVehicle());
+                foundTour.setTourType(needUpdateTour.getTourType());
+                foundTour.setDepart(needUpdateTour.getDepart());
+                foundTour.setDestination(needUpdateTour.getDestination());
+                foundTour.setImg(thumbnailName);
+
+                foundTour.getTourDate().forEach(tourDate -> {
+                    tourDate.setTour(null);
+                });
+
+                foundTour.getTourDate().forEach(tourDate -> {
+                    tourDateRepository.delete(tourDate);
+                });
+
+                needUpdateTour.getTourDate().forEach(tourDate -> {
+                    tourDate.setTour(foundTour);
+                    foundTour.getTourDate().add(tourDate);
+                });
+
+                foundTour.setMaxPeople(needUpdateTour.getMaxPeople());
+                foundTour.setCurrentPeople(needUpdateTour.getCurrentPeople());
+
+                foundTour.getSchedules().clear();
+
+                needUpdateTour.getSchedules().forEach(schedule -> {
+                    schedule.setTour(foundTour);
+                    foundTour.getSchedules().add(schedule);
+                });
+
+                foundTour.setHotels(needUpdateTour.getHotels());
+
+                updatedTour.set(tourRepository.save(foundTour));
+            }
+        });
+
+        TourResMapper mapper = new TourResMapper();
+        TourResDTO response = (TourResDTO) mapper.mapToDTO(updatedTour.get());
+
+        String message = "Chỉnh sửa tour thành thông!";
+
+        if (updatedTour.get() == null){
+            message = "Tour không tìm thấy!";
+        }
+
+        return new ResDTO(
+                200,
+                true,
+                message,
+                response
+        );
+    }
+
+    public ResDTO deleteTour(long id){
+
+        AtomicReference<String> message = new AtomicReference<>("Không tìm thấy tour với id: " + id);
+
+        tourRepository.findById(id).ifPresent(tour -> {
+            tour.setIsRemoved(true);
+            tourRepository.save(tour);
+            message.set("Xóa tour thành công!");
+        });
+
+        return new ResDTO(
+                200,
+                true,
+                message.get(),
+                id
+        );
     }
 }

@@ -25,4 +25,23 @@ public class TourAdminController {
                 tourService.add(tour, thumbnail, images)
         );
     }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> updateTour(
+            @PathVariable long id,
+            @RequestPart("tour") TourAddingDTO tour,
+            @RequestPart("thumbnail") MultipartFile thumbnail,
+            @RequestPart("paragraphImages") MultipartFile[] images
+    ){
+        return ResponseEntity.ok(
+                tourService.updateTour(id, tour, thumbnail, images)
+        );
+    }
+
+    @PostMapping("delete/{id}")
+    public ResponseEntity<?> deleteTour(@PathVariable long id){
+        return ResponseEntity.ok(
+                tourService.deleteTour(id)
+        );
+    }
 }

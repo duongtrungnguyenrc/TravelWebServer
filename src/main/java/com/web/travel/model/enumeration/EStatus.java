@@ -1,4 +1,4 @@
-package com.web.travel.service.cloudinary;
+package com.web.travel.model.enumeration;
 
 public enum EStatus {
     STATUS_OK(0),

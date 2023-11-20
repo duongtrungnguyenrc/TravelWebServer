@@ -24,21 +24,29 @@ public class Tour {
     private ETourType tourType;
     private String depart;
     private String destination;
-    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Boolean isRemoved;
+    @OneToMany(mappedBy = "tour",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
     @JsonIgnore
     private Collection<TourDate> tourDate;
     private int maxPeople;
     private int currentPeople;
     private String img;
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tour",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     private Collection<Schedule> schedules;
-    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tour", fetch = FetchType.EAGER)
     @JsonIgnore
     private Collection<Order> orders;
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private Collection<Rate> rates;
     @ManyToMany(cascade = CascadeType.ALL)

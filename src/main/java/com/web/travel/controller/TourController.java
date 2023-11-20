@@ -49,12 +49,17 @@ public class TourController {
 
     @GetMapping("/detail")
     public ResponseEntity<?> getTourDetail(@RequestParam("id") Long id){
+        Object response = tourService.getResponseTourById(id);
+        String message = "";
+
+        message = response == null ? "Tour không tồn tại!" : "Lấy tour thành công!";
+
         return ResponseEntity.ok(
                 new ResDTO(
                         HttpStatus.OK.value(),
                         true,
-                        "Get tour successfully",
-                        tourService.getTourById(id)
+                        message,
+                        response
                 )
         );
     }

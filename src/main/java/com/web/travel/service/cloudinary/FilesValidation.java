@@ -1,8 +1,6 @@
 package com.web.travel.service.cloudinary;
 
-import com.web.travel.payload.response.AuthResponse;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseEntity;
+import com.web.travel.model.enumeration.EStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

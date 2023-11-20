@@ -16,4 +16,8 @@ public class UserService {
                 new UserByEmailResDTO(user.getFullName(), user.getEmail()) :
                 null;
     }
+
+    public User getUserObjectByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
+    }
 }

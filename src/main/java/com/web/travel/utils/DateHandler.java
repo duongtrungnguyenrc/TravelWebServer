@@ -3,6 +3,7 @@ package com.web.travel.utils;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 @Component
 public class DateHandler {
@@ -17,5 +18,12 @@ public class DateHandler {
             timeDiff = date2InMs - date1InMs;
 
         return (int) (timeDiff / (1000 * 60 * 60 * 24));
+    }
+
+    public static Date getCurrentDateTime(){
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        Date date = new Date();
+        date.setTime(date.getTime() + timeZone.getRawOffset());
+        return date;
     }
 }
