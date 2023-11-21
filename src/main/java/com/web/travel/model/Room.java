@@ -1,5 +1,6 @@
 package com.web.travel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.enumeration.ERoom;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,5 +21,6 @@ public class Room {
     private double price;
     @ManyToOne
     @JoinColumn(name = "hotelId")
+    @JsonIgnore
     private Hotel hotel;
 }

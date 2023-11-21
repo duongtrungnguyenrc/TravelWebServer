@@ -6,7 +6,7 @@ import com.web.travel.dto.response.ListTourResDTO;
 import com.web.travel.dto.response.TourDetailResDTO;
 import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
-import com.web.travel.mapper.request.TourAddingRequestMapper;
+import com.web.travel.mapper.request.TourAddingReqMapper;
 import com.web.travel.mapper.request.TourParagraphsAddingMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourResMapper;
@@ -43,7 +43,7 @@ public class TourService {
     @Autowired
     FileUploadServiceImpl fileUploadService;
     @Autowired
-    TourAddingRequestMapper tourAddingRequestMapper;
+    TourAddingReqMapper tourAddingRequestMapper;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourResDTO> list = new ArrayList<>();
@@ -125,51 +125,15 @@ public class TourService {
     }
 
     public List<TourResDTO> findTourByType(String type){
-        switch (type){
-            case "normal" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_NORMAL).stream()
-                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
-                        .map(
-                                tour -> {
-                                    Mapper mapper = new TourResMapper();
-                                    return (TourResDTO) mapper.mapToDTO(tour);
-                                }
-                        ).toList();
-            }
-            case "popular" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_POPULAR).stream()
-                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
-                        .map(
-                                tour -> {
-                                    Mapper mapper = new TourResMapper();
-                                    return (TourResDTO) mapper.mapToDTO(tour);
-                                }
-                        ).toList();
-            }
-            case "special" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_SPECIAL).stream()
-                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
-                        .map(
-                                tour -> {
-                                    Mapper mapper = new TourResMapper();
-                                    return (TourResDTO) mapper.mapToDTO(tour);
-                                }
-                        ).toList();
-            }
-            case "saving" -> {
-                return tourRepository.findByTourType(ETourType.TYPE_SAVING).stream()
-                        .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
-                        .map(
-                                tour -> {
-                                    Mapper mapper = new TourResMapper();
-                                    return (TourResDTO) mapper.mapToDTO(tour);
-                                }
-                        ).toList();
-            }
-            default -> {
-                return null;
-            }
-        }
+
+        return tourRepository.findByTourType(ETourType.valueOf(("type_" + type).toUpperCase())).stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(
+                        tour -> {
+                            Mapper mapper = new TourResMapper();
+                            return (TourResDTO) mapper.mapToDTO(tour);
+                        }
+                ).toList();
     }
 
     public long getCount(){

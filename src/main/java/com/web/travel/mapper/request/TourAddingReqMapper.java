@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Component
-public class TourAddingRequestMapper implements Mapper {
+public class TourAddingReqMapper implements Mapper {
     @Autowired
     private HotelService hotelService;
     @Override
@@ -72,7 +72,7 @@ public class TourAddingRequestMapper implements Mapper {
         List<Schedule> schedules = new ArrayList<>();
 
         List<ScheduleAddingDTO> scheduleAddingDTOS = tourAddingDTO.getSchedules();
-        TourAddingRequestMapper.sortScheduleByOrderAsc(scheduleAddingDTOS);
+        TourAddingReqMapper.sortScheduleByOrderAsc(scheduleAddingDTOS);
 
         scheduleAddingDTOS.forEach(scheduleDTO -> {
             Schedule schedule = new Schedule();

@@ -33,9 +33,7 @@ public class RateController {
 
     @Operation(summary = "Add rating")
     @PostMapping
-    public ResponseEntity<?> addRate(
-            @RequestBody RateReqDTO rating
-            ){
+    public ResponseEntity<?> addRate(@RequestBody RateReqDTO rating){
         return ResponseEntity.ok(
                 rateService.addRate(rating)
         );
