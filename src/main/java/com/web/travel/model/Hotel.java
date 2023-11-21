@@ -19,6 +19,6 @@ public class Hotel {
     private String name;
     private String address;
     private String illustration;
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Room> rooms;
 }

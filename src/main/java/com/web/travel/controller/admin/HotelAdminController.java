@@ -34,4 +34,22 @@ public class HotelAdminController {
                 hotelService.addHotel(image, hotelAddingDTO)
         );
     }
+
+    @PostMapping("update/{id}")
+    public ResponseEntity<?> updateHotel(
+            @PathVariable("id") long id,
+            @RequestPart("image") MultipartFile image,
+            @RequestPart("hotel") HotelAddingDTO hotelAddingDTO
+    ){
+        return ResponseEntity.ok(
+                hotelService.updateHotel(id, image, hotelAddingDTO)
+        );
+    }
+
+    @PostMapping("delete/{id}")
+    public ResponseEntity<?> deleteHotel(@PathVariable long id){
+        return ResponseEntity.ok(
+                hotelService.deleteHotel(id)
+        );
+    }
 }

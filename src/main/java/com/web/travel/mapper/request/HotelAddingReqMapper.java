@@ -38,6 +38,7 @@ public class HotelAddingReqMapper implements Mapper {
             }
 
             room.setPrice(roomDTO.getPrice());
+            room.setHotel(hotel);
 
             rooms.add(room);
         });
