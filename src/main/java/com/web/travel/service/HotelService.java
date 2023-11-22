@@ -96,12 +96,13 @@ public class HotelService {
             hotel1.setName(hotel.getName());
             hotel1.setAddress(hotel.getAddress());
             hotel1.setIllustration(fileName);
-            repository.save(hotel1);
+
             for (Room room : hotel.getRooms()) {
                 room.setHotel(hotel1);
+                oldRooms.add(room);
             }
 
-            roomRepository.saveAll(hotel.getRooms());
+            repository.save(hotel1);
             return new ResDTO(
                     200,
                     true,
