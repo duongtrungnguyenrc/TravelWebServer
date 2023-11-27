@@ -65,9 +65,11 @@ public class RateService {
         rate.setUser(userRepository.findByEmail(principal.getName()).orElse(null));
         Map<String, RateResDTO> response = new HashMap<>();
         RateResMapper mapper = new RateResMapper();
+        RateResDTO rateResDTO = ((RateResDTO) mapper.mapToDTO(rateRepository.save(rate)));
+        rateResDTO.setActive(true);
         response.put(
                 "rateAdded",
-                (RateResDTO) mapper.mapToDTO(rateRepository.save(rate))
+                rateResDTO
             );
 
         return new ResDTO(

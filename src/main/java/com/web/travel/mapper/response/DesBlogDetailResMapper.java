@@ -35,7 +35,9 @@ public class DesBlogDetailResMapper implements Mapper {
                     new Comparator<Paragraph>() {
                         @Override
                         public int compare(Paragraph o1, Paragraph o2) {
-                            return o1.getOrder() - o2.getOrder();
+                            if(o1.getOrder() != null && o2.getOrder() != null)
+                                return o1.getOrder() - o2.getOrder();
+                            return (int) (o1.getId() - o2.getId());
                         }
                     }
                 )

@@ -63,30 +63,9 @@ public class AuthService {
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "tour":
-                        Role tourRole = roleRepository.findByName(ERole.ROLE_TOUR_MANAGER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(tourRole);
-
-                        break;
-                    case "customer_care":
-                        Role customerCareRole = roleRepository.findByName(ERole.ROLE_CUSTOMER_CARE)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(customerCareRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
+                Role userRole = roleRepository.findByName(ERole.valueOf("ROLE_" + role.toUpperCase()))
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+                roles.add(userRole);
             });
         }
 
@@ -177,7 +156,6 @@ public class AuthService {
     public String createResetPasswordToken(String email){
         return jwtUtils.generateJwtMailToken(email);
     }
-
     public boolean resetPasswordTokenIsValid(String token){
         return jwtUtils.validateJwtToken(token);
     }

@@ -6,7 +6,6 @@ public class LoginVerifyRequest {
     @NotBlank
     private String token;
 
-
     public String getToken() {
         return token;
     }
