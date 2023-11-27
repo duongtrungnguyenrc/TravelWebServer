@@ -11,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TourDateResDTO {
+    private long id;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date departDate;
     @JsonFormat(pattern = "dd-MM-yyyy")
@@ -19,4 +20,6 @@ public class TourDateResDTO {
     private int duration;
     private double adultPrice;
     private double childPrice;
+    private int maxPeople;
+    private int currentPeople;
 }

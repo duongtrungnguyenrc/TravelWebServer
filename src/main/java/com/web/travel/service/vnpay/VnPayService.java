@@ -21,7 +21,7 @@ import java.util.TimeZone;
 
 @Service
 public class VnPayService {
-    public ResDTO createPayment(long amount, String remoteAddress, String method, long orderId) throws UnsupportedEncodingException {
+    public ResDTO createPayment(long amount, String remoteAddress, long orderId) throws UnsupportedEncodingException {
         amount *= 100;
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
         String vnp_TmnCode = VnPayConfig.vnp_TmnCode;
@@ -31,7 +31,7 @@ public class VnPayService {
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", "VND");
-        vnp_Params.put("vnp_BankCode", method);
+        vnp_Params.put("vnp_BankCode", "");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
         vnp_Params.put("vnp_ReturnUrl", "http://localhost:8080/api/payment/return/" + orderId);
@@ -75,6 +75,6 @@ public class VnPayService {
         String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = VnPayConfig.vnp_PayUrl + "?" + queryUrl;
-        return new ResDTO(HttpServletResponse.SC_OK, true, "Success", paymentUrl);
+        return new ResDTO(HttpServletResponse.SC_OK, true, "Đặt tour thành công!", paymentUrl);
     }
 }

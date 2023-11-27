@@ -62,12 +62,12 @@ public class TourAddingReqMapper implements Mapper {
             tourDate.setAdultPrice(date.getAdultPrice());
             tourDate.setChildPrice(date.getChildPrice());
             tourDate.setTour(tour);
+            tourDate.setCurrentPeople(date.getCurrentPeople());
+            tourDate.setMaxPeople(date.getMaxPeople());
             tourDates.add(tourDate);
         });
 
         tour.setTourDate(tourDates);
-        tour.setMaxPeople(tourAddingDTO.getMaxPeople());
-        tour.setCurrentPeople(tourAddingDTO.getCurrentPeople());
 
         List<Schedule> schedules = new ArrayList<>();
 

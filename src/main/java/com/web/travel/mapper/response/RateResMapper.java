@@ -7,12 +7,14 @@ import com.web.travel.model.Rate;
 public class RateResMapper implements Mapper {
     @Override
     public Object mapToDTO(Object obj) {
-        obj = (Rate) obj;
+        Rate rate = (Rate) obj;
         RateResDTO rateResDTO = new RateResDTO();
-        rateResDTO.setRatedDate(((Rate) obj).getDateRated());
-        rateResDTO.setStar(((Rate) obj).getPoint());
-        rateResDTO.setComment(((Rate) obj).getComment());
-        rateResDTO.setUsername(((Rate) obj).getUser().getFullName());
+        rateResDTO.setRatedDate(rate.getDateRated());
+        rateResDTO.setStar(rate.getPoint());
+        rateResDTO.setComment(rate.getComment());
+        rateResDTO.setUsername(rate.getUser().getFullName());
+        rateResDTO.setEmail(rate.getUser().getEmail());
+        rateResDTO.setId(rate.getId());
         return rateResDTO;
     }
 

@@ -93,7 +93,7 @@ public class AuthService {
         }
 
         user.setRoles(roles);
-        user.setActive(EUserStatus.STATUS_ACTIVATED);
+        user.setActive(EUserStatus.STATUS_NOT_ACTIVATED);
 
         String userFullName = signUpRequest.getFullName();
         String confirmationCode = generateConfirmationCode();
@@ -246,15 +246,5 @@ public class AuthService {
                 "Confirmation code is not correct",
                 null
         );
-    }
-
-    public boolean userIsActive(UserDetailsImpl user){
-        String active = user.getActive();
-        return active.equals(EUserStatus.STATUS_ACTIVATED.toString());
-    }
-
-    public boolean userIsActive(User user){
-        String active = user.getActive().toString();
-        return active.equals(EUserStatus.STATUS_ACTIVATED.toString());
     }
 }

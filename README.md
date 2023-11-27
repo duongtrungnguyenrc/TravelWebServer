@@ -22,3 +22,10 @@ The following guides illustrate how to use some features concretely:
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 * [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
 
+
+### BUGS
+- Cancel order still ok although diff of depart date and update date less than 3
+
+### NEED FIX
+- 2 children equals 1 adults
+- 

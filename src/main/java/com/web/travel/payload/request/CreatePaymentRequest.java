@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class CreatePaymentRequest {
-//    private long orderId;
     private double amount;
-    private String method;
     private OrderReqDTO order;
 }

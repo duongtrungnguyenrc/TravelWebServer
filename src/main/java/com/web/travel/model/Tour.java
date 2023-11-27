@@ -31,8 +31,6 @@ public class Tour {
     )
     @JsonIgnore
     private Collection<TourDate> tourDate;
-    private int maxPeople;
-    private int currentPeople;
     private String img;
     @OneToMany(mappedBy = "tour",
             cascade = CascadeType.ALL,
@@ -46,7 +44,7 @@ public class Tour {
     @OneToMany(mappedBy = "tour", fetch = FetchType.EAGER)
     @JsonIgnore
     private Collection<Order> orders;
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tour", fetch = FetchType.EAGER)
     @JsonIgnore
     private Collection<Rate> rates;
     @ManyToMany(cascade = CascadeType.ALL)
@@ -57,21 +55,4 @@ public class Tour {
     )
     @JsonIgnore
     private Collection<Hotel> hotels;
-    public Tour(String name,
-                String vehicle,
-                String depart,
-                String destination,
-                Collection<TourDate> tourDate,
-                int maxPeople,
-                int currentPeople,
-                String img) {
-        this.name = name;
-        this.vehicle = vehicle;
-        this.depart = depart;
-        this.destination = destination;
-        this.tourDate = tourDate;
-        this.maxPeople = maxPeople;
-        this.currentPeople = currentPeople;
-        this.img = img;
-    }
 }

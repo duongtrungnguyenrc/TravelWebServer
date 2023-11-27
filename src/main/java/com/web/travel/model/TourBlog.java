@@ -17,7 +17,8 @@ public class TourBlog {
     private Long id;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "blogId")
-    @JsonIgnore
+//    @OneToOne(mappedBy = "tourBlog")
+//    @JsonIgnore
     private Blog blog;
     @OneToOne
     @JoinColumn(name = "tourId")

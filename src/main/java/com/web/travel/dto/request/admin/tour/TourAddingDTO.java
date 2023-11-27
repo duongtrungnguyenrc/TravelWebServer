@@ -17,8 +17,6 @@ public class TourAddingDTO {
     private String depart;
     private String destination;
     private List<TourDateAddingDTO> tourDate;
-    private int maxPeople;
-    private int currentPeople;
     private List<ScheduleAddingDTO> schedules;
     private List<Long> hotelIds;
     private List<ParagraphAddingDTO> paragraphs;

@@ -39,8 +39,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         }else if (authException.getMessage().equals("Full authentication is required to access this resource")){
             message = "Chưa đăng nhập";
         }else if (authException.getMessage().equals("User account is locked")){
-//            message = "Tài khoản của bạn đã bị vô hiệu hóa";
-            message = authException.getMessage();
+            message = "Tài khoản của bạn đã bị vô hiệu hóa";
         }
         body.put("error", "Unauthorized");
         body.put("path", request.getServletPath());

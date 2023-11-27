@@ -2,11 +2,18 @@ package com.web.travel.service.email;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.model.Order;
+import com.web.travel.model.enumeration.EOrderStatus;
+import com.web.travel.model.enumeration.EPaymentMethod;
 import com.web.travel.payload.response.MessageResponse;
+import com.web.travel.repository.BlogRepository;
+import com.web.travel.repository.TourBlogRepository;
 import com.web.travel.service.AuthService;
+import com.web.travel.service.BlogService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -28,6 +35,8 @@ public class EmailService {
     private JavaMailSender sender;
     @Autowired
     private Configuration config;
+    @Autowired
+    private TourBlogRepository blogRepository;
     @Value("${travel.app.client.host}")
     private String clientHost;
     public ResDTO sendWelcomeEmail(MailRequest request) {
@@ -126,6 +135,109 @@ public class EmailService {
             Map<String, String> tokenDTO = new HashMap<>();
             tokenDTO.put("token", token);
             response.setData(tokenDTO);
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            response.setMessage("Mail sent failure : " + e.getMessage());
+            response.setStatus(Boolean.FALSE);
+        }
+        return response;
+    }
+
+    public MessageResponse sendOrderedEmail(Order order){
+        MessageResponse response = new MessageResponse();
+
+        MailRequest request = new MailRequest();
+        request.setFrom("travel-vn");
+        request.setSubject("YOUR ORDER");
+        request.setTo(order.getContactInfo().getCustomerEmail());
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", order.getContactInfo().getCustomerFullName());
+        model.put("orderId", order.getId());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        model.put("orderDate", formatter.format(order.getOrderDate()));
+        model.put("phone", order.getContactInfo().getCustomerPhone());
+        model.put("email", order.getContactInfo().getCustomerEmail());
+        model.put("address", order.getContactInfo().getCustomerAddress());
+        model.put("nation", order.getContactInfo().getCustomerNation());
+        model.put("amount", order.getTotalPrice());
+        model.put("adults", order.getAdults());
+        model.put("children", order.getChildren());
+
+        blogRepository.findByTour(order.getTour()).ifPresent((blog) -> {
+            model.put("tourImage", blog.getBlog().getBackgroundImg());
+        });
+
+        model.put("tourName", order.getTour().getName());
+        model.put("departDate", formatter.format(order.getTourDate().getDepartDate()).split(" ")[0]);
+        model.put("endDate", formatter.format(order.getTourDate().getEndDate()).split(" ")[0]);
+        model.put("depart", order.getTour().getDepart());
+        model.put("destination", order.getTour().getDestination());
+
+        EPaymentMethod method = order.getPaymentMethod();
+        if(method == EPaymentMethod.METHOD_VNPAY){
+            model.put("method", "Thanh toán bằng VNPay");
+        }else{
+            model.put("method", "Thanh toán bằng tiền mặt");
+        }
+        model.put("clientHost", clientHost);
+        MimeMessage message = sender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+            //add attachment
+            //helper.addAttachment("logo.jpg", new ClassPathResource("logo.jpg"));
+            //render template
+            Template t = config.getTemplate("ordered/ordered-template.html");
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+            helper.setTo(request.getTo());
+            helper.setText(html, true);
+            helper.setSubject(request.getSubject());
+            helper.setFrom(request.getFrom(), "Travel Vn");
+            sender.send(message);
+            response.setMessage("Mail sent to: " + request.getTo());
+            response.setStatus(Boolean.TRUE);
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            response.setMessage("Mail sent failure : " + e.getMessage());
+            response.setStatus(Boolean.FALSE);
+        }
+        return response;
+    }
+
+    public MessageResponse sendCanceledEmail(Order order){
+        MessageResponse response = new MessageResponse();
+
+        MailRequest request = new MailRequest();
+        request.setFrom("travel-vn");
+        request.setSubject("YOUR ORDER IS CANCELED");
+        request.setTo(order.getContactInfo().getCustomerEmail());
+
+        Map<String, Object> model = new HashMap<>();
+
+        model.put("orderId", order.getId());
+        model.put("name", order.getContactInfo().getCustomerFullName());
+        model.put("clientHost", clientHost);
+        MimeMessage message = sender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+            //add attachment
+            //helper.addAttachment("logo.jpg", new ClassPathResource("logo.jpg"));
+            //render template
+            Template t = config.getTemplate("ordered/canceled-template.html");
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+            helper.setTo(request.getTo());
+            helper.setText(html, true);
+            helper.setSubject(request.getSubject());
+            helper.setFrom(request.getFrom(), "Travel Vn");
+            sender.send(message);
+            response.setMessage("Mail sent to: " + request.getTo());
+            response.setStatus(Boolean.TRUE);
 
         } catch (MessagingException | IOException | TemplateException e) {
             response.setMessage("Mail sent failure : " + e.getMessage());

@@ -1,6 +1,7 @@
 package com.web.travel.mapper.request;
 
 import com.web.travel.dto.request.common.RateReqDTO;
+import com.web.travel.dto.request.common.RateUpdateReqDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
 import com.web.travel.service.TourService;
@@ -35,7 +36,6 @@ public class RateReqMapper implements Mapper {
         rate.setComment(rateDTO.getComment());
         rate.setDateRated(DateHandler.getCurrentDateTime());
         rate.setTour(tourService.findTourById(rateDTO.getTourId()));
-        rate.setUser(userService.getUserObjectByEmail(rateDTO.getUserEmail()));
 
         return rate;
     }

@@ -32,29 +32,36 @@ public class TourDetailResMapper implements Mapper {
             tourDto.setStartFrom(priceStartFrom);
 
             List<TourDateResDTO> tourDateResDTOs = new ArrayList<>();
-            tour.getTourDate().forEach(date -> {
-                TourDateResDTO tourDateResDTO = new TourDateResDTO();
-                Date departDate = date.getDepartDate(),
-                        endDate = date.getEndDate();
-                tourDateResDTO.setDepartDate(departDate);
-                tourDateResDTO.setEndDate(endDate);
-                tourDateResDTO.setAdultPrice(date.getAdultPrice());
-                tourDateResDTO.setChildPrice(date.getChildPrice());
+            List<TourDate> tourDates = tour.getTourDate().stream().toList();
+            DateHandler dateHandler = new DateHandler();
+            tourDates.forEach(date -> {
+                if(!date.isFull() && date.getDepartDate().getTime() > DateHandler.getCurrentDateTime().getTime()){
+                    TourDateResDTO tourDateResDTO = new TourDateResDTO();
+                    Date departDate = date.getDepartDate(),
+                            endDate = date.getEndDate();
+                    tourDateResDTO.setId(date.getId());
+                    tourDateResDTO.setDepartDate(departDate);
+                    tourDateResDTO.setEndDate(endDate);
+                    tourDateResDTO.setAdultPrice(date.getAdultPrice());
+                    tourDateResDTO.setChildPrice(date.getChildPrice());
+                    tourDateResDTO.setMaxPeople(date.getMaxPeople());
+                    tourDateResDTO.setCurrentPeople(date.getCurrentPeople());
 
-                String type = date.getDateType().toString();
-                if(type.equals(ETourDateType.TYPE_PLUS.toString()))
-                    type = "Plus";
-                else
-                    type = "Essential";
-                tourDateResDTO.setType(type);
-                int duration = new DateHandler().getDiffDay(endDate, departDate);
-                tourDateResDTO.setDuration(duration);
-                tourDateResDTOs.add(tourDateResDTO);
+                    String type = date.getDateType().toString();
+                    if(type.equals(ETourDateType.TYPE_PLUS.toString()))
+                        type = "Plus";
+                    else
+                        type = "Essential";
+                    tourDateResDTO.setType(type);
+                    int duration = new DateHandler().getDiffDay(endDate, departDate);
+                    tourDateResDTO.setDuration(duration);
+
+                    tourDateResDTOs.add(tourDateResDTO);
+                }
             });
             tourDto.setTourDate(tourDateResDTOs);
-
-            tourDto.setMaxPeople(tour.getMaxPeople());
-            tourDto.setCurrentPeople(tour.getCurrentPeople());
+            tourDto.setMaxPeople(tourDates.get(0).getMaxPeople());
+            tourDto.setCurrentPeople(tourDates.get(0).getCurrentPeople());
             tourDto.setImg(tour.getImg());
 
             List<ParagraphResDTO> paragraphDTO = new ArrayList<ParagraphResDTO>();

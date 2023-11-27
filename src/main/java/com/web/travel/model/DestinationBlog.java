@@ -23,10 +23,10 @@ public class DestinationBlog {
     private String type;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date postDate;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "blog_id")
     private Blog blog;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 

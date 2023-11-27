@@ -22,6 +22,9 @@ public class Blog {
     @ToString.Exclude
     @JsonIgnore
     private Collection<Paragraph> paragraphs;
+//    @OneToOne
+//    @JoinColumn(name = "tourBlogId")
+//    private TourBlog tourBlog;
     public Blog(String backgroundImg){
         this.backgroundImg = backgroundImg;
     }

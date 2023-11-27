@@ -2,6 +2,7 @@ package com.web.travel.service;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.RateReqDTO;
+import com.web.travel.dto.request.common.RateUpdateReqDTO;
 import com.web.travel.dto.response.RateResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.RateReqMapper;
@@ -10,10 +11,16 @@ import com.web.travel.model.Rate;
 import com.web.travel.model.Tour;
 import com.web.travel.repository.RateRepository;
 import com.web.travel.repository.TourRepository;
+import com.web.travel.repository.UserRepository;
+import com.web.travel.utils.DateHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,21 +33,36 @@ public class RateService {
     @Autowired
     RateRepository rateRepository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     RateReqMapper reqMapper;
-    public List<RateResDTO> getRatesByTour(long id){
+    public Map<String, Object> getRatesByTour(Principal principal, long id, int page, int limit){
         Tour foundTour = tourRepository.findById(id).orElse(null);
         if (foundTour != null) {
-            List<Rate> rates = foundTour.getRates().stream().toList();
-            return rates.stream().map(rate -> {
+            Page<Rate> ratesPage = rateRepository
+                    .findByTourOrderByDateRatedDesc(foundTour, PageRequest.of(page - 1, limit));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("pages", ratesPage.getTotalPages());
+
+            List<RateResDTO> rates = ratesPage.get().map(rate -> {
                 RateResMapper mapper = new RateResMapper();
-                return (RateResDTO) mapper.mapToDTO(rate);
+                RateResDTO dto = (RateResDTO) mapper.mapToDTO(rate);
+                dto.setActive(
+                        principal != null && principal.getName().equals(dto.getEmail())
+                );
+                return dto;
             }).toList();
+            response.put("rates", rates);
+
+            return response;
         }
-        return new ArrayList<>();
+        return null;
     }
 
-    public ResDTO addRate(RateReqDTO ratingDTO){
+    public ResDTO addRate(Principal principal, RateReqDTO ratingDTO){
         Rate rate = (Rate) reqMapper.mapToObject(ratingDTO);
+        rate.setUser(userRepository.findByEmail(principal.getName()).orElse(null));
         Map<String, RateResDTO> response = new HashMap<>();
         RateResMapper mapper = new RateResMapper();
         response.put(
@@ -49,10 +71,74 @@ public class RateService {
             );
 
         return new ResDTO(
-                200,
-                true,
-                "Đã thêm bình luận",
-                response
+            200,
+            true,
+            "Đã thêm bình luận",
+            response
         );
     }
+
+    public ResDTO updateRate(Principal principal, RateUpdateReqDTO ratingDTO){
+        Rate needUpdateRate = rateRepository.findById(ratingDTO.getId()).orElse(null);
+        if (needUpdateRate != null){
+            if(principal.getName().equals(needUpdateRate.getUser().getEmail())) {
+                needUpdateRate.setComment(ratingDTO.getComment());
+                needUpdateRate.setPoint(ratingDTO.getStar());
+                needUpdateRate.setDateRated(DateHandler.getCurrentDateTime());
+
+                Rate updatedRate = rateRepository.save(needUpdateRate);
+                RateResMapper mapper = new RateResMapper();
+                RateResDTO dto = (RateResDTO) mapper.mapToDTO(updatedRate);
+                dto.setActive(true);
+                return new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        "Cập nhật đánh giá thành công!",
+                        dto
+                );
+            }
+            return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Bạn không thể cập nhật đánh giá của người khác!",
+                null
+            );
+        }
+        return new ResDTO(
+            HttpServletResponse.SC_BAD_REQUEST,
+            false,
+            "Không tìm thấy đánh giá!",
+            null
+        );
+    }
+
+    public ResDTO deleteRate(Principal principal, long rateId){
+        Rate rate = rateRepository.findById(rateId).orElse(null);
+        if(rate != null) {
+            if (rate.getUser().getEmail().equals(principal.getName())) {
+                rateRepository.deleteById(rateId);
+                Map<String, Long> response = new HashMap<>();
+                response.put("deletedId", rate.getId());
+                return new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        "Xóa đánh giá thành công!",
+                        response
+                );
+            }
+            return new ResDTO(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    false,
+                    "Bạn không thể xóa bình luận của người khác!",
+                    null
+            );
+        }
+        return new ResDTO(
+            HttpServletResponse.SC_BAD_REQUEST,
+            false,
+            "Không tìm thấy bình luận!",
+            null
+        );
+    }
+
 }

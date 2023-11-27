@@ -44,6 +44,8 @@ public class TourService {
     FileUploadServiceImpl fileUploadService;
     @Autowired
     TourAddingReqMapper tourAddingRequestMapper;
+    @Autowired
+    BlogRepository blogRepository;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourResDTO> list = new ArrayList<>();
@@ -319,6 +321,7 @@ public class TourService {
                 TourBlog needUpdateTourBlog = tourBlogRepository.findByTour(foundTour).orElse(null);
 
                 if(needUpdateTourBlog != null){
+
                     needUpdateTourBlog.getBlog().setBackgroundImg(thumbnailName);
 
                     needUpdateTourBlog.getBlog().getParagraphs().forEach(paragraph -> {
@@ -357,21 +360,10 @@ public class TourService {
                 foundTour.setDestination(needUpdateTour.getDestination());
                 foundTour.setImg(thumbnailName);
 
-                foundTour.getTourDate().forEach(tourDate -> {
-                    tourDate.setTour(null);
-                });
-
-                foundTour.getTourDate().forEach(tourDate -> {
-                    tourDateRepository.delete(tourDate);
-                });
-
                 needUpdateTour.getTourDate().forEach(tourDate -> {
                     tourDate.setTour(foundTour);
                     foundTour.getTourDate().add(tourDate);
                 });
-
-                foundTour.setMaxPeople(needUpdateTour.getMaxPeople());
-                foundTour.setCurrentPeople(needUpdateTour.getCurrentPeople());
 
                 foundTour.getSchedules().clear();
 

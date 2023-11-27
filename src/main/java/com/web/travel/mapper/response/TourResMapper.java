@@ -36,7 +36,7 @@ public class TourResMapper implements Mapper {
             }
             tourResDTO.setPrice(price);
             tourResDTO.setDuration(duration);
-            tourResDTO.setMaxPeople(((Tour) obj).getMaxPeople());
+            tourResDTO.setMaxPeople(((Tour) obj).getTourDate().stream().toList().get(0).getMaxPeople());
             String typeDto = "";
             String typeTitle = "";
             switch (((Tour) obj).getTourType().toString()) {

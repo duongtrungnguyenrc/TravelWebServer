@@ -12,18 +12,18 @@ public class DateHandler {
         long date2InMs = date2.getTime();
         long timeDiff = 0;
 
-        if(date1InMs > date2InMs)
-            timeDiff = date1InMs - date2InMs;
-        else
-            timeDiff = date2InMs - date1InMs;
+        timeDiff = date1InMs - date2InMs;
 
         return (int) (timeDiff / (1000 * 60 * 60 * 24));
     }
 
     public static Date getCurrentDateTime(){
-        TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
-        Date date = new Date();
-        date.setTime(date.getTime() + timeZone.getRawOffset());
-        return date;
+        TimeZone vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        Date currentDateInVietnam = new Date(System.currentTimeMillis());
+
+        // Set the time zone to Vietnam's time zone
+        vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        currentDateInVietnam.setTime(currentDateInVietnam.getTime() + vietnamTimeZone.getRawOffset());
+        return currentDateInVietnam;
     }
 }

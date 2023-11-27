@@ -16,6 +16,8 @@ public class TourDateAddingDTO {
     private Date departDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date endDate;
+    private int currentPeople;
+    private int maxPeople;
     private String dateType;
     private double adultPrice;
     private double childPrice;

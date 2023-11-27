@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RateReqDTO {
-    private long tourId;
+public class RateUpdateReqDTO {
+    private long id;
     private String comment;
     private int star;
 }
