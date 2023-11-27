@@ -19,7 +19,6 @@ public class OrderReqDTO {
     private String paymentMethod;
     @JsonIgnore
     private double totalPrice;
-    private Long tourId;
     private long tourDateId;
     private ContactInfo contactInfo;
 }

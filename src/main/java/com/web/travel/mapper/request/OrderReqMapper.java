@@ -42,11 +42,13 @@ public class OrderReqMapper implements Mapper {
         order.setOrderDate(DateHandler.getCurrentDateTime());
 
         tourDateRepository.findById(orderReqDTO.getTourDateId()).ifPresent(
-                order::setTourDate
+            tourDate -> {
+                order.setTourDate(tourDate);
+                long tourId = tourDate.getTour().getId();
+                Tour tour = tourRepository.findById(tourId).orElseGet(Tour::new);
+                order.setTour(tour);
+            }
         );
-
-        Tour tour = tourRepository.findById(orderReqDTO.getTourId()).orElseGet(Tour::new);
-        order.setTour(tour);
 
         order.setPaymentMethod(EPaymentMethod.valueOf("METHOD_" + orderReqDTO.getPaymentMethod().toUpperCase()));
         order.setTotalPrice(0);

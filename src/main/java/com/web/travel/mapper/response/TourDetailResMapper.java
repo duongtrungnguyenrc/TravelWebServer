@@ -71,6 +71,9 @@ public class TourDetailResMapper implements Mapper {
                 paragraphResDTO.setContent(paragraph.getContent());
                 ParagraphImg paragraphImg = paragraphImgMap.get(paragraph.getId());
                 paragraphResDTO.setImage(new ParagraphImageResDTO(paragraphImg.getImg(), paragraphImg.getName()));
+                if(paragraphImg.getImg() == null){
+                    paragraphResDTO.setImage(null);
+                }
                 paragraphDTO.add(paragraphResDTO);
             });
 

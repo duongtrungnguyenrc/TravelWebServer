@@ -19,14 +19,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,9 +85,7 @@ public class OrderService {
             ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());
             Long contactInfoId = contactInfo.getId();
             order.getContactInfo().setId(contactInfoId);
-            order.setTour(tourService.findTourById(
-                    body.getOrder().getTourId()
-            ));
+
             Order savedOrder= saveOrder(order);
 
             long orderId = savedOrder.getId();
