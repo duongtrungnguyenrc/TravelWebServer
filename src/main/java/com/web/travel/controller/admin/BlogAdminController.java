@@ -25,4 +25,22 @@ public class BlogAdminController {
             blogService.addBlog(principal, blogAddingReqDTO, thumbnail, images)
         );
     }
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> updateBlog(@PathVariable("id") Long id,
+            Principal principal,
+            @RequestPart("blog") BlogAddingReqDTO blogAddingReqDTO,
+            @RequestPart("thumbnail") MultipartFile thumbnail,
+            @RequestPart("paragraphImages") MultipartFile[] images
+    ){
+        return ResponseEntity.ok(
+                blogService.updateBlog(id, principal, blogAddingReqDTO, thumbnail, images)
+        );
+    }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<?> deleteBlog(@PathVariable("id") Long id){
+        return ResponseEntity.ok(
+                blogService.deleteBlog((id))
+        );
+    }
 }

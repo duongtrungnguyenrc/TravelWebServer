@@ -8,13 +8,12 @@ import com.web.travel.mapper.request.BlogAddReqMapper;
 import com.web.travel.mapper.response.DesBlogDetailResMapper;
 import com.web.travel.mapper.response.DestinationBlogResMapper;
 import com.web.travel.mapper.Mapper;
-import com.web.travel.model.DestinationBlog;
-import com.web.travel.model.Paragraph;
-import com.web.travel.model.ParagraphImg;
-import com.web.travel.model.User;
+import com.web.travel.model.*;
 import com.web.travel.model.enumeration.EStatus;
+import com.web.travel.repository.BlogRepository;
 import com.web.travel.repository.DestinationBlogRepository;
 import com.web.travel.repository.ParagraphImgRepository;
+import com.web.travel.repository.ParagraphRepository;
 import com.web.travel.repository.custom.CustomDestinationBlogRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FilesValidation;
@@ -33,6 +32,8 @@ import java.util.*;
 @Service
 public class BlogService {
     @Autowired
+    BlogRepository blogRepository;
+    @Autowired
     DestinationBlogRepository desRepository;
     @Autowired
     CustomDestinationBlogRepository customDesBlogRepository;
@@ -40,6 +41,8 @@ public class BlogService {
     BlogAddReqMapper mapper;
     @Autowired
     FileUploadService fileUploadService;
+    @Autowired
+    ParagraphRepository paragraphRepository;
     @Autowired
     ParagraphImgRepository paragraphImgRepository;
     @Autowired
@@ -159,4 +162,104 @@ public class BlogService {
             response
         );
     }
+
+    public ResDTO updateBlog(Long id, Principal principal, BlogAddingReqDTO blogDto, MultipartFile thumbnail, MultipartFile[] images){
+        blogDto.setUserEmail(principal.getName());
+        DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
+        DestinationBlog oldBlog = desRepository.findById(id).orElse(null);
+
+        if(oldBlog!=null){
+
+            Collection<Paragraph> paragraphs = oldBlog.getBlog().getParagraphs();
+
+            for (Paragraph paragraph : paragraphs) {
+                Optional<ParagraphImg> paragraphImg = paragraphImgRepository.findByParagraph(paragraph);
+                paragraphImg.ifPresent(paragraphImgRepository::delete);
+            }
+            Blog myBlog = oldBlog.getBlog();
+            paragraphs.clear();
+            oldBlog.setTitle(blog.getTitle());
+            oldBlog.setType(blog.getType());
+            //blogRepository.deleteByBlogId(oldBlog.getBlog().getId());
+            oldBlog.setBlog(blog.getBlog());
+            blogRepository.delete(myBlog);
+
+            String backgroundImg = "";
+            List<ParagraphImg> paragraphImgs = new ArrayList<>();
+            try{
+                backgroundImg = fileUploadService.uploadFile(thumbnail);
+                List<String> fileNames = null;
+                if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
+                    fileNames = fileUploadService.uploadMultiFile(images);
+                }
+
+                //oldBlog.getBlog().getParagraphs().clear();
+                List<Paragraph> updateParagraph = blog
+                        .getBlog()
+                        .getParagraphs()
+                        .stream().toList();
+
+                updateParagraph.forEach(paragraph ->{
+                    paragraph.setBlog(blog.getBlog());
+                    paragraphRepository.save(paragraph);
+                });
+
+                if(fileNames != null && fileNames.size() <= updateParagraph.size()) {
+                    for (int i = 0; i < fileNames.size(); i++) {
+                        ParagraphImg paragraphImg = new ParagraphImg();
+
+                        paragraphImg.setImg(fileNames.get(i));
+                        paragraphImg.setName(blogDto.getParagraphs().get(i).getImageName());
+                        paragraphImg.setParagraph(updateParagraph.get(i));
+                        paragraphImgRepository.save(paragraphImg);
+                    }
+                }
+            }catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            oldBlog.getBlog().setBackgroundImg(backgroundImg);
+
+            desRepository.save(oldBlog);
+
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Update blog successfully",
+                    oldBlog.getId()
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Update blog failed",
+                oldBlog.getId()
+        );
+    }
+
+    public ResDTO deleteBlog(Long id) {
+        DestinationBlog delBlog = desRepository.findById(id).orElse(null);
+        if (delBlog != null) {
+            Collection<Paragraph> paragraphs = delBlog.getBlog().getParagraphs();
+
+            for (Paragraph paragraph : paragraphs) {
+                Optional<ParagraphImg> paragraphImg = paragraphImgRepository.findByParagraph(paragraph);
+                paragraphImg.ifPresent(paragraphImgRepository::delete);
+            }
+            desRepository.delete(delBlog);
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Delete blog successfully",
+                    null
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Delete blog failed",
+                null
+        );
+    }
+
 }
