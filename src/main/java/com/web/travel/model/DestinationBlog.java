@@ -26,7 +26,7 @@ public class DestinationBlog {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "blog_id")
     private Blog blog;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
