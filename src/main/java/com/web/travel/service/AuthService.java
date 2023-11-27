@@ -6,10 +6,8 @@ import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.EUserStatus;
 import com.web.travel.payload.request.LoginRequest;
-import com.web.travel.payload.request.ResetPasswordRequest;
 import com.web.travel.payload.request.SignupRequest;
-import com.web.travel.payload.response.AuthResponse;
-import com.web.travel.payload.response.JwtResponse;
+import com.web.travel.payload.response.SignInResponse;
 import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
@@ -123,14 +121,19 @@ public class AuthService {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        JwtResponse jwtResponse = new JwtResponse(
-                jwt,
-                userDetails.getId(),
-                userDetails.getEmail(),
-                roles
+        SignInResponse signInResponse = new SignInResponse();
+        signInResponse.setRoles(roles);
+        signInResponse.setId(userDetails.getId());
+        signInResponse.setEmail(userDetails.getEmail());
+        signInResponse.setAddress(userDetails.getAddress());
+        signInResponse.setActive(
+                userDetails.getActive().equals(EUserStatus.STATUS_ACTIVATED.name())
         );
+        signInResponse.setAccessToken(jwt);
+        signInResponse.setPhone(userDetails.getPhone());
+        signInResponse.setFullName(userDetails.getFullName());
 
-        return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", jwtResponse);
+        return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", signInResponse);
     }
 
 
