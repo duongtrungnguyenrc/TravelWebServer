@@ -32,4 +32,5 @@ public class OrderDetailResDTO {
     private double totalPrice;
     private TourResDTO tour;
     private ContactInfo contactInfo;
+    private HotelResDTO hotel;
 }

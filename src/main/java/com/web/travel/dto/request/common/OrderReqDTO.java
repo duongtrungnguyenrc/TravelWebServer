@@ -14,12 +14,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 public class OrderReqDTO {
+    private double amount;
     private int adults;
     private int children;
     private String paymentMethod;
     @JsonIgnore
     private double totalPrice;
     private long tourDateId;
+    private long hotelId;
     private String specialRequest;
     private ContactInfo contactInfo;
 }

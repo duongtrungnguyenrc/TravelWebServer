@@ -21,4 +21,6 @@ public class Hotel {
     private String illustration;
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Room> rooms;
+    @OneToMany(mappedBy = "hotel")
+    private Collection<Order> orders;
 }

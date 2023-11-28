@@ -67,11 +67,11 @@ public class OrderService {
     }
 
     public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody CreatePaymentRequest body) throws UnsupportedEncodingException {
-        long amount = (long) Math.round(body.getAmount());
+        long amount = (long) Math.round(body.getOrder().getAmount());
         String ipAddress = request.getRemoteAddr();
 
         Order order = (Order) orderReqMapper.mapToObject(body.getOrder());
-        order.setTotalPrice(body.getAmount());
+        order.setTotalPrice(body.getOrder().getAmount());
 
         if(order.getTourDate().getDepartDate().getTime() >= order.getOrderDate().getTime()) {
             if (order.getTourDate().canBook(order.getAdults())) {

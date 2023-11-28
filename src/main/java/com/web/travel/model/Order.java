@@ -41,6 +41,9 @@ public class Order {
     @OneToOne
     @JoinColumn(name = "contactInfoId")
     private ContactInfo contactInfo;
+    @ManyToOne
+    @JoinColumn(name = "hotelId")
+    private Hotel hotel;
 
     public int getTotalPeople(){
         return getAdults() + (int)(getChildren()/2);

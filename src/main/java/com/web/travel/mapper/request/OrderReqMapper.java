@@ -8,6 +8,7 @@ import com.web.travel.model.TourDate;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.EPaymentMethod;
+import com.web.travel.repository.HotelRepository;
 import com.web.travel.repository.TourDateRepository;
 import com.web.travel.repository.TourRepository;
 import com.web.travel.repository.UserRepository;
@@ -23,6 +24,8 @@ public class OrderReqMapper implements Mapper {
     TourRepository tourRepository;
     @Autowired
     TourDateRepository tourDateRepository;
+    @Autowired
+    HotelRepository hotelRepository;
 
     @Override
     public Object mapToDTO(Object obj) {
@@ -41,6 +44,7 @@ public class OrderReqMapper implements Mapper {
         order.setContactInfo(orderReqDTO.getContactInfo());
         order.setSpecialRequest(orderReqDTO.getSpecialRequest());
         order.setOrderDate(DateHandler.getCurrentDateTime());
+        order.setHotel(hotelRepository.findById(orderReqDTO.getHotelId()).orElse(null));
 
         tourDateRepository.findById(orderReqDTO.getTourDateId()).ifPresent(
             tourDate -> {

@@ -1,13 +1,19 @@
 package com.web.travel.mapper.response;
 
+import com.web.travel.dto.response.HotelResDTO;
 import com.web.travel.dto.response.OrderDetailResDTO;
+import com.web.travel.dto.response.RoomResDTO;
 import com.web.travel.dto.response.TourResDTO;
 import com.web.travel.mapper.Mapper;
+import com.web.travel.model.Hotel;
 import com.web.travel.model.Order;
 import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.EPaymentMethod;
 import com.web.travel.utils.DateHandler;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class OrderResMapper implements Mapper {
@@ -20,6 +26,32 @@ public class OrderResMapper implements Mapper {
         dto.setAdults(order.getAdults());
         dto.setSpecialRequest(order.getSpecialRequest());
         dto.setChildren(order.getChildren());
+
+        HotelResDTO hotelDto = new HotelResDTO();
+        Hotel foundHotel = order.getHotel();
+        dto.setHotel(null);
+        if(foundHotel != null){
+            hotelDto.setName(foundHotel.getName());
+            hotelDto.setAddress(foundHotel.getAddress());
+            hotelDto.setIllustration(foundHotel.getIllustration());
+            hotelDto.setId(foundHotel.getId());
+            List<RoomResDTO> roomResDTOS = new ArrayList<>();
+
+            foundHotel.getRooms().forEach(room -> {
+                RoomResDTO roomResDTO = new RoomResDTO();
+                roomResDTO.setId(room.getId());
+                switch (room.getType()){
+                    case TYPE_MEDIUM -> roomResDTO.setType("Trung bình");
+                    case TYPE_NORMAL -> roomResDTO.setType("Bình thường");
+                    case TYPE_VIP -> roomResDTO.setType("Vip");
+                }
+                roomResDTO.setPrice(room.getPrice());
+                roomResDTOS.add(roomResDTO);
+            });
+
+            hotelDto.setRooms(roomResDTOS);
+            dto.setHotel(hotelDto);
+        }
 
         TourResMapper tourMapper = new TourResMapper();
         TourResDTO tourDto = (TourResDTO) tourMapper.mapToDTO(order.getTour());
