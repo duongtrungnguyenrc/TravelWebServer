@@ -90,6 +90,7 @@ public class TourDetailResMapper implements Mapper {
                 HotelResDTO hotelResDTO = new HotelResDTO();
                 hotelResDTO.setId(hotel.getId());
                 hotelResDTO.setName(hotel.getName());
+                hotelResDTO.setIllustration(hotel.getIllustration());
                 hotelResDTO.setAddress(hotel.getAddress());
                 List<RoomResDTO> roomResDTOS = new ArrayList<>();
                 hotel.getRooms().forEach(

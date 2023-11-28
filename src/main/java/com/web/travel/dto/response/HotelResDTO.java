@@ -14,5 +14,6 @@ public class HotelResDTO {
     private Long id;
     private String name;
     private String address;
+    private String illustration;
     private List<RoomResDTO> rooms;
 }
