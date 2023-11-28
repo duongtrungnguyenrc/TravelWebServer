@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -109,13 +110,18 @@ public class RateService {
 
                 Rate updatedRate = rateRepository.save(needUpdateRate);
                 RateResMapper mapper = new RateResMapper();
+                Map<String, Object> response = new HashMap<>();
                 RateResDTO dto = (RateResDTO) mapper.mapToDTO(updatedRate);
                 dto.setActive(true);
+                response.put(
+                        "rateUpdated",
+                        dto
+                );
                 return new ResDTO(
                         HttpServletResponse.SC_OK,
                         true,
                         "Cập nhật đánh giá thành công!",
-                        dto
+                        response
                 );
             }
             return new ResDTO(
