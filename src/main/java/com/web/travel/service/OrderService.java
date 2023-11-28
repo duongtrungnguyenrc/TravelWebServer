@@ -1,6 +1,7 @@
 package com.web.travel.service;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.dto.request.common.OrderUpdateReqDTO;
 import com.web.travel.dto.response.OrderDetailResDTO;
 import com.web.travel.mapper.request.OrderReqMapper;
@@ -66,12 +67,12 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
-    public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody CreatePaymentRequest body) throws UnsupportedEncodingException {
-        long amount = (long) Math.round(body.getOrder().getAmount());
+    public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
+        long amount = (long) Math.round(body.getAmount());
         String ipAddress = request.getRemoteAddr();
 
-        Order order = (Order) orderReqMapper.mapToObject(body.getOrder());
-        order.setTotalPrice(body.getOrder().getAmount());
+        Order order = (Order) orderReqMapper.mapToObject(body);
+        order.setTotalPrice(body.getAmount());
 
         if(order.getTourDate().getDepartDate().getTime() >= order.getOrderDate().getTime()) {
             if (order.getTourDate().canBook(order.getAdults())) {
@@ -97,7 +98,7 @@ public class OrderService {
                         null
                 );
 
-                if (body.getOrder().getPaymentMethod().equals("vnpay")) {
+                if (body.getPaymentMethod().equals("vnpay")) {
                     response = vnPayService.createPayment(amount, ipAddress, orderId);
                 } else {
                     emailService.sendOrderedEmail(order, false);

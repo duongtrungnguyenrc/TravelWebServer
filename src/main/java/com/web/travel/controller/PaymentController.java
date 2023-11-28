@@ -1,6 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.mapper.request.OrderReqMapper;
 import com.web.travel.model.ContactInfo;
 import com.web.travel.model.Order;
@@ -31,7 +32,7 @@ public class PaymentController {
     @Autowired
     EmailService emailService;
     @PostMapping("/create_payment")
-    public ResponseEntity<?> createPayment(Principal principal, HttpServletRequest request, @RequestBody CreatePaymentRequest body) throws UnsupportedEncodingException {
+    public ResponseEntity<?> createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
         return ResponseEntity.ok(
                 orderService.createPayment(principal, request, body)
         );
