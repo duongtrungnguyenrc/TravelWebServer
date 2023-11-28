@@ -158,7 +158,7 @@
                                 <span><b>Người lớn:</b></span> 
                             </td>
                             <td style="text-align: end;">
-                                <span>${adults}</span>
+                                <span>${adults} x <span style="color: #c7923e; font-weight: bold;">${adultPrice} VNĐ</span></span>
                             </td>
                         </tr>
                         <tr>
@@ -166,7 +166,7 @@
                                 <span><b>Trẻ em:</b></span> 
                             </td>
                             <td style="text-align: end;">
-                                <span>${children}</span>
+                                <span>${children} x <span style="color: #c7923e; font-weight: bold;">${childrenPrice} VNĐ</span></span>
                             </td>
                         </tr>
                         <tr>
@@ -213,6 +213,31 @@
                             <td class="title">Quốc gia:</td>
                             <td style="text-align: end;">${nation}</td>
                         </tr>
+                        <tr>
+                            <td colspan="2" style="padding-top: 20px;"><hr></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h3>Dịch vụ thêm</h3> 
+                            </td>
+                        </tr>
+                        <#if hotelName != "null">
+                            <tr>
+                                <td colspan="2">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="width: 100px;">
+                                                <img style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px;" src="${hotelImg}"alt="hotel">
+                                            </td>
+                                            <td style="text-align: end;">
+                                                <p><b>${hotelName}</b></p>
+                                                <p style="margin-top: 10px;"><span style="color: #c7923e;"><b>${hotelPrice} VNĐ</b></span></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </#if>
                         <tr>
                             <td colspan="2" style="padding-top: 20px;"><hr></td>
                         </tr>

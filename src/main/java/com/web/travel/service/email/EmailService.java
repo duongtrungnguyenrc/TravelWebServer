@@ -6,9 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.model.Hotel;
 import com.web.travel.model.Order;
+import com.web.travel.model.Room;
+import com.web.travel.model.TourDate;
 import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.EPaymentMethod;
+import com.web.travel.model.enumeration.ERoom;
 import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.repository.BlogRepository;
 import com.web.travel.repository.TourBlogRepository;
@@ -166,6 +170,26 @@ public class EmailService {
         model.put("adults", order.getAdults());
         model.put("specialRequest", order.getSpecialRequest());
         model.put("children", order.getChildren());
+
+        TourDate tourDate = order.getTourDate();
+        model.put("adultPrice", tourDate.getAdultPrice());
+        model.put("childrenPrice", tourDate.getChildPrice());
+        Hotel orderHotel = order.getHotel();
+        model.put("hotelName", "null");
+        model.put("hotelImg", "null");
+        model.put("hotelPrice", 0);
+        if(orderHotel != null){
+            model.put("hotelName", order.getHotel().getName());
+            model.put("hotelImg", orderHotel.getIllustration() == null ? "" : orderHotel.getIllustration());
+            Room room = orderHotel.getRooms().stream().filter(
+                    item -> item.getType().equals(ERoom.valueOf("TYPE_" + order.getRoomType().toUpperCase()))
+            ).findFirst().orElse(null);
+
+            model.put("hotelPrice",
+                    room != null ? order.getTotalPeople() * room.getPrice() : 0
+            );
+        }
+
 
         blogRepository.findByTour(order.getTour()).ifPresent((blog) -> {
             model.put("tourImage", blog.getBlog().getBackgroundImg());
