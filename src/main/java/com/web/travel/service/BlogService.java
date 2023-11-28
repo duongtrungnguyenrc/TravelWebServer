@@ -233,7 +233,7 @@ public class BlogService {
                 HttpServletResponse.SC_BAD_REQUEST,
                 false,
                 "Update blog failed",
-                oldBlog.getId()
+                null
         );
     }
 

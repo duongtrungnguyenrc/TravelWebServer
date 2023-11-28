@@ -16,24 +16,18 @@ import java.util.stream.Collectors;
 @Data
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
-
     private Long id;
-
     private String fullName;
-
     private String address;
-
     private String email;
     @JsonIgnore
     private String password;
-
     private String phone;
-
     private String active;
-
+    private String avatar;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String fullName, String address, String email, String password, String phone, String active, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String fullName, String avatar, String address, String email, String password, String phone, String active, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.fullName = fullName;
         this.address = address;
@@ -42,6 +36,7 @@ public class UserDetailsImpl implements UserDetails {
         this.phone = phone;
         this.authorities = authorities;
         this.active = active;
+        this.avatar = avatar;
     }
 
     public static UserDetailsImpl build(User user) {
@@ -52,6 +47,7 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getFullName(),
+                user.getAvatar(),
                 user.getAddress(),
                 user.getEmail(),
                 user.getPassword(),
@@ -64,33 +60,14 @@ public class UserDetailsImpl implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
-
-    public Long getId() {
-        return id;
-    }
-
     @Override
     public String getPassword() {
         return password;
     }
-
     @Override
     public String getUsername() {
         return email;
     }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;

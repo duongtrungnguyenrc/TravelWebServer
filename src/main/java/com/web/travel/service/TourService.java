@@ -11,11 +11,13 @@ import com.web.travel.mapper.request.TourParagraphsAddingMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourResMapper;
 import com.web.travel.model.*;
+import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.ETourType;
 import com.web.travel.repository.*;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FileUploadServiceImpl;
+import com.web.travel.utils.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -41,7 +44,11 @@ public class TourService {
     @Autowired
     CustomTourRepository customTourRepository;
     @Autowired
+    OrderRepository orderRepository;
+    @Autowired
     FileUploadServiceImpl fileUploadService;
+    @Autowired
+    UserService userService;
     @Autowired
     TourAddingReqMapper tourAddingRequestMapper;
     @Autowired
@@ -141,7 +148,7 @@ public class TourService {
     public long getCount(){
         return tourRepository.count();
     }
-    public Object getResponseTourById(Long id){
+    public Object getResponseTourById(Principal principal, Long id){
         Tour tour = tourRepository.findById(id).orElse(null);
         if(tour != null && (tour.getIsRemoved() == null || !tour.getIsRemoved())){
             List<TourResDTO> relevantTours = getRelevantToursByDestination(tour.getDepart(), tour.getDestination(), 5);
@@ -159,7 +166,9 @@ public class TourService {
 
             TourBlog tourBlog = tourBlogRepository.findByTour(tour).orElse(new TourBlog());
             Blog blog = tourBlog.getBlog();
-            List<Paragraph> paragraphs = (List<Paragraph>) blog.getParagraphs();
+            List<Paragraph> paragraphs = new ArrayList<>();
+            if(blog != null)
+                paragraphs = (List<Paragraph>) blog.getParagraphs();
             paragraphs.sort(new Comparator<Paragraph>() {
                 @Override
                 public int compare(Paragraph o1, Paragraph o2) {
@@ -183,7 +192,22 @@ public class TourService {
             result.put("relevantTours", relevantTours);
             result.put("price", priceStartFrom);
 
-            return (TourDetailResDTO) mapper.mapToDTO(result);
+            TourDetailResDTO response = (TourDetailResDTO) mapper.mapToDTO(result);
+            response.setRatingAcceptance(false);
+
+            if(principal != null){
+                User foundUser = userService.getUserObjectByEmail(principal.getName());
+                List<Order> userOrders = orderRepository.findByUserAndTour(foundUser, tour);
+
+                for (Order order : userOrders) {
+                    if((order.getTourDate().getDepartDate().getTime() <= DateHandler.getCurrentDateTime().getTime()) &&
+                            order.getStatus() == EOrderStatus.STATUS_ORDERED){
+                        response.setRatingAcceptance(true);
+                        break;
+                    }
+                }
+            }
+            return response;
         }
         return null;
     }

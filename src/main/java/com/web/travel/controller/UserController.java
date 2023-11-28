@@ -2,12 +2,16 @@ package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.UserByEmailReqDTO;
+import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
 import com.web.travel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/user")
@@ -29,5 +33,30 @@ public class UserController {
                         "User not found with email: " + user.getEmail(),
                         null)
         );
+    }
+
+    @PostMapping("/update")
+    private ResponseEntity<?> updateUserInfo(Principal principal, @RequestBody UserUpdateReqDTO userDto){
+        ResDTO response = service.updateUserInfo(principal, userDto);
+
+        if(response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("/status/{status}")
+    private ResponseEntity<?> updateUserStatus(Principal principal, @PathVariable boolean status){
+        ResDTO response = service.updateUserStatus(principal, status);
+        if(response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("/avatar")
+    private ResponseEntity<?> updateUserAvatar(Principal principal, @RequestParam MultipartFile avatar){
+        ResDTO response = service.updateUserAvatar(principal, avatar);
+        if(response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
     }
 }

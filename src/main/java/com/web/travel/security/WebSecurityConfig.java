@@ -69,25 +69,31 @@ public class WebSecurityConfig {
                                         response.setContentType("application/json");
                                         response.setCharacterEncoding("utf8");
                                         response.getWriter().write(
-                                                "{\"code\": 403, " +
-                                                        "\"status\": false, " +
-                                                        "\"message\": " +
-                                                        "\"Bạn không có quyền truy cập tài nguyên này!\", " +
-                                                        "\"data\": {" +
-                                                        "\"path\": \"" + request.getServletPath() + "\"," +
-                                                        "\"error\": \"Access denied\"" +
-                                                        "}}"
+                                        "{\"code\": 403, " +
+                                                "\"status\": false, " +
+                                                "\"message\": " +
+                                                "\"Bạn không có quyền truy cập tài nguyên này!\", " +
+                                                "\"data\": {" +
+                                                "\"path\": \"" + request.getServletPath() + "\"," +
+                                                "\"error\": \"Access denied\"" +
+                                                "}}"
                                         );
                                     }
                                 })
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                    auth
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST,"/api/rate", "/api/rate/update", "api/rate/delete/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/order").authenticated()
-                        .anyRequest().permitAll()
+                        auth
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.POST,
+                                    "/api/rate",
+                                    "/api/rate/update",
+                                    "/api/rate/delete/**",
+                                    "/api/user/update",
+                                    "/api/user/status/**",
+                                    "/api/user/avatar").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/api/order").authenticated()
+                            .anyRequest().permitAll()
                 );
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

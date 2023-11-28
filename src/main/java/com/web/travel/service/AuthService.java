@@ -105,6 +105,7 @@ public class AuthService {
         signInResponse.setId(userDetails.getId());
         signInResponse.setEmail(userDetails.getEmail());
         signInResponse.setAddress(userDetails.getAddress());
+        signInResponse.setAvatar(userDetails.getAvatar());
         signInResponse.setActive(
                 userDetails.getActive().equals(EUserStatus.STATUS_ACTIVATED.name())
         );

@@ -3,6 +3,7 @@ package com.web.travel.service;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.RateReqDTO;
 import com.web.travel.dto.request.common.RateUpdateReqDTO;
+import com.web.travel.dto.response.ListTourResDTO;
 import com.web.travel.dto.response.RateResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.RateReqMapper;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class RateService {
@@ -45,16 +48,32 @@ public class RateService {
             Map<String, Object> response = new HashMap<>();
             response.put("pages", ratesPage.getTotalPages());
 
-            List<RateResDTO> rates = ratesPage.get().map(rate -> {
+            List<RateResDTO> rates;
+            Stream<Rate> rateStream;
+
+            if(principal != null){
+                List<Rate> preHandlingRates = new ArrayList<>(ratesPage.get().toList());
+                List<Rate> userRates = new ArrayList<>(preHandlingRates.stream().filter(rate ->
+                            rate.getUser().getEmail() != null && rate.getUser().getEmail().equals(principal.getName())
+                ).toList());
+                preHandlingRates.removeAll(userRates);
+                userRates.addAll(preHandlingRates);
+
+                rateStream = userRates.stream();
+            }else{
+                rateStream = ratesPage.get();
+            }
+
+            rates = rateStream.map(rate -> {
                 RateResMapper mapper = new RateResMapper();
                 RateResDTO dto = (RateResDTO) mapper.mapToDTO(rate);
                 dto.setActive(
-                        principal != null && principal.getName().equals(dto.getEmail())
+                    (principal != null && principal.getName().equals(dto.getEmail()))
                 );
                 return dto;
             }).toList();
-            response.put("rates", rates);
 
+            response.put("rates", rates);
             return response;
         }
         return null;

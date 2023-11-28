@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.logging.Logger;
 
 @RestController
@@ -36,7 +37,6 @@ public class TourController {
                         tourService.getTourDTOListGroupByType())
         );
     }
-
     @GetMapping("/type")
     public ResponseEntity<?> getListTourByType(@RequestParam(name = "type") String type){
         return ResponseEntity.ok(
@@ -48,8 +48,8 @@ public class TourController {
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<?> getTourDetail(@RequestParam("id") Long id){
-        Object response = tourService.getResponseTourById(id);
+    public ResponseEntity<?> getTourDetail(Principal principal, @RequestParam("id") Long id){
+        Object response = tourService.getResponseTourById(principal, id);
         String message = "";
 
         message = response == null ? "Tour không tồn tại!" : "Lấy tour thành công!";

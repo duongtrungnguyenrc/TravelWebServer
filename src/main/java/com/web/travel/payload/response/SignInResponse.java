@@ -14,6 +14,7 @@ public class SignInResponse {
     private String tokenType = "Bearer";
     private Long id;
     private String email;
+    private String avatar;
     private String address;
     private String fullName;
     private String phone;

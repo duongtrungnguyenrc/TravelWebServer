@@ -25,6 +25,7 @@ public class TourDetailResDTO {
     private int currentPeople;
     private String img;
     private TourBlogResDTO overview;
+    private boolean ratingAcceptance;
     private List<HotelResDTO> hotels;
     private List<ScheduleResDTO> schedules;
     private List<TourResDTO> relevantTours;

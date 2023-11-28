@@ -80,7 +80,8 @@ public class TourDetailResMapper implements Mapper {
             TourBlogResDTO tourBlogResDTO = new TourBlogResDTO();
             tourBlogResDTO.setId(tourBlog.getId());
             tourBlogResDTO.setParagraphs(paragraphDTO);
-            tourBlogResDTO.setBackgroundImage(blog.getBackgroundImg());
+            if(blog != null)
+                tourBlogResDTO.setBackgroundImage(blog.getBackgroundImg());
 
             tourDto.setOverview(tourBlogResDTO);
 

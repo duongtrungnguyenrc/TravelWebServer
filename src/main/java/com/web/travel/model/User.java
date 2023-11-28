@@ -25,10 +25,12 @@ public class User {
     @Column(length = 100)
     private String fullName;
     private String address;
+    private String avatar;
     @Email
     @Column(unique = true)
     private String email;
     @Column
+    @JsonIgnore
     private String password;
     @Column(length = 13)
     private String phone;
@@ -43,12 +45,15 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Collection<Order> orders;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Collection<Rate> rates;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Collection<DestinationBlog> destinationBlogs;
     public User(String fullName, String address, String email, String password, String phone) {
         this.fullName = fullName;
