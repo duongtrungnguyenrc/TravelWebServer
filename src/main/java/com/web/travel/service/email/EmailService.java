@@ -143,7 +143,7 @@ public class EmailService {
         return response;
     }
 
-    public MessageResponse sendOrderedEmail(Order order){
+    public MessageResponse sendOrderedEmail(Order order, boolean isOnline){
         MessageResponse response = new MessageResponse();
 
         MailRequest request = new MailRequest();
@@ -191,7 +191,10 @@ public class EmailService {
             //add attachment
             //helper.addAttachment("logo.jpg", new ClassPathResource("logo.jpg"));
             //render template
-            Template t = config.getTemplate("ordered/ordered-template.html");
+
+            Template t = config.getTemplate("ordered/unordered-template.html");
+            if(isOnline)
+                t = config.getTemplate("ordered/ordered-template.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
             helper.setTo(request.getTo());
             helper.setText(html, true);

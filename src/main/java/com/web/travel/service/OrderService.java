@@ -73,39 +73,49 @@ public class OrderService {
         Order order = (Order) orderReqMapper.mapToObject(body.getOrder());
         order.setTotalPrice(body.getAmount());
 
-        if(order.getTourDate().canBook(order.getAdults())){
-            if(principal != null)
-                order.setUser(userService.getUserObjectByEmail(principal.getName()));
+        if(order.getTourDate().getDepartDate().getTime() >= order.getOrderDate().getTime()) {
+            if (order.getTourDate().canBook(order.getAdults())) {
+                if (principal != null)
+                    order.setUser(userService.getUserObjectByEmail(principal.getName()));
 
-            int currentPeople = order.getTourDate().getCurrentPeople();
-            order.getTourDate().setCurrentPeople(currentPeople + order.getTotalPeople());
+                int currentPeople = order.getTourDate().getCurrentPeople();
+                order.getTourDate().setCurrentPeople(currentPeople + order.getTotalPeople());
 
-            tourDateRepository.save(order.getTourDate());
+                tourDateRepository.save(order.getTourDate());
 
-            ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());
-            Long contactInfoId = contactInfo.getId();
-            order.getContactInfo().setId(contactInfoId);
+                ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());
+                Long contactInfoId = contactInfo.getId();
+                order.getContactInfo().setId(contactInfoId);
 
-            Order savedOrder= saveOrder(order);
+                Order savedOrder = saveOrder(order);
 
-            long orderId = savedOrder.getId();
-            ResDTO response = new ResDTO(
-                    HttpServletResponse.SC_OK,
+                long orderId = savedOrder.getId();
+                ResDTO response = new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        "Đặt tour thành công!",
+                        null
+                );
+
+                if (body.getOrder().getPaymentMethod().equals("vnpay")) {
+                    response = vnPayService.createPayment(amount, ipAddress, orderId);
+                } else {
+                    emailService.sendOrderedEmail(order, false);
+                }
+
+                return response;
+            }
+            return new ResDTO(
+                    HttpServletResponse.SC_BAD_REQUEST,
                     true,
-                    "Đặt tour thành công!",
+                    "Tour đã đầy!",
                     null
             );
-
-            if(body.getOrder().getPaymentMethod().equals("vnpay")){
-                response = vnPayService.createPayment(amount, ipAddress, orderId);
-            }
-
-            return response;
         }
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 true,
-                "Tour đã đầy!",
+                "Ngày này đã đi rồi!",
                 null
         );
     }
@@ -161,7 +171,7 @@ public class OrderService {
                     response.put("status", order.getStatus());
 
                     if(needUpdateStatus == EOrderStatus.STATUS_ORDERED){
-                        emailService.sendOrderedEmail(getById(order.getId()));
+                        emailService.sendOrderedEmail(getById(order.getId()), true);
                     }
                     return new ResDTO(
                         HttpServletResponse.SC_OK,

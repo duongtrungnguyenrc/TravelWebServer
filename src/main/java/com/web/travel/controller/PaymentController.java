@@ -47,7 +47,7 @@ public class PaymentController {
         Order order = orderService.getById(orderId);
         if(responseCode.equals("00") || responseCode.equals("07")){
             order.setStatus(EOrderStatus.STATUS_ORDERED);
-            emailService.sendOrderedEmail(order);
+            emailService.sendOrderedEmail(order, true);
         }else{
             order.setStatus(EOrderStatus.STATUS_PENDING);
         }
