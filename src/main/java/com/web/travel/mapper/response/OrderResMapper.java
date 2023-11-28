@@ -18,6 +18,7 @@ public class OrderResMapper implements Mapper {
         dto.setId(order.getId());
         dto.setOrderDate(order.getOrderDate());
         dto.setAdults(order.getAdults());
+        dto.setSpecialRequest(order.getSpecialRequest());
         dto.setChildren(order.getChildren());
 
         TourResMapper tourMapper = new TourResMapper();

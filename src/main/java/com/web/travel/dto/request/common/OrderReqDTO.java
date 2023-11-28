@@ -20,5 +20,6 @@ public class OrderReqDTO {
     @JsonIgnore
     private double totalPrice;
     private long tourDateId;
+    private String specialRequest;
     private ContactInfo contactInfo;
 }

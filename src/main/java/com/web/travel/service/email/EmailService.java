@@ -164,6 +164,7 @@ public class EmailService {
         model.put("nation", order.getContactInfo().getCustomerNation());
         model.put("amount", order.getTotalPrice());
         model.put("adults", order.getAdults());
+        model.put("specialRequest", order.getSpecialRequest());
         model.put("children", order.getChildren());
 
         blogRepository.findByTour(order.getTour()).ifPresent((blog) -> {

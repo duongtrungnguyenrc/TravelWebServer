@@ -39,6 +39,7 @@ public class OrderReqMapper implements Mapper {
         order.setAdults(orderReqDTO.getAdults());
         order.setChildren(orderReqDTO.getChildren());
         order.setContactInfo(orderReqDTO.getContactInfo());
+        order.setSpecialRequest(orderReqDTO.getSpecialRequest());
         order.setOrderDate(DateHandler.getCurrentDateTime());
 
         tourDateRepository.findById(orderReqDTO.getTourDateId()).ifPresent(

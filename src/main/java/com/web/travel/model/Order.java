@@ -28,6 +28,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EOrderStatus status;
     private double totalPrice;
+    private String specialRequest;
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;

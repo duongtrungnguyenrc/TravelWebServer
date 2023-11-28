@@ -22,6 +22,7 @@ public class OrderDetailResDTO {
     private Date orderDate;
     private int adults;
     private int children;
+    private String specialRequest;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date departDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
