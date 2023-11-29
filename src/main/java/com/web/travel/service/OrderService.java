@@ -8,6 +8,7 @@ import com.web.travel.mapper.request.OrderReqMapper;
 import com.web.travel.mapper.response.OrderResMapper;
 import com.web.travel.model.ContactInfo;
 import com.web.travel.model.Order;
+import com.web.travel.model.TourDate;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.repository.OrderRepository;
@@ -73,49 +74,58 @@ public class OrderService {
         Order order = (Order) orderReqMapper.mapToObject(body);
         order.setTotalPrice(body.getAmount());
 
-        if(order.getTourDate().getDepartDate().getTime() >= order.getOrderDate().getTime()) {
-            if (order.getTourDate().canBook(order.getAdults())) {
-                if (principal != null)
-                    order.setUser(userService.getUserObjectByEmail(principal.getName()));
+        TourDate orderTourDate = order.getTourDate();
+        if(orderTourDate != null){
+            if(orderTourDate.getDepartDate().getTime() >= order.getOrderDate().getTime()) {
+                if (orderTourDate.canBook(order.getAdults())) {
+                    if (principal != null)
+                        order.setUser(userService.getUserObjectByEmail(principal.getName()));
 
-                int currentPeople = order.getTourDate().getCurrentPeople();
-                order.getTourDate().setCurrentPeople(currentPeople + order.getTotalPeople());
+                    int currentPeople = orderTourDate.getCurrentPeople();
+                    orderTourDate.setCurrentPeople(currentPeople + order.getTotalPeople());
 
-                tourDateRepository.save(order.getTourDate());
+                    tourDateRepository.save(orderTourDate);
 
-                ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());
-                Long contactInfoId = contactInfo.getId();
-                order.getContactInfo().setId(contactInfoId);
+                    ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());
+                    Long contactInfoId = contactInfo.getId();
+                    order.getContactInfo().setId(contactInfoId);
 
-                Order savedOrder = saveOrder(order);
+                    Order savedOrder = saveOrder(order);
 
-                long orderId = savedOrder.getId();
-                ResDTO response = new ResDTO(
-                        HttpServletResponse.SC_OK,
+                    long orderId = savedOrder.getId();
+                    ResDTO response = new ResDTO(
+                            HttpServletResponse.SC_OK,
+                            true,
+                            "Đặt tour thành công!",
+                            null
+                    );
+
+                    if (body.getPaymentMethod().equals("vnpay")) {
+                        response = vnPayService.createPayment(amount, ipAddress, orderId);
+                    } else {
+                        emailService.sendOrderedEmail(order, false);
+                    }
+
+                    return response;
+                }
+                return new ResDTO(
+                        HttpServletResponse.SC_BAD_REQUEST,
                         true,
-                        "Đặt tour thành công!",
+                        "Tour đã đầy!",
                         null
                 );
-
-                if (body.getPaymentMethod().equals("vnpay")) {
-                    response = vnPayService.createPayment(amount, ipAddress, orderId);
-                } else {
-                    emailService.sendOrderedEmail(order, false);
-                }
-
-                return response;
             }
             return new ResDTO(
                     HttpServletResponse.SC_BAD_REQUEST,
                     true,
-                    "Tour đã đầy!",
+                    "Ngày này đã đi rồi!",
                     null
             );
         }
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 true,
-                "Ngày này đã đi rồi!",
+                "Vui lòng nhập mã ngày tour!",
                 null
         );
     }

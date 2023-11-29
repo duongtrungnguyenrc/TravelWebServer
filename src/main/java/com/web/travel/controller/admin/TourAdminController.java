@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/admin/tour")
-@CrossOrigin(originPatterns = "*")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class TourAdminController {
     private final TourService tourService;

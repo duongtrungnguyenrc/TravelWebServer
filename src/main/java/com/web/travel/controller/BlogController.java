@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/blog")
+@CrossOrigin(origins = "*")
 public class BlogController {
     @Autowired
     BlogService blogService;

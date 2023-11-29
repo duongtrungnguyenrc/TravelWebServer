@@ -15,6 +15,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/payment")
+@CrossOrigin(origins = "*")
 public class PaymentController {
     @Autowired
     OrderService orderService;

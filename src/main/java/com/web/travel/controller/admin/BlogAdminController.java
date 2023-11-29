@@ -11,6 +11,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api/admin/blog")
+@CrossOrigin(origins = "*")
 public class BlogAdminController {
     @Autowired
     BlogService blogService;

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/admin/hotel")
-@CrossOrigin(originPatterns = "*")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class HotelAdminController {
     private final HotelService hotelService;
