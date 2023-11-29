@@ -195,38 +195,41 @@ public class AuthService {
         String[] jwtSubjects = jwtUtils.getTokenSubject(token).split(":");
         String code = jwtSubjects[1];
         String email = jwtSubjects[0];
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("valid", false);
         if(code.equals(confirmCode)){
             if(resetPasswordTokenIsValid(token)){
                 User user = userRepository.findByEmail(email).orElse(null);
                 if(user != null){
                     user.setActive(EUserStatus.STATUS_ACTIVATED);
                     userRepository.save(user);
+                    response.put("valid", true);
                     return new ResDTO(
                             HttpServletResponse.SC_OK,
                             true,
                             "Confirmation code is valid",
-                            null
+                            response
                     );
                 }
                 return new ResDTO(
                         HttpServletResponse.SC_BAD_REQUEST,
                         false,
                         "Can't found user with email: " + email,
-                        null
+                        response
                 );
             }
             return new ResDTO(
                     HttpServletResponse.SC_BAD_REQUEST,
                     false,
                     "Confirmation code is expired",
-                    null
+                    response
             );
         }
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 false,
                 "Confirmation code is not correct",
-                null
+                response
         );
     }
 }

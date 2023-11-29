@@ -3,6 +3,8 @@ package com.web.travel.service;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
+import com.web.travel.dto.response.UserResDTO;
+import com.web.travel.mapper.response.UserDetailResMapper;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.EUserStatus;
 import com.web.travel.repository.UserRepository;
@@ -38,11 +40,14 @@ public class UserService {
             foundUser.setAddress(userDto.getAddress());
             foundUser.setFullName(userDto.getFullName());
             foundUser.setPhone(userDto.getPhone());
+
+            UserDetailResMapper mapper = new UserDetailResMapper();
+            UserResDTO response = (UserResDTO) mapper.mapToDTO(userRepository.save(foundUser));
             return new ResDTO(
                     HttpServletResponse.SC_OK,
                     true,
                     "Cập nhật thông tin thành công!",
-                    userRepository.save(foundUser)
+                    response
             );
         }
         return new ResDTO(
@@ -59,11 +64,13 @@ public class UserService {
             EUserStatus userStatus = status ? EUserStatus.STATUS_ACTIVATED : EUserStatus.STATUS_NOT_ACTIVATED;
             foundUser.setActive(userStatus);
 
+            UserDetailResMapper mapper = new UserDetailResMapper();
+            UserResDTO response = (UserResDTO) mapper.mapToDTO(userRepository.save(foundUser));
             return new ResDTO(
                     HttpServletResponse.SC_OK,
                     true,
                     status ? "Mở tài khoản thành công" : "Vô hiệu hóa tài khoản thành công!",
-                    userRepository.save(foundUser)
+                    response
             );
         }
         return new ResDTO(

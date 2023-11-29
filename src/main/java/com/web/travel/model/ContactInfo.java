@@ -23,13 +23,11 @@ public class ContactInfo {
     @Email
     private String customerEmail;
     private String customerAddress;
-    private String customerNation;
 
-    public ContactInfo(String customerFullName, String customerPhone, String customerEmail, String customerAddress, String customerNation) {
+    public ContactInfo(String customerFullName, String customerPhone, String customerEmail, String customerAddress) {
         this.customerFullName = customerFullName;
         this.customerPhone = customerPhone;
         this.customerEmail = customerEmail;
         this.customerAddress = customerAddress;
-        this.customerNation = customerNation;
     }
 }

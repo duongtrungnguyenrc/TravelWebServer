@@ -110,21 +110,21 @@ public class OrderService {
                 }
                 return new ResDTO(
                         HttpServletResponse.SC_BAD_REQUEST,
-                        true,
+                        false,
                         "Tour đã đầy!",
                         null
                 );
             }
             return new ResDTO(
                     HttpServletResponse.SC_BAD_REQUEST,
-                    true,
+                    false,
                     "Ngày này đã đi rồi!",
                     null
             );
         }
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
-                true,
+                false,
                 "Vui lòng nhập mã ngày tour!",
                 null
         );

@@ -165,7 +165,6 @@ public class EmailService {
         model.put("phone", order.getContactInfo().getCustomerPhone());
         model.put("email", order.getContactInfo().getCustomerEmail());
         model.put("address", order.getContactInfo().getCustomerAddress());
-        model.put("nation", order.getContactInfo().getCustomerNation());
         model.put("amount", order.getTotalPrice());
         model.put("adults", order.getAdults());
         model.put("specialRequest", order.getSpecialRequest());
