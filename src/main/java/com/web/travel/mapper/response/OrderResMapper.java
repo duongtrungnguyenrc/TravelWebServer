@@ -41,9 +41,9 @@ public class OrderResMapper implements Mapper {
                 RoomResDTO roomResDTO = new RoomResDTO();
                 roomResDTO.setId(room.getId());
                 switch (room.getType()){
-                    case TYPE_MEDIUM -> roomResDTO.setType("medium");
-                    case TYPE_NORMAL -> roomResDTO.setType("normal");
-                    case TYPE_VIP -> roomResDTO.setType("vip");
+                    case TYPE_MEDIUM -> roomResDTO.setType("Trung bình");
+                    case TYPE_NORMAL -> roomResDTO.setType("Bình thường");
+                    case TYPE_VIP -> roomResDTO.setType("Vip");
                 }
                 roomResDTO.setPrice(room.getPrice());
                 roomResDTOS.add(roomResDTO);

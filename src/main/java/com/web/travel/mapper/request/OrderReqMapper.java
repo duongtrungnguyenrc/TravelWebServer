@@ -40,7 +40,12 @@ public class OrderReqMapper implements Mapper {
         }
         Order order = new Order();
         order.setAdults(orderReqDTO.getAdults());
-        order.setRoomType(orderReqDTO.getRoomType());
+        order.setRoomType("normal");
+        switch (orderReqDTO.getRoomType()){
+            case "Trung bình" -> order.setRoomType("medium");
+            case "Bình thường" -> order.setRoomType("normal");
+            case "Vip" -> order.setRoomType("vip");
+        }
         order.setChildren(orderReqDTO.getChildren());
         order.setContactInfo(orderReqDTO.getContactInfo());
         order.setSpecialRequest(orderReqDTO.getSpecialRequest());
