@@ -12,10 +12,8 @@ import com.web.travel.model.*;
 import com.web.travel.model.enumeration.EStatus;
 import com.web.travel.repository.BlogRepository;
 import com.web.travel.repository.DestinationBlogRepository;
-import com.web.travel.repository.ParagraphImgRepository;
 import com.web.travel.repository.ParagraphRepository;
 import com.web.travel.repository.custom.CustomDestinationBlogRepository;
-import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FilesValidation;
 import com.web.travel.service.interfaces.FileUploadService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,8 +41,6 @@ public class BlogService {
     FileUploadService fileUploadService;
     @Autowired
     ParagraphRepository paragraphRepository;
-    @Autowired
-    ParagraphImgRepository paragraphImgRepository;
     @Autowired
     DesBlogDetailResMapper desBlogDetailResMapper;
     @Autowired
@@ -122,13 +118,14 @@ public class BlogService {
         DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
 
         String backgroundImg = "";
-        List<ParagraphImg> paragraphImgs = new ArrayList<>();
+
         try{
             backgroundImg = fileUploadService.uploadFile(thumbnail);
             List<String> fileNames = null;
             if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
                 fileNames = fileUploadService.uploadMultiFile(images);
             }
+
 
             List<Paragraph> addedParagraph = blog
                     .getBlog()
@@ -137,14 +134,11 @@ public class BlogService {
 
             if(fileNames != null && fileNames.size() <= addedParagraph.size()) {
                 for (int i = 0; i < fileNames.size(); i++) {
-                    ParagraphImg paragraphImg = new ParagraphImg();
-
-                    paragraphImg.setImg(fileNames.get(i));
-                    paragraphImg.setName(blogDto.getParagraphs().get(i).getImageName());
-                    paragraphImg.setParagraph(addedParagraph.get(i));
-                    paragraphImgRepository.save(paragraphImg);
+                    addedParagraph.get(i).setImgSrc(fileNames.get(i));
+                    addedParagraph.get(i).setImgName(blogDto.getParagraphs().get(i).getImageName());
                 }
             }
+
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -172,53 +166,51 @@ public class BlogService {
 
             Collection<Paragraph> paragraphs = oldBlog.getBlog().getParagraphs();
 
-            for (Paragraph paragraph : paragraphs) {
-                Optional<ParagraphImg> paragraphImg = paragraphImgRepository.findByParagraph(paragraph);
-                paragraphImg.ifPresent(paragraphImgRepository::delete);
-            }
             Blog myBlog = oldBlog.getBlog();
             paragraphs.clear();
             oldBlog.setTitle(blog.getTitle());
             oldBlog.setType(blog.getType());
-            //blogRepository.deleteByBlogId(oldBlog.getBlog().getId());
             oldBlog.setBlog(blog.getBlog());
+            oldBlog.getBlog().setBackgroundImg(myBlog.getBackgroundImg());
             blogRepository.delete(myBlog);
 
-            String backgroundImg = "";
-            List<ParagraphImg> paragraphImgs = new ArrayList<>();
+            String backgroundImg = null;
             try{
-                backgroundImg = fileUploadService.uploadFile(thumbnail);
+                if(!Objects.requireNonNull(thumbnail.getOriginalFilename()).isEmpty()) {
+                    backgroundImg = fileUploadService.uploadFile(thumbnail);
+                }
                 List<String> fileNames = null;
                 if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
                     fileNames = fileUploadService.uploadMultiFile(images);
                 }
 
-                //oldBlog.getBlog().getParagraphs().clear();
                 List<Paragraph> updateParagraph = blog
                         .getBlog()
                         .getParagraphs()
                         .stream().toList();
+
+
+                if(fileNames != null && fileNames.size() <= updateParagraph.size()) {
+                    for (int i = 0; i < updateParagraph.size(); i++) {
+                       if(i < fileNames.size()){
+                           updateParagraph.get(i).setImgSrc(fileNames.get(i));
+                       }else{
+                           updateParagraph.get(i).setImgSrc(blogDto.getParagraphs().get(i).getOldImage());
+                       }
+                    }
+                }
 
                 updateParagraph.forEach(paragraph ->{
                     paragraph.setBlog(blog.getBlog());
                     paragraphRepository.save(paragraph);
                 });
 
-                if(fileNames != null && fileNames.size() <= updateParagraph.size()) {
-                    for (int i = 0; i < fileNames.size(); i++) {
-                        ParagraphImg paragraphImg = new ParagraphImg();
-
-                        paragraphImg.setImg(fileNames.get(i));
-                        paragraphImg.setName(blogDto.getParagraphs().get(i).getImageName());
-                        paragraphImg.setParagraph(updateParagraph.get(i));
-                        paragraphImgRepository.save(paragraphImg);
-                    }
-                }
             }catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            oldBlog.getBlog().setBackgroundImg(backgroundImg);
+            if(backgroundImg != null)
+                oldBlog.getBlog().setBackgroundImg(backgroundImg);
 
             desRepository.save(oldBlog);
 
@@ -240,12 +232,6 @@ public class BlogService {
     public ResDTO deleteBlog(Long id) {
         DestinationBlog delBlog = desRepository.findById(id).orElse(null);
         if (delBlog != null) {
-            Collection<Paragraph> paragraphs = delBlog.getBlog().getParagraphs();
-
-            for (Paragraph paragraph : paragraphs) {
-                Optional<ParagraphImg> paragraphImg = paragraphImgRepository.findByParagraph(paragraph);
-                paragraphImg.ifPresent(paragraphImgRepository::delete);
-            }
             desRepository.delete(delBlog);
             return new ResDTO(
                     HttpServletResponse.SC_OK,

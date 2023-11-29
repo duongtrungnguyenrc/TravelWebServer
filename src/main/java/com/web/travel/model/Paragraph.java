@@ -20,6 +20,8 @@ public class Paragraph {
     private String content;
     @Column(name = "paragraphOrder")
     private Integer order;
+    private String imgName;
+    private String imgSrc;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "blogId")
     @EqualsAndHashCode.Exclude

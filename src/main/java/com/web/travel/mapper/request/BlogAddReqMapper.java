@@ -42,7 +42,7 @@ public class BlogAddReqMapper implements Mapper {
             para.setBlog(parentBlog);
             para.setOrder(paragraphAddingDTO.getOrder());
             para.setContent(paragraphAddingDTO.getContent());
-
+            para.setImgName(paragraphAddingDTO.getImageName());
             paragraphs.add(para);
         });
 

@@ -17,6 +17,7 @@ import com.web.travel.repository.*;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FileUploadServiceImpl;
+import com.web.travel.service.cloudinary.FilesValidation;
 import com.web.travel.utils.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,8 +41,6 @@ public class TourService {
     @Autowired
     TourBlogRepository tourBlogRepository;
     @Autowired
-    ParagraphImgRepository paragraphImgRepository;
-    @Autowired
     CustomTourRepository customTourRepository;
     @Autowired
     OrderRepository orderRepository;
@@ -53,6 +52,8 @@ public class TourService {
     TourAddingReqMapper tourAddingRequestMapper;
     @Autowired
     BlogRepository blogRepository;
+    @Autowired
+    FilesValidation filesValidation;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourGeneralResDTO> list = new ArrayList<>();
@@ -178,17 +179,12 @@ public class TourService {
                 }
             });
             List<Schedule> schedules = (List<Schedule>) tour.getSchedules();
-            Map<Long, ParagraphImg> paragraphImgMap = new HashMap<>();
-            paragraphs.forEach(paragraph -> {
-                paragraphImgMap.put(paragraph.getId(), paragraphImgRepository.findByParagraph(paragraph).orElse(new ParagraphImg()));
-            });
 
             result.put("blog", blog);
             result.put("tour", tour);
             result.put("tourBlog", tourBlog);
             result.put("paragraphs", paragraphs);
             result.put("schedules", schedules);
-            result.put("images", paragraphImgMap);
             result.put("relevantTours", relevantTours);
             result.put("price", priceStartFrom);
 
@@ -301,14 +297,9 @@ public class TourService {
 
         if(paragraphImages != null && paragraphImages.size() <= needAddParagraphs.size()){
             for (int i = 0; i < paragraphImages.size(); i++){
-                ParagraphImg paragraphImg = new ParagraphImg();
-
-                paragraphImg.setImg(paragraphImages.get(i));
-                paragraphImg.setName(tour.getParagraphs().get(i).getImageName());
-
-                paragraphImg.setParagraph(addedParagraph.get(i));
-
-                paragraphImgRepository.save(paragraphImg);
+                addedParagraph.get(i).setImgName(tour.getParagraphs().get(i).getImageName());
+                addedParagraph.get(i).setImgSrc(paragraphImages.get(i));
+                paragraphRepository.save(addedParagraph.get(i));
             }
         }
 
@@ -337,8 +328,10 @@ public class TourService {
                 String thumbnailName = null;
                 List<String> paragraphImages = null;
                 try {
-                    thumbnailName = fileUploadService.uploadFile(thumbnail);
-                    paragraphImages = fileUploadService.uploadMultiFile(images);
+                    if(!Objects.requireNonNull(thumbnail.getOriginalFilename()).isEmpty()) {
+                        thumbnailName = fileUploadService.uploadFile(thumbnail);
+                    }
+                        paragraphImages = fileUploadService.uploadMultiFile(images);
                 }catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
@@ -346,15 +339,8 @@ public class TourService {
                 TourBlog needUpdateTourBlog = tourBlogRepository.findByTour(foundTour).orElse(null);
 
                 if(needUpdateTourBlog != null){
-
                     needUpdateTourBlog.getBlog().setBackgroundImg(thumbnailName);
-
-                    needUpdateTourBlog.getBlog().getParagraphs().forEach(paragraph -> {
-                        paragraphImgRepository.deleteByParagraphId(paragraph.getId());
-                    });
-
                     needUpdateTourBlog.getBlog().getParagraphs().clear();
-
                     newParagraphs.forEach(paragraph -> {
                         paragraph.setBlog(needUpdateTourBlog.getBlog());
                     });
@@ -364,17 +350,14 @@ public class TourService {
 
                 if(paragraphImages != null && paragraphImages.size() <= newParagraphs.size()){
                     for(int i = 0; i < newParagraphs.size(); i++){
-                        ParagraphImg paragraphImg = new ParagraphImg();
-
                         if(i < paragraphImages.size()){
-                            paragraphImg.setParagraph(newParagraphs.get(i));
-                            paragraphImg.setName(tour.getParagraphs().get(i).getImageName());
-                            paragraphImg.setImg(paragraphImages.get(i));
-
-                            paragraphImgRepository.save(paragraphImg);
+                            newParagraphs.get(i).setImgSrc(paragraphImages.get(i));
                         }else{
-                            paragraphRepository.save(newParagraphs.get(i));
+                            newParagraphs.get(i).setImgSrc(
+                                    tour.getParagraphs().get(i).getOldImage()
+                            );
                         }
+                        paragraphRepository.save(newParagraphs.get(i));
                     }
                 }
 
@@ -383,7 +366,8 @@ public class TourService {
                 foundTour.setTourType(needUpdateTour.getTourType());
                 foundTour.setDepart(needUpdateTour.getDepart());
                 foundTour.setDestination(needUpdateTour.getDestination());
-                foundTour.setImg(thumbnailName);
+                if(thumbnailName != null)
+                    foundTour.setImg(thumbnailName);
 
                 needUpdateTour.getTourDate().forEach(tourDate -> {
                     tourDate.setTour(foundTour);

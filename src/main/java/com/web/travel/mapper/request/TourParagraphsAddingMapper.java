@@ -21,6 +21,8 @@ public class TourParagraphsAddingMapper implements Mapper {
             Paragraph para = new Paragraph();
             para.setContent(paragraph.getContent());
             para.setOrder(paragraph.getOrder());
+            para.setImgSrc(paragraph.getOldImage());
+            para.setImgName(paragraph.getImageName());
             paragraphs.add(para);
         });
         return paragraphs;

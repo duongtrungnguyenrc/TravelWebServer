@@ -7,6 +7,7 @@ import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
 import com.web.travel.model.enumeration.ETourDateType;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TourDetailResMapper implements Mapper {
     @Override
@@ -18,7 +19,6 @@ public class TourDetailResMapper implements Mapper {
             List<TourGeneralResDTO> relevantTours = (List<TourGeneralResDTO>) ((Map<?, ?>) obj).get("relevantTours");
             List<Paragraph> paragraphs = (List<Paragraph>) ((Map<?, ?>) obj).get("paragraphs");
             List<Schedule> schedules = (List<Schedule>) ((Map<?, ?>) obj).get("schedules");
-            Map<Long, ParagraphImg> paragraphImgMap = (Map<Long, ParagraphImg>) ((Map<?, ?>) obj).get("images");
             double priceStartFrom = (double) ((Map<?, ?>) obj).get("price");
 
             TourDetailResDTO tourDto = new TourDetailResDTO();
@@ -64,14 +64,19 @@ public class TourDetailResMapper implements Mapper {
             tourDto.setCurrentPeople(tourDates.get(0).getCurrentPeople());
             tourDto.setImg(tour.getImg());
 
+            AtomicInteger index = new AtomicInteger();
             List<ParagraphResDTO> paragraphDTO = new ArrayList<ParagraphResDTO>();
             paragraphs.forEach(paragraph -> {
                 ParagraphResDTO paragraphResDTO = new ParagraphResDTO();
                 paragraphResDTO.setId(paragraph.getId());
                 paragraphResDTO.setContent(paragraph.getContent());
-                ParagraphImg paragraphImg = paragraphImgMap.get(paragraph.getId());
-                paragraphResDTO.setImage(new ParagraphImageResDTO(paragraphImg.getImg(), paragraphImg.getName()));
-                if(paragraphImg.getImg() == null){
+                ParagraphImageResDTO paragraphImageResDTO = new ParagraphImageResDTO();
+                if(paragraph.getImgSrc() != null){
+                    paragraphImageResDTO.setName(paragraph.getImgName());
+                    paragraphImageResDTO.setSrc(paragraph.getImgSrc());
+                    paragraphResDTO.setId((long) index.getAndIncrement());
+                    paragraphResDTO.setImage(paragraphImageResDTO);
+                }else{
                     paragraphResDTO.setImage(null);
                 }
                 paragraphDTO.add(paragraphResDTO);

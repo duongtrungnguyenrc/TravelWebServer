@@ -6,7 +6,6 @@ import com.web.travel.dto.response.ParagraphResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.DestinationBlog;
 import com.web.travel.model.Paragraph;
-import com.web.travel.repository.ParagraphImgRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +14,6 @@ import java.util.List;
 
 @Component
 public class DesBlogDetailResMapper implements Mapper {
-    @Autowired
-    ParagraphImgRepository paragraphImgRepository;
     @Override
     public Object mapToDTO(Object obj) {
         DestinationBlog destinationBlog = (DestinationBlog) obj;
@@ -43,14 +40,12 @@ public class DesBlogDetailResMapper implements Mapper {
                 )
                 .map(paragraph -> {
                     ParagraphResDTO paragraphResDTO = new ParagraphResDTO();
-                    paragraphImgRepository.findByParagraph(paragraph)
-                        .ifPresent(item -> {
-                            ParagraphImageResDTO img = new ParagraphImageResDTO();
-                            img.setSrc(item.getImg());
-                            img.setName(item.getName());
+                    ParagraphImageResDTO img = new ParagraphImageResDTO();
+                    img.setSrc(paragraph.getImgSrc());
+                    img.setName(paragraph.getImgName());
 
-                            paragraphResDTO.setImage(img);
-                        });
+                    paragraphResDTO.setImage(img);
+
                     paragraphResDTO.setContent(paragraph.getContent());
                     paragraphResDTO.setId(paragraph.getId());
                     

@@ -11,4 +11,5 @@ public class ParagraphAddingDTO {
     private int order;
     private String content;
     private String imageName;
+    private String oldImage;
 }
