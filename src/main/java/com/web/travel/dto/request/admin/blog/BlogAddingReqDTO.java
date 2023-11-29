@@ -17,6 +17,7 @@ import java.util.List;
 public class BlogAddingReqDTO {
     private String title;
     private String type;
+    private String author;
     private final Date postDate = DateHandler.getCurrentDateTime();
     private List<ParagraphAddingDTO> paragraphs;
     @JsonIgnore

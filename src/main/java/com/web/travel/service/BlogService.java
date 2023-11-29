@@ -170,6 +170,7 @@ public class BlogService {
             paragraphs.clear();
             oldBlog.setTitle(blog.getTitle());
             oldBlog.setType(blog.getType());
+            oldBlog.setAuthor(blog.getAuthor());
             oldBlog.setBlog(blog.getBlog());
             oldBlog.getBlog().setBackgroundImg(myBlog.getBackgroundImg());
             blogRepository.delete(myBlog);

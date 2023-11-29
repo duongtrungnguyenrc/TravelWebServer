@@ -79,7 +79,9 @@ public class HotelService {
         String fileName = null;
         if(image != null){
             try {
-                fileName = fileUploadService.uploadFile(image);
+                if(!Objects.requireNonNull(image.getOriginalFilename()).isEmpty()) {
+                    fileName = fileUploadService.uploadFile(image);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -95,7 +97,8 @@ public class HotelService {
             oldRooms.clear();
             hotel1.setName(hotel.getName());
             hotel1.setAddress(hotel.getAddress());
-            hotel1.setIllustration(fileName);
+            if(fileName != null)
+                hotel1.setIllustration(fileName);
 
             for (Room room : hotel.getRooms()) {
                 room.setHotel(hotel1);
@@ -113,7 +116,7 @@ public class HotelService {
         return new ResDTO(
                 400,
                 false,
-                "Cập nhật khách sạn không thành công!",
+                "Không tìm thấy khách sạn có id: " + id,
                 null);
     }
 

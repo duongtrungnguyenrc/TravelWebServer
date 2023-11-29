@@ -30,9 +30,9 @@ public class BlogAddReqMapper implements Mapper {
         blog.setTitle(dto.getTitle());
         blog.setType(dto.getType());
         blog.setPostDate(dto.getPostDate());
-
         User user = userService.getUserObjectByEmail(dto.getUserEmail());
         blog.setUser(user);
+        blog.setAuthor(dto.getAuthor());
 
         Blog parentBlog = new Blog();
 

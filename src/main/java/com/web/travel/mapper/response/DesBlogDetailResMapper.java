@@ -22,7 +22,10 @@ public class DesBlogDetailResMapper implements Mapper {
         dto.setType(destinationBlog.getType());
         dto.setImg(destinationBlog.getBlog().getBackgroundImg());
         dto.setTitle(destinationBlog.getTitle());
-        dto.setAuthor(destinationBlog.getUser().getFullName());
+        if(destinationBlog.getAuthor() == null || destinationBlog.getAuthor().isEmpty())
+            dto.setAuthor(destinationBlog.getUser().getFullName());
+        else
+            dto.setAuthor(destinationBlog.getAuthor());
         dto.setTime(destinationBlog.getPostDate());
         
         List<ParagraphResDTO> paragraphs = destinationBlog
