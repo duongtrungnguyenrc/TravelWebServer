@@ -3,7 +3,7 @@ package com.web.travel.mapper.response;
 import com.web.travel.dto.response.HotelResDTO;
 import com.web.travel.dto.response.OrderDetailResDTO;
 import com.web.travel.dto.response.RoomResDTO;
-import com.web.travel.dto.response.TourResDTO;
+import com.web.travel.dto.response.TourGeneralResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Hotel;
 import com.web.travel.model.Order;
@@ -53,8 +53,8 @@ public class OrderResMapper implements Mapper {
             dto.setHotel(hotelDto);
         }
 
-        TourResMapper tourMapper = new TourResMapper();
-        TourResDTO tourDto = (TourResDTO) tourMapper.mapToDTO(order.getTour());
+        TourGeneralResMapper tourMapper = new TourGeneralResMapper();
+        TourGeneralResDTO tourDto = (TourGeneralResDTO) tourMapper.mapToDTO(order.getTour());
         DateHandler dateHandler = new DateHandler();
         tourDto.setDuration(dateHandler.getDiffDay(
                 order.getTourDate().getEndDate(), order.getTourDate().getDepartDate()));

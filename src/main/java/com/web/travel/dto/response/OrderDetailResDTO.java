@@ -2,11 +2,6 @@ package com.web.travel.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.web.travel.model.ContactInfo;
-import com.web.travel.model.Tour;
-import com.web.travel.model.User;
-import com.web.travel.model.enumeration.EOrderStatus;
-import com.web.travel.model.enumeration.EPaymentMethod;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +25,7 @@ public class OrderDetailResDTO {
     private String paymentMethod;
     private String status;
     private double totalPrice;
-    private TourResDTO tour;
+    private TourGeneralResDTO tour;
     private ContactInfo contactInfo;
     private HotelResDTO hotel;
 }

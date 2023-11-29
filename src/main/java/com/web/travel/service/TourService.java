@@ -4,12 +4,12 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.tour.TourAddingDTO;
 import com.web.travel.dto.response.ListTourResDTO;
 import com.web.travel.dto.response.TourDetailResDTO;
-import com.web.travel.dto.response.TourResDTO;
+import com.web.travel.dto.response.TourGeneralResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.TourAddingReqMapper;
 import com.web.travel.mapper.request.TourParagraphsAddingMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
-import com.web.travel.mapper.response.TourResMapper;
+import com.web.travel.mapper.response.TourGeneralResMapper;
 import com.web.travel.model.*;
 import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.ETourType;
@@ -55,7 +55,7 @@ public class TourService {
     BlogRepository blogRepository;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
-        List<TourResDTO> list = new ArrayList<>();
+        List<TourGeneralResDTO> list = new ArrayList<>();
 
         ListTourResDTO dto1 = new ListTourResDTO();
         dto1.setType("Popular");
@@ -64,8 +64,8 @@ public class TourService {
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(
                         tour -> {
-                            TourResMapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
+                            TourGeneralResMapper mapper = new TourGeneralResMapper();
+                            return (TourGeneralResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
@@ -76,8 +76,8 @@ public class TourService {
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(
                         tour -> {
-                            TourResMapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
+                            TourGeneralResMapper mapper = new TourGeneralResMapper();
+                            return (TourGeneralResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
@@ -88,8 +88,8 @@ public class TourService {
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(
                         tour -> {
-                            TourResMapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
+                            TourGeneralResMapper mapper = new TourGeneralResMapper();
+                            return (TourGeneralResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
@@ -100,8 +100,8 @@ public class TourService {
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(
                         tour -> {
-                            TourResMapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
+                            TourGeneralResMapper mapper = new TourGeneralResMapper();
+                            return (TourGeneralResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList());
 
@@ -116,11 +116,11 @@ public class TourService {
     public Map<String, Object> getAllTour(int page, int limit){
         Map<String, Object> result = new HashMap<>();
         Page<Tour> tourPage = tourRepository.findAll(PageRequest.of(page, limit));
-        List<TourResDTO> tours = tourPage.stream()
+        List<TourGeneralResDTO> tours = tourPage.stream()
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(tour -> {
-                    Mapper tourMapper = new TourResMapper();
-                    return (TourResDTO) tourMapper.mapToDTO(tour);
+                    Mapper tourMapper = new TourGeneralResMapper();
+                    return (TourGeneralResDTO) tourMapper.mapToDTO(tour);
                 }).toList();
 
         result.put("tours", tours);
@@ -133,14 +133,14 @@ public class TourService {
         return tourRepository.findById(id).orElse(null);
     }
 
-    public List<TourResDTO> findTourByType(String type){
+    public List<TourGeneralResDTO> findTourByType(String type){
 
         return tourRepository.findByTourType(ETourType.valueOf(("type_" + type).toUpperCase())).stream()
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(
                         tour -> {
-                            Mapper mapper = new TourResMapper();
-                            return (TourResDTO) mapper.mapToDTO(tour);
+                            Mapper mapper = new TourGeneralResMapper();
+                            return (TourGeneralResDTO) mapper.mapToDTO(tour);
                         }
                 ).toList();
     }
@@ -151,7 +151,7 @@ public class TourService {
     public Object getResponseTourById(Principal principal, Long id){
         Tour tour = tourRepository.findById(id).orElse(null);
         if(tour != null && (tour.getIsRemoved() == null || !tour.getIsRemoved())){
-            List<TourResDTO> relevantTours = getRelevantToursByDestination(tour.getDepart(), tour.getDestination(), 5);
+            List<TourGeneralResDTO> relevantTours = getRelevantToursByDestination(tour.getDepart(), tour.getDestination(), 5);
             relevantTours = relevantTours.stream().filter(relevantTour -> !Objects.equals(tour.getId(), relevantTour.getId())).toList();
             Mapper mapper = new TourDetailResMapper();
             Map<String, Object> result = new HashMap<>();
@@ -212,14 +212,14 @@ public class TourService {
         return null;
     }
 
-    public List<TourResDTO> getRelevantToursByDestination(String depart, String destination ,int numberOfTour){
-        List<TourResDTO> result;
+    public List<TourGeneralResDTO> getRelevantToursByDestination(String depart, String destination , int numberOfTour){
+        List<TourGeneralResDTO> result;
         List<Tour> relevantTours = customTourRepository.getRelevantTourByDestination(depart, destination, numberOfTour);
         result = relevantTours.stream()
                 .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
                 .map(tour -> {
-                    Mapper mapper = new TourResMapper();
-                    return (TourResDTO) mapper.mapToDTO(tour);
+                    Mapper mapper = new TourGeneralResMapper();
+                    return (TourGeneralResDTO) mapper.mapToDTO(tour);
                 }).toList();
         return result;
     }
@@ -312,8 +312,9 @@ public class TourService {
             }
         }
 
-        HashMap<String, Long> response = new HashMap<String, Long>();
-        response.put("tourId", addedTour.getId());
+        Mapper mapper = new TourGeneralResMapper();
+        TourGeneralResDTO response = (TourGeneralResDTO) mapper.mapToDTO(addedTour);
+
         return new ResDTO(
                 200,
                 true,
@@ -402,8 +403,8 @@ public class TourService {
             }
         });
 
-        TourResMapper mapper = new TourResMapper();
-        TourResDTO response = (TourResDTO) mapper.mapToDTO(updatedTour.get());
+        TourGeneralResMapper mapper = new TourGeneralResMapper();
+        TourGeneralResDTO response = (TourGeneralResDTO) mapper.mapToDTO(updatedTour.get());
 
         String message = "Chỉnh sửa tour thành thông!";
 
@@ -429,11 +430,13 @@ public class TourService {
             message.set("Xóa tour thành công!");
         });
 
+        Map<String, Long> response = new HashMap<>();
+        response.put("deletedId", id);
         return new ResDTO(
                 200,
                 true,
                 message.get(),
-                id
+                response
         );
     }
 }

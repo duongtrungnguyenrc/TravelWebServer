@@ -181,7 +181,7 @@ public class EmailService {
             model.put("hotelName", order.getHotel().getName());
             model.put("hotelImg", orderHotel.getIllustration() == null ? "" : orderHotel.getIllustration());
             Room room = orderHotel.getRooms().stream().filter(
-                    item -> item.getType().equals(ERoom.valueOf("TYPE_" + order.getRoomType().toUpperCase()))
+                    item -> item.getType().equals(ERoom.valueOf("TYPE_" + (order.getRoomType() != null ? order.getRoomType() : "normal").toUpperCase()))
             ).findFirst().orElse(null);
 
             model.put("hotelPrice",

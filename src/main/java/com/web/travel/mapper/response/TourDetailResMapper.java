@@ -15,7 +15,7 @@ public class TourDetailResMapper implements Mapper {
             Tour tour = (Tour) ((Map<?, ?>) obj).get("tour");
             TourBlog tourBlog = (TourBlog) ((Map<?, ?>) obj).get("tourBlog");
             Blog blog = (Blog) ((Map<?, ?>) obj).get("blog");
-            List<TourResDTO> relevantTours = (List<TourResDTO>) ((Map<?, ?>) obj).get("relevantTours");
+            List<TourGeneralResDTO> relevantTours = (List<TourGeneralResDTO>) ((Map<?, ?>) obj).get("relevantTours");
             List<Paragraph> paragraphs = (List<Paragraph>) ((Map<?, ?>) obj).get("paragraphs");
             List<Schedule> schedules = (List<Schedule>) ((Map<?, ?>) obj).get("schedules");
             Map<Long, ParagraphImg> paragraphImgMap = (Map<Long, ParagraphImg>) ((Map<?, ?>) obj).get("images");

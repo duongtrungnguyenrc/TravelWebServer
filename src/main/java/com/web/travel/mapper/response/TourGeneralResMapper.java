@@ -2,7 +2,7 @@ package com.web.travel.mapper.response;
 
 import com.web.travel.utils.DateHandler;
 import com.web.travel.utils.RateCalculator;
-import com.web.travel.dto.response.TourResDTO;
+import com.web.travel.dto.response.TourGeneralResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
 import com.web.travel.model.Tour;
@@ -13,17 +13,17 @@ import java.util.Collection;
 import java.util.Date;
 
 @Component
-public class TourResMapper implements Mapper {
-    TourResDTO tourResDTO = new TourResDTO();
+public class TourGeneralResMapper implements Mapper {
+    TourGeneralResDTO tourGeneralResDTO = new TourGeneralResDTO();
     DateHandler dateHandler = new DateHandler();
     @Override
     public Object mapToDTO(Object obj) {
         if(obj != null){
-            tourResDTO.setId(((Tour) obj).getId());
-            tourResDTO.setImg(((Tour) obj).getImg());
-            tourResDTO.setName(((Tour) obj).getName());
-            tourResDTO.setLocation(((Tour) obj).getDestination());
-            tourResDTO.setDepart(((Tour) obj).getDepart());
+            tourGeneralResDTO.setId(((Tour) obj).getId());
+            tourGeneralResDTO.setImg(((Tour) obj).getImg());
+            tourGeneralResDTO.setName(((Tour) obj).getName());
+            tourGeneralResDTO.setLocation(((Tour) obj).getDestination());
+            tourGeneralResDTO.setDepart(((Tour) obj).getDepart());
             TourDate tourDate = ((Tour) obj).getTourDate().stream().findFirst().orElse(null);
             double price = 0;
             int duration = 0;
@@ -34,9 +34,9 @@ public class TourResMapper implements Mapper {
 
                 price = tourDate.getAdultPrice();
             }
-            tourResDTO.setPrice(price);
-            tourResDTO.setDuration(duration);
-            tourResDTO.setMaxPeople(((Tour) obj).getTourDate().stream().toList().get(0).getMaxPeople());
+            tourGeneralResDTO.setPrice(price);
+            tourGeneralResDTO.setDuration(duration);
+            tourGeneralResDTO.setMaxPeople(((Tour) obj).getTourDate().stream().toList().get(0).getMaxPeople());
             String typeDto = "";
             String typeTitle = "";
             switch (((Tour) obj).getTourType().toString()) {
@@ -59,13 +59,13 @@ public class TourResMapper implements Mapper {
                 default -> {
                 }
             }
-            tourResDTO.setType(typeDto);
-            tourResDTO.setTypeTitle(typeTitle);
+            tourGeneralResDTO.setType(typeDto);
+            tourGeneralResDTO.setTypeTitle(typeTitle);
 
             Collection<Rate> rates = ((Tour) obj).getRates();
 
-            tourResDTO.setRatedStar(RateCalculator.getAverageRates(rates));
-            return tourResDTO;
+            tourGeneralResDTO.setRatedStar(RateCalculator.getAverageRates(rates));
+            return tourGeneralResDTO;
         }
         return null;
     }

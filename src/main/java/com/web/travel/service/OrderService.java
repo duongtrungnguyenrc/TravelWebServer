@@ -140,6 +140,7 @@ public class OrderService {
 
                 Map<String, Object> response = new HashMap<>();
                 response.put("id", order.getId());
+                response.put("status", order.getStatus());
 
                 //Get number of days from updated date to departure date
                 DateHandler dateHandler = new DateHandler();

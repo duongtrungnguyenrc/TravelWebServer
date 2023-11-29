@@ -28,5 +28,5 @@ public class TourDetailResDTO {
     private boolean ratingAcceptance;
     private List<HotelResDTO> hotels;
     private List<ScheduleResDTO> schedules;
-    private List<TourResDTO> relevantTours;
+    private List<TourGeneralResDTO> relevantTours;
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class TourResDTO {
+public class TourGeneralResDTO {
     private Long id;
     private String name;
     private double price;
@@ -18,7 +18,7 @@ public class TourResDTO {
     private String type;
     private String typeTitle;
 
-    public TourResDTO(){
+    public TourGeneralResDTO(){
         id = 1L;
         name = "Deluxe Double with New York City View";
         price = 59;
