@@ -40,6 +40,7 @@ public class BlogAddReqMapper implements Mapper {
         dto.getParagraphs().forEach(paragraphAddingDTO -> {
             Paragraph para = new Paragraph();
             para.setBlog(parentBlog);
+            para.setLayout(paragraphAddingDTO.getLayout());
             para.setOrder(paragraphAddingDTO.getOrder());
             para.setContent(paragraphAddingDTO.getContent());
             para.setImgName(paragraphAddingDTO.getImageName());

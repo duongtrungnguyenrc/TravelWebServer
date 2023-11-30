@@ -22,6 +22,7 @@ public class Paragraph {
     private Integer order;
     private String imgName;
     private String imgSrc;
+    private int layout;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "blogId")
     @EqualsAndHashCode.Exclude

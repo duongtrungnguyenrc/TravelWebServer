@@ -51,6 +51,7 @@ public class DesBlogDetailResMapper implements Mapper {
 
                     paragraphResDTO.setContent(paragraph.getContent());
                     paragraphResDTO.setId(paragraph.getId());
+                    paragraphResDTO.setLayout(paragraph.getLayout());
                     
                     return paragraphResDTO;
                 }).toList();

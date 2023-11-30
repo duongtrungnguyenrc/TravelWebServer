@@ -13,4 +13,5 @@ public class ParagraphResDTO {
     private Long id;
     private String content;
     private ParagraphImageResDTO image;
+    private int layout;
 }
