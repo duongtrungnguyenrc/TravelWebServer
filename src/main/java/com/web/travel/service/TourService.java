@@ -12,6 +12,7 @@ import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourGeneralResMapper;
 import com.web.travel.model.*;
 import com.web.travel.model.enumeration.EOrderStatus;
+import com.web.travel.model.enumeration.EStatus;
 import com.web.travel.model.enumeration.ETourType;
 import com.web.travel.repository.*;
 import com.web.travel.repository.custom.CustomTourRepository;
@@ -326,11 +327,13 @@ public class TourService {
                 List<Paragraph> newParagraphs = (List<Paragraph>) paraMapper.mapToObject(tour);
 
                 String thumbnailName = null;
-                List<String> paragraphImages = null;
+                List<String> paragraphImages = new ArrayList<>();
                 try {
                     if(!Objects.requireNonNull(thumbnail.getOriginalFilename()).isEmpty()) {
                         thumbnailName = fileUploadService.uploadFile(thumbnail);
                     }
+
+                    if(filesValidation.validate(images) != EStatus.STATUS_EMPTY_FILE && images.length <= newParagraphs.size())
                         paragraphImages = fileUploadService.uploadMultiFile(images);
                 }catch (IOException e) {
                     System.out.println(e.getMessage());
@@ -348,7 +351,7 @@ public class TourService {
                     tourBlogRepository.save(needUpdateTourBlog);
                 }
 
-                if(paragraphImages != null && paragraphImages.size() <= newParagraphs.size()){
+                if(paragraphImages.size() <= newParagraphs.size()){
                     for(int i = 0; i < newParagraphs.size(); i++){
                         if(i < paragraphImages.size()){
                             newParagraphs.get(i).setImgSrc(paragraphImages.get(i));

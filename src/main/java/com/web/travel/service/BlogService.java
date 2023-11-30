@@ -180,18 +180,19 @@ public class BlogService {
                 if(!Objects.requireNonNull(thumbnail.getOriginalFilename()).isEmpty()) {
                     backgroundImg = fileUploadService.uploadFile(thumbnail);
                 }
-                List<String> fileNames = null;
-                if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
-                    fileNames = fileUploadService.uploadMultiFile(images);
-                }
+                List<String> fileNames = new ArrayList<>();
 
                 List<Paragraph> updateParagraph = blog
                         .getBlog()
                         .getParagraphs()
                         .stream().toList();
 
+                if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
+                    if(images.length <= updateParagraph.size())
+                        fileNames = fileUploadService.uploadMultiFile(images);
+                }
 
-                if(fileNames != null && fileNames.size() <= updateParagraph.size()) {
+                if(fileNames.size() <= updateParagraph.size()) {
                     for (int i = 0; i < updateParagraph.size(); i++) {
                        if(i < fileNames.size()){
                            updateParagraph.get(i).setImgSrc(fileNames.get(i));
