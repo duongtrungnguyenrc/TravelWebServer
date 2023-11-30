@@ -16,6 +16,7 @@ public class BlogAdminController {
     @Autowired
     BlogService blogService;
     @PostMapping("/add")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> addBlog(
             Principal principal,
             @RequestPart("blog") BlogAddingReqDTO blogAddingReqDTO,
@@ -26,6 +27,7 @@ public class BlogAdminController {
         );
     }
     @PostMapping("/update/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> updateBlog(@PathVariable("id") Long id,
             Principal principal,
             @RequestPart("blog") BlogAddingReqDTO blogAddingReqDTO,
@@ -37,6 +39,7 @@ public class BlogAdminController {
     }
 
     @PostMapping("/delete/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> deleteBlog(@PathVariable("id") Long id){
         return ResponseEntity.ok(
                 blogService.deleteBlog((id))

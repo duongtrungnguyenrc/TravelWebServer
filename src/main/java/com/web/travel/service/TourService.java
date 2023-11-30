@@ -351,17 +351,15 @@ public class TourService {
                     tourBlogRepository.save(needUpdateTourBlog);
                 }
 
-                if(paragraphImages.size() - 1 == newParagraphs.size()){
-                    for(int i = 0; i < newParagraphs.size(); i++){
-                        if(i + 1 < paragraphImages.size() && paragraphImages.get(i + 1) != null){
-                            newParagraphs.get(i).setImgSrc(paragraphImages.get(i + 1));
-                        }else{
-                            newParagraphs.get(i).setImgSrc(
-                                    tour.getParagraphs().get(i).getOldImage()
-                            );
-                        }
-                        paragraphRepository.save(newParagraphs.get(i));
+                for(int i = 0; i < newParagraphs.size(); i++){
+                    if(i + 1 < paragraphImages.size() && paragraphImages.get(i + 1) != null){
+                        newParagraphs.get(i).setImgSrc(paragraphImages.get(i + 1));
+                    }else{
+                        newParagraphs.get(i).setImgSrc(
+                                tour.getParagraphs().get(i).getOldImage()
+                        );
                     }
+                    paragraphRepository.save(newParagraphs.get(i));
                 }
 
                 foundTour.setName(needUpdateTour.getName());
@@ -372,10 +370,11 @@ public class TourService {
                 if(thumbnailName != null)
                     foundTour.setImg(thumbnailName);
 
-                needUpdateTour.getTourDate().forEach(tourDate -> {
-                    tourDate.setTour(foundTour);
-                    foundTour.getTourDate().add(tourDate);
-                });
+                if(needUpdateTour.getTourDate() != null)
+                    needUpdateTour.getTourDate().forEach(tourDate -> {
+                        tourDate.setTour(foundTour);
+                        foundTour.getTourDate().add(tourDate);
+                    });
 
                 foundTour.getSchedules().clear();
 

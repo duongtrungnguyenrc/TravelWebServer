@@ -118,7 +118,7 @@ public class ResetPasswordController {
     public Object resetPassword(@RequestParam("token") String encodedToken){
         String token = authService.decodeResetPasswordToken(encodedToken);
         if (authService.resetPasswordTokenIsValid(token)) {
-            String url  = clientHost + "/auth/reset-password?token=" + authService.encodeResetPasswordToken(token);
+            String url  = clientHost + "/reset-password?token=" + authService.encodeResetPasswordToken(token);
 
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(url)).build();

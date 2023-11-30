@@ -47,25 +47,26 @@ public class TourAddingReqMapper implements Mapper {
         tour.setDestination(tourAddingDTO.getDestination());
 
         List<TourDate> tourDates = new ArrayList<>();
-        tourAddingDTO.getTourDate().forEach(date -> {
-            TourDate tourDate = new TourDate();
-            switch (date.getDateType()){
-                case "essential" -> {
-                    tourDate.setDateType(ETourDateType.TYPE_ESSENTIAL);
-                }case "plus" -> {
-                    tourDate.setDateType(ETourDateType.TYPE_PLUS);
+        if(tourAddingDTO.getTourDate() != null)
+            tourAddingDTO.getTourDate().forEach(date -> {
+                TourDate tourDate = new TourDate();
+                switch (date.getDateType()){
+                    case "essential" -> {
+                        tourDate.setDateType(ETourDateType.TYPE_ESSENTIAL);
+                    }case "plus" -> {
+                        tourDate.setDateType(ETourDateType.TYPE_PLUS);
+                    }
                 }
-            }
 
-            tourDate.setDepartDate(date.getDepartDate());
-            tourDate.setEndDate(date.getEndDate());
-            tourDate.setAdultPrice(date.getAdultPrice());
-            tourDate.setChildPrice(date.getChildPrice());
-            tourDate.setTour(tour);
-            tourDate.setCurrentPeople(date.getCurrentPeople());
-            tourDate.setMaxPeople(date.getMaxPeople());
-            tourDates.add(tourDate);
-        });
+                tourDate.setDepartDate(date.getDepartDate());
+                tourDate.setEndDate(date.getEndDate());
+                tourDate.setAdultPrice(date.getAdultPrice());
+                tourDate.setChildPrice(date.getChildPrice());
+                tourDate.setTour(tour);
+                tourDate.setCurrentPeople(date.getCurrentPeople());
+                tourDate.setMaxPeople(date.getMaxPeople());
+                tourDates.add(tourDate);
+            });
 
         tour.setTourDate(tourDates);
 

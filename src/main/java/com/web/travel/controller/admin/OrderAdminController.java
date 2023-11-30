@@ -23,6 +23,7 @@ public class OrderAdminController {
     @Autowired
     EmailService emailService;
     @PostMapping("/update")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> updateOrderStatus(@RequestBody OrderUpdateReqDTO orderDto){
         ResDTO response = orderService.updateOrderStatus(orderDto);
         return ResponseEntity.ok().body(response);

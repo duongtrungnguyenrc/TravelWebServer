@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class TourAdminController {
     private final TourService tourService;
     @Operation(summary = "Add new tour")
+    @CrossOrigin(origins = "*")
     @PostMapping("/add")
     public ResponseEntity<?> addTour(
             @RequestPart("tour") TourAddingDTO tour,
@@ -26,6 +27,7 @@ public class TourAdminController {
     }
 
     @PostMapping("/update/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> updateTour(
             @PathVariable long id,
             @RequestPart("tour") TourAddingDTO tour,
@@ -37,6 +39,7 @@ public class TourAdminController {
     }
 
     @PostMapping("delete/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> deleteTour(@PathVariable long id){
         return ResponseEntity.ok(
                 tourService.deleteTour(id)

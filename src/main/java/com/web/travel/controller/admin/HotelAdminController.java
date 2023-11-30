@@ -16,6 +16,7 @@ public class HotelAdminController {
     private final HotelService hotelService;
 
     @GetMapping("")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> getAllHotel(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int limit
@@ -26,6 +27,7 @@ public class HotelAdminController {
     }
 
     @PostMapping()
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> addHotel(
             @RequestPart("image") MultipartFile image,
             @RequestPart("hotel") HotelAddingDTO hotelAddingDTO
@@ -36,6 +38,7 @@ public class HotelAdminController {
     }
 
     @PostMapping("update/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> updateHotel(
             @PathVariable("id") long id,
             @RequestPart("image") MultipartFile image,
@@ -47,6 +50,7 @@ public class HotelAdminController {
     }
 
     @PostMapping("delete/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> deleteHotel(@PathVariable long id){
         return ResponseEntity.ok(
                 hotelService.deleteHotel(id)
