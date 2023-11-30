@@ -18,11 +18,10 @@ public class TourAdminController {
     @PostMapping("/add")
     public ResponseEntity<?> addTour(
             @RequestPart("tour") TourAddingDTO tour,
-            @RequestPart("thumbnail") MultipartFile thumbnail,
-            @RequestPart("paragraphImages") MultipartFile[] images
+            @RequestPart("images") MultipartFile[] images
     ){
         return ResponseEntity.ok(
-                tourService.add(tour, thumbnail, images)
+                tourService.add(tour, images)
         );
     }
 
@@ -30,11 +29,10 @@ public class TourAdminController {
     public ResponseEntity<?> updateTour(
             @PathVariable long id,
             @RequestPart("tour") TourAddingDTO tour,
-            @RequestPart("thumbnail") MultipartFile thumbnail,
-            @RequestPart("paragraphImages") MultipartFile[] images
+            @RequestPart("images") MultipartFile[] images
     ){
         return ResponseEntity.ok(
-                tourService.updateTour(id, tour, thumbnail, images)
+                tourService.updateTour(id, tour, images)
         );
     }
 

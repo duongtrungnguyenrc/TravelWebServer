@@ -113,29 +113,26 @@ public class BlogService {
         }
     }
 
-    public ResDTO addBlog(Principal principal, BlogAddingReqDTO blogDto, MultipartFile thumbnail, MultipartFile[] images){
+    public ResDTO addBlog(Principal principal, BlogAddingReqDTO blogDto, MultipartFile[] images){
         blogDto.setUserEmail(principal.getName());
         DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
-
-        String backgroundImg = "";
+        String backgroundImg = null;
 
         try{
-            backgroundImg = fileUploadService.uploadFile(thumbnail);
-            List<String> fileNames = null;
-            if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
-                fileNames = fileUploadService.uploadMultiFile(images);
-            }
-
-
             List<Paragraph> addedParagraph = blog
                     .getBlog()
                     .getParagraphs()
                     .stream().toList();
 
-            if(fileNames != null && fileNames.size() <= addedParagraph.size()) {
-                for (int i = 0; i < fileNames.size(); i++) {
-                    addedParagraph.get(i).setImgSrc(fileNames.get(i));
-                    addedParagraph.get(i).setImgName(blogDto.getParagraphs().get(i).getImageName());
+            List<String> fileNames = new ArrayList<>();
+            if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
+                fileNames = fileUploadService.uploadMultiFile(images);
+
+                backgroundImg = fileNames.get(0);
+
+                for (int i = 0; i < fileNames.size() - 1 && i < addedParagraph.size(); i++) {
+                        addedParagraph.get(i).setImgSrc(fileNames.get(i + 1));
+                        addedParagraph.get(i).setImgName(blogDto.getParagraphs().get(i).getImageName());
                 }
             }
 
@@ -157,10 +154,12 @@ public class BlogService {
         );
     }
 
-    public ResDTO updateBlog(Long id, Principal principal, BlogAddingReqDTO blogDto, MultipartFile thumbnail, MultipartFile[] images){
+    public ResDTO updateBlog(Long id, Principal principal, BlogAddingReqDTO blogDto, MultipartFile[] images){
         blogDto.setUserEmail(principal.getName());
         DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
         DestinationBlog oldBlog = desRepository.findById(id).orElse(null);
+
+//        MultipartFile thumbnail = images[0];
 
         if(oldBlog!=null){
 
@@ -177,29 +176,27 @@ public class BlogService {
 
             String backgroundImg = null;
             try{
-                if(!Objects.requireNonNull(thumbnail.getOriginalFilename()).isEmpty()) {
-                    backgroundImg = fileUploadService.uploadFile(thumbnail);
-                }
-                List<String> fileNames = new ArrayList<>();
-
                 List<Paragraph> updateParagraph = blog
                         .getBlog()
                         .getParagraphs()
                         .stream().toList();
 
+                List<String> fileNames = new ArrayList<>();
+
+
+
                 if(fileValidator.validate(images) != EStatus.STATUS_EMPTY_FILE){
-                    if(images.length <= updateParagraph.size())
-                        fileNames = fileUploadService.uploadMultiFile(images);
+                    fileNames = fileUploadService.uploadMultiFile(images);
+
+                    backgroundImg = fileNames.get(0);
                 }
 
-                if(fileNames.size() <= updateParagraph.size()) {
-                    for (int i = 0; i < updateParagraph.size(); i++) {
-                       if(i < fileNames.size()){
-                           updateParagraph.get(i).setImgSrc(fileNames.get(i));
-                       }else{
-                           updateParagraph.get(i).setImgSrc(blogDto.getParagraphs().get(i).getOldImage());
-                       }
-                    }
+                for (int i = 0; i < updateParagraph.size(); i++) {
+                   if(i < fileNames.size() - 1 && fileNames.get(i + 1) != null){
+                       updateParagraph.get(i).setImgSrc(fileNames.get(i + 1));
+                   }else{
+                       updateParagraph.get(i).setImgSrc(blogDto.getParagraphs().get(i).getOldImage());
+                   }
                 }
 
                 updateParagraph.forEach(paragraph ->{

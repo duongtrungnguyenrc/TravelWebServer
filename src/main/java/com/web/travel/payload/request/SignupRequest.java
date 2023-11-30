@@ -19,4 +19,5 @@ public class SignupRequest {
     private String password;
     private String phone;
     private Set<String> role;
+    private String avatar;
 }

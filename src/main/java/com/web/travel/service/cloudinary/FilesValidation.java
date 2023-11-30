@@ -26,4 +26,17 @@ public class FilesValidation {
         }
         return EStatus.STATUS_OK;
     }
+
+    public boolean isCorrectFormat(MultipartFile file){
+        String name = file.getOriginalFilename();
+        if(name != null && !name.isEmpty()) {
+            String[] splited = name.split("\\.");
+            String ext = splited[splited.length - 1];
+
+            return ext.equals("png") || ext.equals("jpg") ||
+                    ext.equals("jpeg") || ext.equals("gif");
+        }
+
+        return true;
+    }
 }

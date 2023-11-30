@@ -261,7 +261,7 @@ public class TourService {
         }
     }
 
-    public ResDTO add(TourAddingDTO tour, MultipartFile thumbnail, MultipartFile[] images){
+    public ResDTO add(TourAddingDTO tour, MultipartFile[] images){
         Mapper paraMapper = new TourParagraphsAddingMapper();
         Tour needAddTour = (Tour) tourAddingRequestMapper.mapToObject(tour);
         List<Paragraph> needAddParagraphs = (List<Paragraph>) paraMapper.mapToObject(tour);
@@ -269,10 +269,10 @@ public class TourService {
         Tour addedTour = tourRepository.save(needAddTour);
 
         String thumbnailName = null;
-        List<String> paragraphImages = null;
+        List<String> imageNames = new ArrayList<>();
         try {
-            thumbnailName = fileUploadService.uploadFile(thumbnail);
-            paragraphImages = fileUploadService.uploadMultiFile(images);
+            imageNames = fileUploadService.uploadMultiFile(images);
+            thumbnailName = imageNames.get(0);
         }catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -296,10 +296,10 @@ public class TourService {
                 .getParagraphs()
                 .stream().toList();
 
-        if(paragraphImages != null && paragraphImages.size() <= needAddParagraphs.size()){
-            for (int i = 0; i < paragraphImages.size(); i++){
+        if(imageNames.size() - 1 == needAddParagraphs.size()){
+            for (int i = 0; i < imageNames.size() - 1; i++){
                 addedParagraph.get(i).setImgName(tour.getParagraphs().get(i).getImageName());
-                addedParagraph.get(i).setImgSrc(paragraphImages.get(i));
+                addedParagraph.get(i).setImgSrc(imageNames.get(i + 1));
                 paragraphRepository.save(addedParagraph.get(i));
             }
         }
@@ -316,7 +316,7 @@ public class TourService {
     }
 
     public ResDTO updateTour(
-            long id, TourAddingDTO tour, MultipartFile thumbnail, MultipartFile[] images
+            long id, TourAddingDTO tour, MultipartFile[] images
     ){
         AtomicReference<Tour> updatedTour = new AtomicReference<>(null);
 
@@ -329,12 +329,11 @@ public class TourService {
                 String thumbnailName = null;
                 List<String> paragraphImages = new ArrayList<>();
                 try {
-                    if(!Objects.requireNonNull(thumbnail.getOriginalFilename()).isEmpty()) {
-                        thumbnailName = fileUploadService.uploadFile(thumbnail);
-                    }
-
-                    if(filesValidation.validate(images) != EStatus.STATUS_EMPTY_FILE && images.length <= newParagraphs.size())
+                    if (filesValidation.validate(images) != EStatus.STATUS_EMPTY_FILE){
                         paragraphImages = fileUploadService.uploadMultiFile(images);
+
+                        thumbnailName = paragraphImages.get(0);
+                    }
                 }catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
@@ -342,7 +341,8 @@ public class TourService {
                 TourBlog needUpdateTourBlog = tourBlogRepository.findByTour(foundTour).orElse(null);
 
                 if(needUpdateTourBlog != null){
-                    needUpdateTourBlog.getBlog().setBackgroundImg(thumbnailName);
+                    if(thumbnailName != null)
+                        needUpdateTourBlog.getBlog().setBackgroundImg(thumbnailName);
                     needUpdateTourBlog.getBlog().getParagraphs().clear();
                     newParagraphs.forEach(paragraph -> {
                         paragraph.setBlog(needUpdateTourBlog.getBlog());
@@ -351,10 +351,10 @@ public class TourService {
                     tourBlogRepository.save(needUpdateTourBlog);
                 }
 
-                if(paragraphImages.size() <= newParagraphs.size()){
+                if(paragraphImages.size() - 1 == newParagraphs.size()){
                     for(int i = 0; i < newParagraphs.size(); i++){
-                        if(i < paragraphImages.size()){
-                            newParagraphs.get(i).setImgSrc(paragraphImages.get(i));
+                        if(i + 1 < paragraphImages.size() && paragraphImages.get(i + 1) != null){
+                            newParagraphs.get(i).setImgSrc(paragraphImages.get(i + 1));
                         }else{
                             newParagraphs.get(i).setImgSrc(
                                     tour.getParagraphs().get(i).getOldImage()

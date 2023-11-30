@@ -36,7 +36,7 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     private EUserStatus active;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "userId"),

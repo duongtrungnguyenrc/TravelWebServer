@@ -2,6 +2,7 @@ package com.web.travel.security;
 
 import com.web.travel.security.jwt.AuthEntryPointJwt;
 import com.web.travel.security.jwt.AuthTokenFilter;
+import com.web.travel.security.oauth2.CustomSuccessHandler;
 import com.web.travel.security.services.UserDetailsServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -35,6 +38,8 @@ public class WebSecurityConfig {
     UserDetailsServiceImpl userDetailsService;
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
+    @Autowired
+    private CustomSuccessHandler successHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter(){
@@ -94,7 +99,9 @@ public class WebSecurityConfig {
                                     "/api/user/avatar").authenticated()
                             .requestMatchers(HttpMethod.GET, "/api/order").authenticated()
                             .anyRequest().permitAll()
-                );
+                ).oauth2Login(oAuth2LoginConfigurer -> {
+                    oAuth2LoginConfigurer.successHandler(successHandler);
+                });
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
