@@ -101,7 +101,7 @@ public class OrderService {
                     );
 
                     if (body.getPaymentMethod().equals("vnpay")) {
-                        response = vnPayService.createPayment(amount, ipAddress, orderId);
+                        response = vnPayService.createPayment(amount, ipAddress, orderId, body.getSessionToken());
                     } else {
                         emailService.sendOrderedEmail(order, false);
                     }

@@ -14,6 +14,7 @@ import com.web.travel.repository.UserRepository;
 import com.web.travel.security.jwt.JwtUtils;
 import com.web.travel.security.services.UserDetailsImpl;
 import com.web.travel.service.email.EmailService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -89,7 +90,12 @@ public class AuthService {
         return result;
     }
 
-    public ResDTO signIn(LoginRequest loginRequest){
+    public ResDTO signIn(HttpServletRequest request, LoginRequest loginRequest){
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+        if(user != null && user.getActive().equals(EUserStatus.STATUS_NOT_ACTIVATED)){
+            request.setAttribute("email", loginRequest.getEmail());
+            request.setAttribute("fullName", user.getFullName());
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 

@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 public class OrderReqDTO {
     private double amount;
+    private String sessionToken;
     private int adults;
     private int children;
     private String paymentMethod;

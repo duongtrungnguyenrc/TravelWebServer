@@ -11,6 +11,7 @@ import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.LoginVerifyRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -32,8 +33,8 @@ public class AuthController {
 
     @PostMapping("/signin")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        ResDTO authResponse = authService.signIn(loginRequest);
+    public ResponseEntity<?> authenticateUser(HttpServletRequest request, @Valid @RequestBody LoginRequest loginRequest) {
+        ResDTO authResponse = authService.signIn(request, loginRequest);
         return ResponseEntity.ok(authResponse);
     }
 
