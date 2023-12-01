@@ -21,8 +21,9 @@ import java.util.TimeZone;
 
 @Service
 public class VnPayService {
-    public ResDTO createPayment(long amount, String remoteAddress, long orderId, String sessionToken) throws UnsupportedEncodingException {
+    public ResDTO createPayment(long amount, String remoteAddress, HashMap<String, Long> idParams, String sessionToken) throws UnsupportedEncodingException {
         amount *= 100;
+
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
         String vnp_TmnCode = VnPayConfig.vnp_TmnCode;
         Map<String, String> vnp_Params = new HashMap<>();
@@ -34,7 +35,7 @@ public class VnPayService {
         vnp_Params.put("vnp_BankCode", "");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-        vnp_Params.put("vnp_ReturnUrl", "http://localhost:8080/api/payment/return/" + orderId + "/" + sessionToken);
+        vnp_Params.put("vnp_ReturnUrl", "http://localhost:8080/api/payment/return/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId"));
         vnp_Params.put("vnp_IpAddr", remoteAddress);
         vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Locale", "vn");

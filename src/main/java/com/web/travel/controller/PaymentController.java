@@ -36,12 +36,15 @@ public class PaymentController {
 
     //TODO: Waiting for thank you page url from client and change vnp_ReturnUrl to it
     //TODO: Client will send the vnp_ResponseCode to update the order status
-    @GetMapping("/return/{orderId}/{sessionToken}")
+    @GetMapping("/return/{orderId}/{sessionToken}/{tourId}/{tourDateId}")
     @CrossOrigin(origins = "*")
     public Object thankYou(
             @RequestParam("vnp_ResponseCode") String responseCode,
             @PathVariable("orderId") long orderId,
-            @PathVariable("sessionToken") String sessionToken){
+            @PathVariable("sessionToken") String sessionToken,
+            @PathVariable("tourId") long tourId,
+            @PathVariable("tourDateId") long tourDateId
+    ){
         //Success payment
         Order order = orderService.getById(orderId);
         boolean status = true;
@@ -54,7 +57,7 @@ public class PaymentController {
         }
         orderService.saveOrder(order);
 
-        String url = clientHost + "/booking/return?orderId=" + orderId + "&status=" + status + "&sessionToken=" + sessionToken;
+        String url = clientHost + "/booking/" + tourId + "?dateId=" + tourDateId + "&orderId=" + orderId + "&status=" + status + "&sessionToken=" + sessionToken;
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(url)).build();
     }

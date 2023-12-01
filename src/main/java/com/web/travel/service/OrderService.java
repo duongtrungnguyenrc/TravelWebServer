@@ -84,7 +84,7 @@ public class OrderService {
                     int currentPeople = orderTourDate.getCurrentPeople();
                     orderTourDate.setCurrentPeople(currentPeople + order.getTotalPeople());
 
-                    tourDateRepository.save(orderTourDate);
+                    TourDate savedTourDate = tourDateRepository.save(orderTourDate);
 
                     ContactInfo contactInfo = contactInfoService.saveContactInfo(order.getContactInfo());
                     Long contactInfoId = contactInfo.getId();
@@ -101,7 +101,12 @@ public class OrderService {
                     );
 
                     if (body.getPaymentMethod().equals("vnpay")) {
-                        response = vnPayService.createPayment(amount, ipAddress, orderId, body.getSessionToken());
+                        HashMap<String, Long> idParams = new HashMap<>();
+                        idParams.put("orderId", orderId);
+                        idParams.put("tourDateId", savedTourDate.getId());
+                        idParams.put("tourId", savedTourDate.getTour().getId());
+
+                        response = vnPayService.createPayment(amount, ipAddress, idParams, body.getSessionToken());
                     } else {
                         emailService.sendOrderedEmail(order, false);
                     }
