@@ -6,6 +6,7 @@ import com.web.travel.mapper.response.UserDetailResMapper;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.ERole;
+import com.web.travel.payload.request.ConfirmCodeRequest;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.LoginVerifyRequest;
 import com.web.travel.payload.request.SignupRequest;
@@ -89,5 +90,19 @@ public class AuthController {
     @CrossOrigin(origins = "*")
     public void authorized(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.sendRedirect("/oauth2/authorization/google");
+    }
+
+    @PostMapping("/activate")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<ResDTO> validateConfirmCode(@RequestBody ConfirmCodeRequest request){
+        String decodedToken = authService.decodeResetPasswordToken(request.getToken());
+        ResDTO response = authService.confirmationCodeValidate(request.getActivateCode(), decodedToken);
+        return response.isStatus() ?
+                ResponseEntity.ok(
+                        response
+                ) :
+                ResponseEntity.badRequest().body(
+                        response
+                );
     }
 }
