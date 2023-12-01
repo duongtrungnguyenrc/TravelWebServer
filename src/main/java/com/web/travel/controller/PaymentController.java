@@ -57,7 +57,7 @@ public class PaymentController {
         }
         orderService.saveOrder(order);
 
-        String url = clientHost + "/booking/" + tourId + "?dateId=" + tourDateId + "&orderId=" + orderId + "&status=" + status + "&sessionToken=" + sessionToken;
+        String url = clientHost + "/booking/" + tourId + "?date=" + tourDateId + "&orderId=" + orderId + "&status=" + status + "&sessionToken=" + sessionToken;
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(url)).build();
     }
