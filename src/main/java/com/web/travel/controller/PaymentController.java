@@ -22,6 +22,7 @@ public class PaymentController {
     @Autowired
     EmailService emailService;
     @PostMapping("/create_payment")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
         return ResponseEntity.ok(
                 orderService.createPayment(principal, request, body)
@@ -31,6 +32,7 @@ public class PaymentController {
     //TODO: Waiting for thank you page url from client and change vnp_ReturnUrl to it
     //TODO: Client will send the vnp_ResponseCode to update the order status
     @GetMapping("/return/{orderId}")
+    @CrossOrigin(origins = "*")
     public String thankYou(
             @RequestParam("vnp_ResponseCode") String responseCode,
             @PathVariable("orderId") long orderId){

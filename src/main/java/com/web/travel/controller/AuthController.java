@@ -30,12 +30,14 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/signin")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         ResDTO authResponse = authService.signIn(loginRequest);
         return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/signup")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (authService.userIsExistsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
@@ -71,6 +73,7 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> loginVerify(@Valid @RequestBody LoginVerifyRequest loginVerifyRequest) {
         if (!authService.loginVerify(loginVerifyRequest.getToken())) {
             return ResponseEntity
@@ -83,6 +86,7 @@ public class AuthController {
     }
 
     @GetMapping("/sign-with-google")
+    @CrossOrigin(origins = "*")
     public void authorized(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.sendRedirect("/oauth2/authorization/google");
     }

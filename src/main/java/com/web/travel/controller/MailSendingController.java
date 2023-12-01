@@ -14,6 +14,7 @@ public class MailSendingController {
     @Autowired
     private EmailService service;
     @PostMapping("/send")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> sendWelcomeEmail(@RequestBody MailRequest request) {
         ResDTO response = service.sendWelcomeEmail(request);
         boolean isOk = response.isStatus();

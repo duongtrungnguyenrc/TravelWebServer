@@ -15,6 +15,7 @@ public class BlogController {
     BlogService blogService;
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
@@ -32,6 +33,7 @@ public class BlogController {
     }
 
     @GetMapping("/latest")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> getLatest(){
         return ResponseEntity.ok(
                 new ResDTO(
@@ -44,6 +46,7 @@ public class BlogController {
     }
 
     @GetMapping("/authors")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> getAuthorsDesc(){
         return ResponseEntity.ok(
             new ResDTO(
@@ -56,6 +59,7 @@ public class BlogController {
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> getBlogById(@PathVariable long id){
         ResDTO response = blogService.getById(id);
         if(response.isStatus()){

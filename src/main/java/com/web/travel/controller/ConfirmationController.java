@@ -18,6 +18,7 @@ public class ConfirmationController {
     AuthService authService;
 
     @PostMapping("/validate")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<ResDTO> validateConfirmCode(@RequestBody ConfirmCodeRequest request){
         String decodedToken = authService.decodeResetPasswordToken(request.getToken());
         ResDTO response = authService.confirmationCodeValidate(request.getConfirmCode(), decodedToken);
