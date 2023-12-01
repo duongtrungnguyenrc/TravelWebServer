@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConfirmCodeRequest {
-    private String email;
     private String token;
-    private String confirmCode;
+    private String activateCode;
 }
