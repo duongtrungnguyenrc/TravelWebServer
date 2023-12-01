@@ -11,12 +11,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +31,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     UserService userService;
     @Autowired
     JwtUtils jwtUtils;
+    @Value("${travel.app.client.host}")
+    String clientHost;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if(authentication.getPrincipal() instanceof DefaultOAuth2User) {
@@ -33,10 +40,11 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             String email = userDetails.getAttribute("email") != null ? userDetails.getAttribute("email") : userDetails.getAttribute("login") + "@gmail.com";
             String imgUrl = userDetails.getAttribute("picture");
             String fullName = userDetails.getAttribute("name");
+            String phone = userDetails.getAttribute("phone");
             SignInResponse signInResponse = new SignInResponse();
             if(!userService.userIsExistsByEmail(email)){
                 SignupRequest dto = new SignupRequest();
-                dto.setPhone("");
+                dto.setPhone(phone != null ? phone : "");
                 dto.setEmail(email);
                 dto.setPassword("default-password");
                 dto.setAddress("");
@@ -59,13 +67,16 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             String token = jwtUtils.generateJwtToken(email);
             signInResponse.setAccessToken(token);
             response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             Gson gson = new Gson();
             String json = gson.toJson(signInResponse);
 
+            Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
+            String objectToken = encoder.encodeToString(json.getBytes());
+            String url = clientHost + "/auth-redirect?token=" + objectToken;
 
-            response.getWriter().write(json);
+            response.setHeader("Location", url);
+            response.setStatus(302);
         }
     }
 }

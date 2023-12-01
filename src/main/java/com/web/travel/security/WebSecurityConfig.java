@@ -22,15 +22,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -42,7 +38,8 @@ public class WebSecurityConfig {
     private AuthEntryPointJwt unauthorizedHandler;
     @Autowired
     private CustomSuccessHandler successHandler;
-
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter(){
         return new AuthTokenFilter();
@@ -86,23 +83,7 @@ public class WebSecurityConfig {
                 })
                 .exceptionHandling(exception ->
                         exception.authenticationEntryPoint(unauthorizedHandler)
-                                .accessDeniedHandler(new AccessDeniedHandler() {
-                                    @Override
-                                    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-                                        response.setContentType("application/json");
-                                        response.setCharacterEncoding("utf8");
-                                        response.getWriter().write(
-                                        "{\"code\": 403, " +
-                                                "\"status\": false, " +
-                                                "\"message\": " +
-                                                "\"Bạn không có quyền truy cập tài nguyên này!\", " +
-                                                "\"data\": {" +
-                                                "\"path\": \"" + request.getServletPath() + "\"," +
-                                                "\"error\": \"Access denied\"" +
-                                                "}}"
-                                        );
-                                    }
-                                })
+                                .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
