@@ -1,12 +1,16 @@
 package com.web.travel.controller.admin;
 
+import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.tour.TourAddingDTO;
 import com.web.travel.service.TourService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/admin/tour")
@@ -43,6 +47,17 @@ public class TourAdminController {
     public ResponseEntity<?> deleteTour(@PathVariable long id){
         return ResponseEntity.ok(
                 tourService.deleteTour(id)
+        );
+    }
+
+    @GetMapping("/all")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> getAllTour(Principal principal, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit){
+        return ResponseEntity.ok(
+                new ResDTO(HttpServletResponse.SC_OK,
+                        true,
+                        "Tour fetched successfully",
+                        tourService.adminGetAllTour(principal, page, limit))
         );
     }
 }

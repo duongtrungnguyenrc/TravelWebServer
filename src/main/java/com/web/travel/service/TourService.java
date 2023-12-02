@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 public class TourService {
@@ -404,6 +405,20 @@ public class TourService {
                 message,
                 response
         );
+    }
+
+    public Map<String, Object> adminGetAllTour(Principal principal, int page, int limit){
+        Page<Tour> tour = tourRepository.findAll(PageRequest.of(page - 1, limit));
+        List<TourDetailResDTO> tourDetailResDTOS = tour.get().map(item -> {
+            return (TourDetailResDTO) getResponseTourById(principal, item.getId());
+        }).toList();
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("pages", tour.getTotalPages());
+        response.put("tours", tourDetailResDTOS);
+
+        return response;
     }
 
     public ResDTO deleteTour(long id){

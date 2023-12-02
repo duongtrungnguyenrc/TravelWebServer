@@ -89,8 +89,20 @@ public class AuthController {
 
     @GetMapping("/sign-with-google")
     @CrossOrigin(origins = "*")
-    public void authorized(HttpServletResponse httpServletResponse) throws IOException {
+    public void googleAuthorize(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.sendRedirect("/oauth2/authorization/google");
+    }
+
+    @GetMapping("/sign-with-github")
+    @CrossOrigin(origins = "*")
+    public void githubAuthorize(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.sendRedirect("/oauth2/authorization/github");
+    }
+
+    @GetMapping("/sign-with-facebook")
+    @CrossOrigin(origins = "*")
+    public void facebookAuthorize(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.sendRedirect("/oauth2/authorization/facebook");
     }
 
     @PostMapping("/activate")

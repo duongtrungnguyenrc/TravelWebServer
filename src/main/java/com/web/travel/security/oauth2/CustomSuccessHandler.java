@@ -38,7 +38,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         if(authentication.getPrincipal() instanceof DefaultOAuth2User) {
             DefaultOAuth2User userDetails = (DefaultOAuth2User) authentication.getPrincipal();
             String email = userDetails.getAttribute("email") != null ? userDetails.getAttribute("email") : userDetails.getAttribute("login") + "@gmail.com";
-            String imgUrl = userDetails.getAttribute("picture");
+            String imgUrl = userDetails.getAttribute("picture") != null ? userDetails.getAttribute("picture") : userDetails.getAttribute("avatar_url");
             String fullName = userDetails.getAttribute("name");
             String phone = userDetails.getAttribute("phone");
             SignInResponse signInResponse = new SignInResponse();
