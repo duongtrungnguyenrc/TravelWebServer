@@ -31,13 +31,16 @@ public class OrderAdminController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllOrder(){
+    public ResponseEntity<?> getAllOrder(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ){
         return ResponseEntity.ok().body(
                 new ResDTO(
                         HttpServletResponse.SC_OK,
                         true,
                         "Orders fetched successfully!",
-                        orderService.getAllResponse()
+                        orderService.getAllResponse(page, limit)
                 )
         );
     }

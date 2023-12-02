@@ -20,6 +20,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -67,13 +69,20 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
-    public List<OrderDetailResDTO> getAllResponse(){
-        List<Order> orders = orderRepository.findAllByOrderByOrderDateDesc();
+    public Map<String, Object> getAllResponse(int page, int limit){
+        Page<Order> orders = orderRepository.findAllByOrderByOrderDateDesc(PageRequest.of(page - 1, limit));
 
-        return orders.stream().map(order -> {
+        Map<String, Object> response = new HashMap<>();
+
+        List<OrderDetailResDTO> ordersResponse = orders.get().map(order -> {
             OrderResMapper mapper = new OrderResMapper();
             return (OrderDetailResDTO) mapper.mapToDTO(order);
-        }).collect(Collectors.toList());
+        }).toList();
+
+        response.put("pages", orders.getTotalPages());
+        response.put("orders", ordersResponse);
+
+        return response;
     }
 
     public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
