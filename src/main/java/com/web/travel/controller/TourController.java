@@ -1,6 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.payload.request.TourFilter;
 import com.web.travel.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -61,6 +63,24 @@ public class TourController {
                         message,
                         response
                 )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searching(
+            @RequestParam(defaultValue = "") String key,
+            @RequestParam(defaultValue = "1", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int limit
+    ){
+        return ResponseEntity.ok(
+                tourService.getTourResByNameOrDestination(key, page, limit)
+        );
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> filter(@RequestBody TourFilter tourFilter){
+        return ResponseEntity.ok(
+                tourService.getTourByFilter(tourFilter)
         );
     }
 }

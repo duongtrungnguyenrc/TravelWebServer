@@ -32,6 +32,18 @@ public class BlogController {
         );
     }
 
+    @GetMapping("search")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> search(
+            @RequestParam String key,
+            @RequestParam(defaultValue = "1", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int limit
+    ){
+        return ResponseEntity.ok(
+          blogService.getBlogsByKeyword(key, page, limit)
+        );
+    }
+
     @GetMapping("/latest")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> getLatest(){

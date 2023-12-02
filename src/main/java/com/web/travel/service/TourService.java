@@ -14,12 +14,14 @@ import com.web.travel.model.*;
 import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.EStatus;
 import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.payload.request.TourFilter;
 import com.web.travel.repository.*;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FileUploadServiceImpl;
 import com.web.travel.service.cloudinary.FilesValidation;
 import com.web.travel.utils.DateHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -130,6 +132,61 @@ public class TourService {
         int pages = tourPage.getTotalPages();
         result.put("pages", pages);
         return result;
+    }
+
+    public ResDTO getTourResByNameOrDestination(String keyWord, int page, int limit){
+        Page<Tour> foundTours = tourRepository.findByNameContainingOrDestinationContaining(keyWord, keyWord, PageRequest.of(page - 1, limit));
+
+        List<TourGeneralResDTO> listTourRes = foundTours.get().map(
+                tour -> {
+                    Mapper mapper = new TourGeneralResMapper();
+                    return (TourGeneralResDTO) mapper.mapToDTO(tour);
+                }
+        ).toList();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("pages", foundTours.getTotalPages());
+        response.put("tours" , listTourRes);
+
+        ResDTO resDTO = new ResDTO();
+        resDTO.setMessage("Tour searched successfully!");
+        resDTO.setData(response);
+        resDTO.setCode(HttpServletResponse.SC_OK);
+        resDTO.setStatus(true);
+        return resDTO;
+    }
+
+    public ResDTO getTourByFilter(TourFilter tourFilter){
+        Map<String, Object> response = new HashMap<>();
+
+        Page<Tour> foundTours = tourRepository.findByFilter(
+                tourFilter.getStar(),
+                tourFilter.getDepartDate(),
+                tourFilter.getEndDate(),
+                tourFilter.getFromPrice(),
+                tourFilter.getToPrice(),
+                tourFilter.getType() != null ? ETourType.valueOf("TYPE_" + tourFilter.getType().toUpperCase()) : null,
+                PageRequest.of(tourFilter.getPage() - 1, tourFilter.getLimit())
+        );
+
+        response.put("pages", foundTours.getTotalPages());
+
+        List<TourGeneralResDTO> tourDTOS = foundTours.get().map(
+                tour -> {
+                    Mapper mapper = new TourGeneralResMapper();
+                    return (TourGeneralResDTO) mapper.mapToDTO(tour);
+                }
+        ).toList();
+
+        response.put("tours", tourDTOS);
+
+        ResDTO resDTO = new ResDTO();
+        resDTO.setStatus(true);
+        resDTO.setCode(HttpServletResponse.SC_OK);
+        resDTO.setData(response);
+        resDTO.setMessage("Tour searched successfully!");
+
+        return resDTO;
     }
 
     public Tour findTourById(Long id){

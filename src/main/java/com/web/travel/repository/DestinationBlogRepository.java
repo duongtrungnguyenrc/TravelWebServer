@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DestinationBlogRepository extends JpaRepository<DestinationBlog, Long> {
     public Page<DestinationBlog> findAllByOrderByPostDateDesc(Pageable pageable);
+    public Page<DestinationBlog> findByTitleContaining(String keyword, Pageable pageable);
 }

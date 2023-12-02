@@ -79,6 +79,32 @@ public class BlogService {
         }).toList();
     }
 
+    public ResDTO getBlogsByKeyword(String keyword, int page, int limit){
+        ResDTO response = new ResDTO();
+        response.setCode(HttpServletResponse.SC_OK);
+        response.setStatus(true);
+        response.setMessage("Blog searched successfully!");
+
+        Page<DestinationBlog> foundBlogs = desRepository.findByTitleContaining(keyword, PageRequest.of(page - 1, limit));
+
+        List<DestinationBlogResDTO> resDTOS = foundBlogs
+                .map(blog -> {
+                    Mapper mapper = new DestinationBlogResMapper();
+                    DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
+                    Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
+                    dto.setDescription(paragraph.getContent());
+                    return dto;
+                }).toList();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("pages", foundBlogs.getTotalPages());
+        data.put("posts", resDTOS);
+
+        response.setData(data);
+
+        return response;
+    }
+
     public List<Map<String, Object>> getListAuthorDesc(){
         List<User> authors = customDesBlogRepository.findTopAuthor();
         List<Map<String, Object>> result = new ArrayList<>();
