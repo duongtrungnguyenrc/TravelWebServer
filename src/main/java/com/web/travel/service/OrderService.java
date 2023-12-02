@@ -67,6 +67,15 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
+    public List<OrderDetailResDTO> getAllResponse(){
+        List<Order> orders = orderRepository.findAllByOrderByOrderDateDesc();
+
+        return orders.stream().map(order -> {
+            OrderResMapper mapper = new OrderResMapper();
+            return (OrderDetailResDTO) mapper.mapToDTO(order);
+        }).collect(Collectors.toList());
+    }
+
     public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
         long amount = (long) Math.round(body.getAmount());
         String ipAddress = request.getRemoteAddr();

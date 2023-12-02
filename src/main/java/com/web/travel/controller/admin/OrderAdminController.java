@@ -11,6 +11,7 @@ import org.springframework.boot.web.server.Http2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,5 +28,17 @@ public class OrderAdminController {
     public ResponseEntity<?> updateOrderStatus(@RequestBody OrderUpdateReqDTO orderDto){
         ResDTO response = orderService.updateOrderStatus(orderDto);
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllOrder(){
+        return ResponseEntity.ok().body(
+                new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        "Orders fetched successfully!",
+                        orderService.getAllResponse()
+                )
+        );
     }
 }
