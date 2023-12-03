@@ -153,7 +153,7 @@ public class OrderService {
         );
     }
 
-    public ResDTO updateOrderStatus(OrderUpdateReqDTO dto){
+    public ResDTO updateOrderStatus(Principal principal, boolean isUserUpdate, OrderUpdateReqDTO dto){
         Order order = getById(dto.getId());
         if(order != null){
             EOrderStatus needUpdateStatus = EOrderStatus.valueOf("STATUS_" + dto.getStatus().toUpperCase());
@@ -173,22 +173,30 @@ public class OrderService {
                 //Ticket booking can only be canceled 3 days before departure date
                 if(needUpdateStatus == EOrderStatus.STATUS_CANCELED){
                     if(diffDay >= 3){
-                        order.setStatus(needUpdateStatus);
+                        if(!isUserUpdate || principal.getName().equals(order.getUser().getEmail())){
+                            order.setStatus(needUpdateStatus);
 
-                        //Reduce current people due to this order is canceled
-                        int currentPeople = order.getTourDate().getCurrentPeople();
-                        order.getTourDate().setCurrentPeople(currentPeople - order.getTotalPeople());
-                        tourDateRepository.save(order.getTourDate());
+                            //Reduce current people due to this order is canceled
+                            int currentPeople = order.getTourDate().getCurrentPeople();
+                            order.getTourDate().setCurrentPeople(currentPeople - order.getTotalPeople());
+                            tourDateRepository.save(order.getTourDate());
 
-                        saveOrder(order);
-                        response.put("status", order.getStatus());
+                            saveOrder(order);
+                            response.put("status", order.getStatus());
 
-                        emailService.sendCanceledEmail(order);
+                            emailService.sendCanceledEmail(order);
+                            return new ResDTO(
+                                    HttpServletResponse.SC_OK,
+                                    true,
+                                    "Hủy đặt tour thành công!",
+                                    response
+                            );
+                        }
                         return new ResDTO(
-                            HttpServletResponse.SC_OK,
-                            true,
-                            "Hủy đặt tour thành công!",
-                            response
+                                HttpServletResponse.SC_BAD_REQUEST,
+                                false,
+                                "Không thể hủy tour của người khác!",
+                                response
                         );
                     }
                     return new ResDTO(

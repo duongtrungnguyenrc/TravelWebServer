@@ -11,6 +11,7 @@ import org.springframework.boot.web.server.Http2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +26,8 @@ public class OrderAdminController {
     EmailService emailService;
     @PostMapping("/update")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<?> updateOrderStatus(@RequestBody OrderUpdateReqDTO orderDto){
-        ResDTO response = orderService.updateOrderStatus(orderDto);
+    public ResponseEntity<?> updateOrderStatus(Principal principal,  @RequestBody OrderUpdateReqDTO orderDto){
+        ResDTO response = orderService.updateOrderStatus(principal, false, orderDto);
         return ResponseEntity.ok().body(response);
     }
 
@@ -37,10 +38,10 @@ public class OrderAdminController {
     ){
         return ResponseEntity.ok().body(
                 new ResDTO(
-                        HttpServletResponse.SC_OK,
-                        true,
-                        "Orders fetched successfully!",
-                        orderService.getAllResponse(page, limit)
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Orders fetched successfully!",
+                    orderService.getAllResponse(page, limit)
                 )
         );
     }

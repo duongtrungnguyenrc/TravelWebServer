@@ -15,6 +15,7 @@ import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.model.enumeration.EStatus;
 import com.web.travel.model.enumeration.ETourType;
 import com.web.travel.payload.request.TourFilter;
+import com.web.travel.payload.response.TopDestinationResponse;
 import com.web.travel.repository.*;
 import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
@@ -496,5 +497,18 @@ public class TourService {
                 message.get(),
                 response
         );
+    }
+
+    public ResDTO getTopDestinations(int top){
+        ResDTO response = new ResDTO();
+
+        List<TopDestinationResponse> responses = customTourRepository.findTopDestinations(top);
+
+        response.setMessage("Destination fetched successfully!");
+        response.setCode(HttpServletResponse.SC_OK);
+        response.setData(responses);
+        response.setStatus(true);
+
+        return response;
     }
 }

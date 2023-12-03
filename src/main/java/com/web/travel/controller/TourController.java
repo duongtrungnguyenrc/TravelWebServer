@@ -83,4 +83,11 @@ public class TourController {
                 tourService.getTourByFilter(tourFilter)
         );
     }
+
+    @GetMapping("/top-destination")
+    public ResponseEntity<?> getTopDestination(){
+        return ResponseEntity.ok(
+                tourService.getTopDestinations(6)
+        );
+    }
 }

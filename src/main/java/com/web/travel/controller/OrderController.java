@@ -1,15 +1,13 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.common.OrderUpdateReqDTO;
 import com.web.travel.service.OrderService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -30,4 +28,15 @@ public class OrderController {
             )
         );
     }
-}
+
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelOrder(Principal principal, @PathVariable long id){
+
+        OrderUpdateReqDTO request = new OrderUpdateReqDTO();
+        request.setId(id);
+        request.setStatus("canceled");
+
+        return ResponseEntity.ok(
+                orderService.updateOrderStatus(principal, true, request)
+        );
+    }}

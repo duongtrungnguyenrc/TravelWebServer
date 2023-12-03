@@ -95,7 +95,8 @@ public class WebSecurityConfig {
                                     "/api/rate/delete/**",
                                     "/api/user/update",
                                     "/api/user/status/**",
-                                    "/api/user/avatar").authenticated()
+                                    "/api/user/avatar",
+                                    "/api/order/cancel/**").authenticated()
                             .requestMatchers(HttpMethod.GET, "/api/order").authenticated()
                             .anyRequest().permitAll()
                 ).oauth2Login(oAuth2LoginConfigurer -> {
