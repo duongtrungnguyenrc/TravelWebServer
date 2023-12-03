@@ -203,6 +203,8 @@ public class EmailService {
         EPaymentMethod method = order.getPaymentMethod();
         if(method == EPaymentMethod.METHOD_VNPAY){
             model.put("method", "Thanh toán bằng VNPay");
+        }else if(method == EPaymentMethod.METHOD_PAYPAL){
+            model.put("method", "Thanh toán bằng PayPal");
         }else{
             model.put("method", "Thanh toán bằng tiền mặt");
         }
