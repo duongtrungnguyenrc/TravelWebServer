@@ -6,5 +6,6 @@ public enum EPaymentMethod {
     STATUS_REFUNDED,
     STATUS_CANCELLED,
     METHOD_VNPAY,
-    METHOD_CASH
+    METHOD_CASH,
+    METHOD_PAYPAL
 }

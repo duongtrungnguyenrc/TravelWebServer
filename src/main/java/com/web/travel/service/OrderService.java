@@ -1,5 +1,8 @@
 package com.web.travel.service;
 
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.dto.request.common.OrderUpdateReqDTO;
@@ -14,6 +17,7 @@ import com.web.travel.model.enumeration.EOrderStatus;
 import com.web.travel.repository.OrderRepository;
 import com.web.travel.repository.TourDateRepository;
 import com.web.travel.service.email.EmailService;
+import com.web.travel.service.paypal.PaypalService;
 import com.web.travel.service.vnpay.VnPayService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +47,8 @@ public class OrderService {
     TourDateRepository tourDateRepository;
     @Autowired
     VnPayService vnPayService;
+    @Autowired
+    PaypalService paypalService;
     @Autowired
     OrderReqMapper orderReqMapper;
     @Autowired
@@ -118,13 +124,43 @@ public class OrderService {
                             null
                     );
 
-                    if (body.getPaymentMethod().equals("vnpay")) {
+                    String paymentMethod = body.getPaymentMethod();
+                    if (paymentMethod.equals("vnpay")) {
                         HashMap<String, Long> idParams = new HashMap<>();
                         idParams.put("orderId", orderId);
                         idParams.put("tourDateId", savedTourDate.getId());
                         idParams.put("tourId", savedTourDate.getTour().getId());
 
                         response = vnPayService.createPayment(amount, ipAddress, idParams, body.getSessionToken());
+
+                    }else if(paymentMethod.equals("paypal")){
+                        Payment payment = null;
+                        try {
+                            HashMap<String, Long> idParams = new HashMap<>();
+                            idParams.put("orderId", orderId);
+                            idParams.put("tourDateId", savedTourDate.getId());
+                            idParams.put("tourId", savedTourDate.getTour().getId());
+
+                            payment = paypalService.createPayment(convertVNDtoUSD(amount), idParams, body.getSessionToken());
+
+                        } catch (PayPalRESTException e) {
+                            return new ResDTO(
+                                HttpServletResponse.SC_BAD_REQUEST,
+                                false,
+                                "Có lỗi xảy ra, vui lòng thử lại sau!",
+                                null
+                            );
+                        }
+                        for(Links link : payment.getLinks()) {
+                            if(link.getRel().equals("approval_url")) {
+                                return new ResDTO(
+                                    HttpServletResponse.SC_OK,
+                                    false,
+                                    "Đặt tour thành công!",
+                                    link.getHref()
+                                );
+                            }
+                        }
                     } else {
                         emailService.sendOrderedEmail(order, false);
                     }
@@ -243,5 +279,9 @@ public class OrderService {
             "Không tìm thấy đơn hàng có mã: " + dto.getId(),
             null
         );
+    }
+
+    public static double convertVNDtoUSD(long vndAmount) {
+        return vndAmount * 0.000041;
     }
 }
