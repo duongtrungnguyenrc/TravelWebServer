@@ -11,4 +11,5 @@ public class TopDestinationResponse {
     private String id;
     private String name;
     private Long orderQuantity;
+    private String img;
 }

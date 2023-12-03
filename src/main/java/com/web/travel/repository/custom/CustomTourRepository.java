@@ -43,7 +43,7 @@ public class CustomTourRepository {
         Root<Tour> tourRoot = criteriaQuery.from(Tour.class);
         Join<Tour, Order> orderJoin = tourRoot.join("orders", JoinType.INNER);
 
-        criteriaQuery.multiselect(tourRoot.get("destination"), criteriaBuilder.count(orderJoin));
+        criteriaQuery.multiselect(tourRoot.get("destination"), criteriaBuilder.count(orderJoin), tourRoot.get("img"));
         criteriaQuery.groupBy(tourRoot.get("destination"));
         criteriaQuery.orderBy(criteriaBuilder.desc(criteriaBuilder.count(orderJoin)));
 
@@ -57,6 +57,7 @@ public class CustomTourRepository {
             response.setId(UUID.randomUUID().toString());
             response.setName((String) result[0]);
             response.setOrderQuantity((Long) result[1]);
+            response.setImg((String) result[2]);
             topDestinations.add(response);
         }
 
