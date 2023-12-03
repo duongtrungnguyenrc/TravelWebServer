@@ -3,17 +3,14 @@ package com.web.travel.repository;
 import com.web.travel.model.Tour;
 import com.web.travel.model.enumeration.ETourType;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TourRepository extends JpaRepository<Tour, Long> {
@@ -41,7 +38,4 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
             @Param("type") ETourType type,
             Pageable pageable
     );
-
-
-
 }

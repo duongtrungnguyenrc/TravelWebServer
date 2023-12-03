@@ -217,7 +217,7 @@ public class OrderService {
                     return new ResDTO(
                             HttpServletResponse.SC_BAD_REQUEST,
                             false,
-                            "Không thể cập nhật trạng thái!",
+                            "Không thể cập nhật trạng thái khi đã hủy!",
                             response
                     );
                 }
