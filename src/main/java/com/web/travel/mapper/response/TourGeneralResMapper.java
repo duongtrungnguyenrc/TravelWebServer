@@ -26,6 +26,7 @@ public class TourGeneralResMapper implements Mapper {
             tourGeneralResDTO.setLocation(((Tour) obj).getDestination());
             tourGeneralResDTO.setDepart(((Tour) obj).getDepart());
             TourDate tourDate = ((Tour) obj).getTourDate().stream().findFirst().orElse(null);
+            tourGeneralResDTO.setMaxPeople(0);
             double price = 0;
             int duration = 0;
             if(tourDate != null){
@@ -34,11 +35,10 @@ public class TourGeneralResMapper implements Mapper {
                 duration = dateHandler.getDiffDay(end, depart);
 
                 price = tourDate.getAdultPrice();
+                tourGeneralResDTO.setMaxPeople(tourDate.getMaxPeople());
             }
             tourGeneralResDTO.setPrice(price);
             tourGeneralResDTO.setDuration(duration);
-            List<TourDate> tourDateList = ((Tour) obj).getTourDate().stream().toList();
-            tourGeneralResDTO.setMaxPeople(tourDateList.size() > 0 ? tourDateList.get(0).getMaxPeople() : 0);
             String typeDto = "";
             String typeTitle = "";
             switch (((Tour) obj).getTourType().toString()) {
