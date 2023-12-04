@@ -1,5 +1,6 @@
 package com.web.travel.controller.admin;
 
+import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.blog.BlogAddingReqDTO;
 import com.web.travel.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +34,18 @@ public class BlogAdminController {
             @RequestPart("blog") BlogAddingReqDTO blogAddingReqDTO,
             @RequestPart("images") MultipartFile[] images
     ){
-        return ResponseEntity.ok(
-                blogService.updateBlog(id, principal, blogAddingReqDTO, images)
-        );
+        ResDTO response  = blogService.updateBlog(id, principal, blogAddingReqDTO, images);
+        if(response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/delete/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> deleteBlog(@PathVariable("id") Long id){
-        return ResponseEntity.ok(
-                blogService.deleteBlog((id))
-        );
+        ResDTO response = blogService.deleteBlog((id));
+        if (response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
     }
 }

@@ -44,16 +44,20 @@ public class HotelAdminController {
             @RequestPart("image") MultipartFile image,
             @RequestPart("hotel") HotelAddingDTO hotelAddingDTO
     ){
-        return ResponseEntity.ok(
-                hotelService.updateHotel(id, image, hotelAddingDTO)
-        );
+        ResDTO response = hotelService.updateHotel(id, image, hotelAddingDTO);
+
+        if(response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("delete/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> deleteHotel(@PathVariable long id){
-        return ResponseEntity.ok(
-                hotelService.deleteHotel(id)
-        );
+        ResDTO response = hotelService.deleteHotel(id);
+
+        if(response.isStatus())
+            return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
     }
 }

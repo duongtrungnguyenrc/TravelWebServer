@@ -120,8 +120,7 @@ public class AuthController {
     @PostMapping("/change-password")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> changePassword(Principal principal, @RequestBody ChangePasswordRequest request){
-        return ResponseEntity.ok(
-               authService.changePassword(principal, request)
-        );
+        ResDTO response = authService.changePassword(principal, request);
+        return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 }

@@ -249,7 +249,7 @@ public class BlogService {
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 false,
-                "Update blog failed",
+                "Blog not found with id: " + id,
                 null
         );
     }
@@ -268,7 +268,7 @@ public class BlogService {
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 false,
-                "Delete blog failed",
+                "Blog not found with id: " + id,
                 null
         );
     }

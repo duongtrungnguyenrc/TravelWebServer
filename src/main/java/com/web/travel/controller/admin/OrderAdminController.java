@@ -28,7 +28,9 @@ public class OrderAdminController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> updateOrderStatus(Principal principal,  @RequestBody OrderUpdateReqDTO orderDto){
         ResDTO response = orderService.updateOrderStatus(principal, false, orderDto);
-        return ResponseEntity.ok().body(response);
+        if(response.isStatus())
+            return ResponseEntity.ok().body(response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     @GetMapping("/all")

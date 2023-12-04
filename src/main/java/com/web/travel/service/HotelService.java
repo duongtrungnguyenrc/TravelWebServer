@@ -134,7 +134,7 @@ public class HotelService {
         return new ResDTO(
                 400,
                 false,
-                "Xóa khách sạn không thành công!",
+                "Hotel not found with id: " + id,
                 null
         );
     }
