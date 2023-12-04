@@ -30,6 +30,27 @@ public class CustomDestinationBlogRepository {
                 .getResultList();
     }
 
+    public Page<DestinationBlog> findAllDestinationBlogDiffLatest(Pageable pageable){
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<DestinationBlog> criteriaQuery = builder.createQuery(DestinationBlog.class);
+        Root<DestinationBlog> root = criteriaQuery.from(DestinationBlog.class);
+
+        criteriaQuery.select(root).orderBy(builder.desc(root.get("postDate")));
+
+        List<DestinationBlog> result = entityManager.createQuery(criteriaQuery)
+                .setFirstResult((int) pageable.getOffset() + 4)
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        Root<DestinationBlog> blogRoot = countQuery.from(DestinationBlog.class);
+        countQuery.select(builder.count(blogRoot));
+
+        Long count = entityManager.createQuery(countQuery).getSingleResult();
+
+        return new PageImpl<>(result, pageable, count - 4);
+    }
+
     public List<User> findTopAuthor(){
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);

@@ -46,7 +46,7 @@ public class BlogService {
     @Autowired
     FilesValidation fileValidator;
     public Map<String, Object> getAllDestinationBlog(int page, int limit){
-        Page<DestinationBlog> list = desRepository.findAllByOrderByPostDateDesc(PageRequest.of(page, limit));
+        Page<DestinationBlog> list = customDesBlogRepository.findAllDestinationBlogDiffLatest(PageRequest.of(page, limit));
         Map<String, Object> result = new HashMap<>();
 
         int pages = list.getTotalPages();
