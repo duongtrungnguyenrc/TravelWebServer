@@ -96,7 +96,8 @@ public class WebSecurityConfig {
                                     "/api/user/update",
                                     "/api/user/status",
                                     "/api/user/avatar",
-                                    "/api/order/cancel/**").authenticated()
+                                    "/api/order/cancel/**",
+                                    "/api/auth/change-password").authenticated()
                             .requestMatchers(HttpMethod.GET, "/api/order").authenticated()
                             .anyRequest().permitAll()
                 ).oauth2Login(oAuth2LoginConfigurer -> {

@@ -5,6 +5,7 @@ import com.web.travel.model.enumeration.ERole;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.EUserStatus;
+import com.web.travel.payload.request.ChangePasswordRequest;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.SignInResponse;
@@ -26,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,6 +90,39 @@ public class AuthService {
         }
 
         return result;
+    }
+
+    public ResDTO changePassword(Principal principal, ChangePasswordRequest request){
+        if(principal != null){
+            User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
+            if(foundUser != null){
+                String encodedPassword = foundUser.getPassword();
+                if(encoder.matches(request.getOldPassword(), encodedPassword)){
+                    foundUser.setPassword(encoder.encode(request.getNewPassword()));
+                    userRepository.save(foundUser);
+                    Map<String, Long> response = new HashMap<>();
+                    response.put("userId", foundUser.getId());
+                    return new ResDTO(
+                            HttpServletResponse.SC_OK,
+                            true,
+                            "Đổi mật khẩu thành công!",
+                            response
+                    );
+                }
+                return new ResDTO(
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        false,
+                        "Sai mật khẩu!",
+                        null
+                );
+            }
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Không tìm thấy người dùng!",
+                null
+        );
     }
 
     public ResDTO signIn(HttpServletRequest request, LoginRequest loginRequest){

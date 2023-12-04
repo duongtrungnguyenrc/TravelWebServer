@@ -1,7 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.payload.request.ChangePasswordRequest;
+import com.web.travel.payload.request.NewPasswordRequest;
 import com.web.travel.payload.request.MailRequest;
 import com.web.travel.payload.request.MailResetPasswordRequest;
 import com.web.travel.service.AuthService;
@@ -52,7 +52,7 @@ public class ResetPasswordController {
     }
 
     @PostMapping("/change/{token}")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest password, @PathVariable("token") String encodedToken){
+    public ResponseEntity<?> changePassword(@RequestBody NewPasswordRequest password, @PathVariable("token") String encodedToken){
         String token = authService.decodeResetPasswordToken(encodedToken);
         if(authService.resetPasswordTokenIsValid(token)){
             return ResponseEntity.ok(

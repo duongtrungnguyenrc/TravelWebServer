@@ -6,10 +6,7 @@ import com.web.travel.mapper.response.UserDetailResMapper;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.ERole;
-import com.web.travel.payload.request.ConfirmCodeRequest;
-import com.web.travel.payload.request.LoginRequest;
-import com.web.travel.payload.request.LoginVerifyRequest;
-import com.web.travel.payload.request.SignupRequest;
+import com.web.travel.payload.request.*;
 import com.web.travel.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,5 +115,13 @@ public class AuthController {
                 ResponseEntity.badRequest().body(
                         response
                 );
+    }
+
+    @PostMapping("/change-password")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> changePassword(Principal principal, @RequestBody ChangePasswordRequest request){
+        return ResponseEntity.ok(
+               authService.changePassword(principal, request)
+        );
     }
 }
