@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class TourGeneralResMapper implements Mapper {
@@ -36,7 +37,8 @@ public class TourGeneralResMapper implements Mapper {
             }
             tourGeneralResDTO.setPrice(price);
             tourGeneralResDTO.setDuration(duration);
-            tourGeneralResDTO.setMaxPeople(((Tour) obj).getTourDate().stream().toList().get(0).getMaxPeople());
+            List<TourDate> tourDateList = ((Tour) obj).getTourDate().stream().toList();
+            tourGeneralResDTO.setMaxPeople(tourDateList.size() > 0 ? tourDateList.get(0).getMaxPeople() : 0);
             String typeDto = "";
             String typeTitle = "";
             switch (((Tour) obj).getTourType().toString()) {
