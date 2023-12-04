@@ -132,11 +132,11 @@ public class AuthService {
         if(user != null && user.getActive().equals(EUserStatus.STATUS_NOT_ACTIVATED)){
             request.setAttribute("email", loginRequest.getEmail());
             request.setAttribute("fullName", user.getFullName());
-        }else{
-            saveUserLoginHistory(user);
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+        saveUserLoginHistory(user);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
