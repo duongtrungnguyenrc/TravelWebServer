@@ -33,6 +33,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.*;
@@ -173,13 +176,13 @@ public class AuthService {
 
         LoginHistory loginHistory = new LoginHistory();
         loginHistory.setUser(user);
+        loginHistory.setIpAddress(request.getRemoteAddr());
         loginHistory.setUserDevice(deviceName);
         loginHistory.setLoggedDate(DateHandler.getCurrentDateTime());
 
         user.getLoginHistories().add(loginHistory);
         userRepository.save(user);
     }
-
 
     public boolean loginVerify(String token) {
         return jwtUtils.validateJwtToken(token);
