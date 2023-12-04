@@ -63,4 +63,29 @@ public class CustomDestinationBlogRepository {
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
+
+    public List<DestinationBlog> getRelevantBlogs(DestinationBlog currentBlog, int maxResult){
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<DestinationBlog> criteriaQuery = builder.createQuery(DestinationBlog.class);
+        Root<DestinationBlog> root = criteriaQuery.from(DestinationBlog.class);
+
+        Predicate idNotEqual = builder.notEqual(root.get("id"), currentBlog.getId());
+        Predicate titleLike = builder.like(builder.lower(root.get("title")), "%" + currentBlog.getTitle().toLowerCase() + "%");
+        Predicate typeLike = builder.like(builder.lower(root.get("type")), "%" + currentBlog.getType().toLowerCase() + "%");
+        Predicate titleOrTypeLike = builder.or(titleLike, typeLike);
+
+        criteriaQuery.select(root).where(idNotEqual, titleOrTypeLike);
+
+        List<DestinationBlog> result = entityManager.createQuery(criteriaQuery)
+                .setMaxResults(maxResult)
+                .getResultList();
+        if(result.size() > 0){
+            return result;
+        }
+
+        criteriaQuery.select(root).where(builder.like(root.get("type"), "%"));
+        return entityManager.createQuery(criteriaQuery)
+                .setMaxResults(maxResult)
+                .getResultList();
+    }
 }

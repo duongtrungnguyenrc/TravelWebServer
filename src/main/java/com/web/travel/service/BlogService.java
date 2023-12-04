@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogService {
@@ -122,12 +123,25 @@ public class BlogService {
         Optional<DestinationBlog> foundBlog = desRepository.findById(id);
 
         if(foundBlog.isPresent()){
-            dto = (DesBlogDetailResDTO) desBlogDetailResMapper.mapToDTO(foundBlog.get());
+            DestinationBlog foundBlogObj = foundBlog.get();
+            dto = (DesBlogDetailResDTO) desBlogDetailResMapper.mapToDTO(foundBlogObj);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("post", dto);
+
+            List<DestinationBlogResDTO> relevantBlogs = customDesBlogRepository.getRelevantBlogs(foundBlogObj, 4)
+                    .stream().map(blog -> {
+                            Mapper mapper = new DestinationBlogResMapper();
+                            return (DestinationBlogResDTO) mapper.mapToDTO(blog);
+                        }
+                    ).toList();
+            response.put("relevantPosts", relevantBlogs);
+
             return new ResDTO(
                     HttpServletResponse.SC_OK,
                     true,
                     "Blog fetched successfully!",
-                    dto
+                    response
             );
         }else{
             return new ResDTO(
