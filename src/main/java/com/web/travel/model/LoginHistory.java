@@ -19,6 +19,7 @@ public class LoginHistory {
     private Long id;
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date loggedDate;
+    private String userDevice;
     @ManyToOne
     @JoinColumn(name = "userId")
     @JsonIgnore

@@ -56,6 +56,18 @@
 			<artifactId>rest-api-sdk</artifactId>
 			<version>1.14.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.uadetector/uadetector-core -->
+		<dependency>
+			<groupId>net.sf.uadetector</groupId>
+			<artifactId>uadetector-core</artifactId>
+			<version>0.9.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.uadetector</groupId>
+			<artifactId>uadetector-resources</artifactId>
+			<version>2014.10</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -19,6 +19,10 @@ import com.web.travel.service.email.EmailService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -136,7 +140,7 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        saveUserLoginHistory(user);
+        saveUserLoginHistory(request, user);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -161,9 +165,15 @@ public class AuthService {
         return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", signInResponse);
     }
 
-    private void saveUserLoginHistory(User user){
+    private void saveUserLoginHistory(HttpServletRequest request, User user){
+        String userAgentString = request.getHeader("User-Agent");
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent userAgent = parser.parse(userAgentString);
+        String deviceName = userAgent.getName() + ", " + userAgent.getOperatingSystem().getName();
+
         LoginHistory loginHistory = new LoginHistory();
         loginHistory.setUser(user);
+        loginHistory.setUserDevice(deviceName);
         loginHistory.setLoggedDate(DateHandler.getCurrentDateTime());
 
         user.getLoginHistories().add(loginHistory);
