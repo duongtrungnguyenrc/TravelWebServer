@@ -1,6 +1,7 @@
 package com.web.travel.service;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.model.LoginHistory;
 import com.web.travel.model.enumeration.ERole;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
@@ -15,6 +16,7 @@ import com.web.travel.repository.UserRepository;
 import com.web.travel.security.jwt.JwtUtils;
 import com.web.travel.security.services.UserDetailsImpl;
 import com.web.travel.service.email.EmailService;
+import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,8 @@ public class AuthService {
         if(user != null && user.getActive().equals(EUserStatus.STATUS_NOT_ACTIVATED)){
             request.setAttribute("email", loginRequest.getEmail());
             request.setAttribute("fullName", user.getFullName());
+        }else{
+            saveUserLoginHistory(user);
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -155,6 +159,15 @@ public class AuthService {
         signInResponse.setFullName(userDetails.getFullName());
 
         return new ResDTO(HttpServletResponse.SC_OK, true, "Đăng nhập thành công", signInResponse);
+    }
+
+    private void saveUserLoginHistory(User user){
+        LoginHistory loginHistory = new LoginHistory();
+        loginHistory.setUser(user);
+        loginHistory.setLoggedDate(DateHandler.getCurrentDateTime());
+
+        user.getLoginHistories().add(loginHistory);
+        userRepository.save(user);
     }
 
 

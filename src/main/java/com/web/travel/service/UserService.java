@@ -5,6 +5,7 @@ import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
 import com.web.travel.dto.response.UserResDTO;
 import com.web.travel.mapper.response.UserDetailResMapper;
+import com.web.travel.model.LoginHistory;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enumeration.ERole;
@@ -23,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -175,5 +173,27 @@ public class UserService {
             }
         }
         return false;
+    }
+
+    public ResDTO getLoginHistory(Principal principal){
+        User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
+        if(foundUser != null)
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Login histories fetched successfully",
+                    foundUser.getLoginHistories().stream().sorted(new Comparator<LoginHistory>() {
+                        @Override
+                        public int compare(LoginHistory o1, LoginHistory o2) {
+                            return (int) (o2.getLoggedDate().getTime() - o1.getLoggedDate().getTime());
+                        }
+                    }).toList()
+            );
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "User not found!",
+                null
+        );
     }
 }

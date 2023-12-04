@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    private ResponseEntity<?> updateUserInfo(Principal principal, @RequestBody UserUpdateReqDTO userDto){
+    public ResponseEntity<?> updateUserInfo(Principal principal, @RequestBody UserUpdateReqDTO userDto){
         ResDTO response = service.updateUserInfo(principal, userDto);
 
         if(response.isStatus())
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/status")
-    private ResponseEntity<?> updateUserStatus(Principal principal, @RequestBody UpdateUserStatusRequest request){
+    public ResponseEntity<?> updateUserStatus(Principal principal, @RequestBody UpdateUserStatusRequest request){
         ResDTO response = service.updateUserStatus(principal, request);
         if(response.isStatus())
             return ResponseEntity.ok(response);
@@ -54,10 +54,18 @@ public class UserController {
     }
 
     @PostMapping("/avatar")
-    private ResponseEntity<?> updateUserAvatar(Principal principal, @RequestParam MultipartFile avatar){
+    public ResponseEntity<?> updateUserAvatar(Principal principal, @RequestParam MultipartFile avatar){
         ResDTO response = service.updateUserAvatar(principal, avatar);
         if(response.isStatus())
             return ResponseEntity.ok(response);
         return ResponseEntity.badRequest().body(response);
     }
+
+    @GetMapping("login-history")
+    public ResponseEntity<?> getLoginHistory(Principal principal){
+        ResDTO response = service.getLoginHistory(principal);
+
+        return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+    }
+
 }

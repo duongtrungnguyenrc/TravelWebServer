@@ -11,6 +11,7 @@ import org.hibernate.boot.model.source.spi.FetchCharacteristics;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -55,6 +56,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private Collection<DestinationBlog> destinationBlogs;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<LoginHistory> loginHistories;
     public User(String fullName, String address, String email, String password, String phone) {
         this.fullName = fullName;
         this.address = address;
