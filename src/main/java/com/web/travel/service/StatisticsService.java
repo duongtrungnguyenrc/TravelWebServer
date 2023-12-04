@@ -14,7 +14,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,28 +25,23 @@ public class StatisticsService {
         List<Date> lastDaysOfWeek = getLastWeekDays();
         List<Date> datesFromMondayToToday = getDatesFromMondayToToday();
 
-        List<Double> profitOfLastWeek = new ArrayList<>();
-        List<Double> profitOfThisWeek = new ArrayList<>();
-
-        System.out.println("Last dates of week:");
+        List<Long> profitOfLastWeek = new ArrayList<>();
+        List<Long> profitOfThisWeek = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         lastDaysOfWeek.forEach(date -> {
             String[] dateStr = dateFormat.format(date).split("-");
             Double profit = orderRepository.findSumProfitByOrderDate(dateStr[0], dateStr[1], dateStr[2], EOrderStatus.STATUS_ORDERED);
-            profitOfLastWeek.add(profit != null ? profit : 0.0);
-            System.out.println(profit != null ? profit : 0.0);
+            profitOfLastWeek.add(profit != null ? Math.round(profit) : 0L);
         });
-
-        System.out.println("Dates from monday to today:");
         datesFromMondayToToday.forEach(date -> {
             if(date != null){
                 String[] dateStr = dateFormat.format(date).split("-");
                 Double profit = orderRepository.findSumProfitByOrderDate(dateStr[0], dateStr[1], dateStr[2], EOrderStatus.STATUS_ORDERED);
-                profitOfThisWeek.add(profit != null ? profit : 0.0);
+                profitOfThisWeek.add(profit != null ? Math.round(profit) : 0L);
             }
             else{
-                profitOfThisWeek.add(0.0);
+                profitOfThisWeek.add(0L);
             }
         });
 
@@ -65,10 +59,10 @@ public class StatisticsService {
         Integer customQuantity = orderRepository.findCustomerQuantityByMonth(String.valueOf(currentDateStrSplit[1]));
         Double averageMonthProfit = orderRepository.findAvgProfitByMonth(String.valueOf(currentDateStrSplit[1]), EOrderStatus.STATUS_ORDERED);
 
-        response.setProfit(monthProfit != null ? monthProfit : 0);
+        response.setProfit(monthProfit != null ? Math.round(monthProfit) : 0);
         response.setOrderQuantity(orderQuantity != null ? orderQuantity : 0);
         response.setCustomerQuantity(customQuantity != null ? customQuantity : 0);
-        response.setMonthAverage(averageMonthProfit != null ? averageMonthProfit : 0);
+        response.setMonthAverage(averageMonthProfit != null ? Math.round(averageMonthProfit) : 0);
 
         return new ResDTO(
                 HttpServletResponse.SC_OK,

@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WeekStatisticDTO {
-    private List<Double> lastWeek;
-    private List<Double> thisWeek;
+    private List<Long> lastWeek;
+    private List<Long> thisWeek;
 }

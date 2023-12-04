@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfitStatisticsResDTO {
     private WeekStatisticDTO statistic;
-    private double profit;
+    private long profit;
     private int orderQuantity;
     private int customerQuantity;
-    private double monthAverage;
+    private long monthAverage;
 }
