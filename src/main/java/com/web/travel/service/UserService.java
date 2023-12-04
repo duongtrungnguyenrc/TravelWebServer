@@ -4,6 +4,7 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
 import com.web.travel.dto.response.UserResDTO;
+import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.response.UserDetailResMapper;
 import com.web.travel.model.LoginHistory;
 import com.web.travel.model.Role;
@@ -143,8 +144,8 @@ public class UserService {
             User foundUser = getUserObjectByEmail(principal.getName());
             foundUser.setAvatar(avatarName);
             User savedUser = userRepository.save(foundUser);
-            Map<String, String> response = new HashMap<>();
-            response.put("avatar", savedUser.getAvatar());
+            Mapper mapper = new UserDetailResMapper();
+            UserResDTO response = (UserResDTO) mapper.mapToDTO(savedUser);
             return new ResDTO(
                     HttpServletResponse.SC_OK,
                     true,
