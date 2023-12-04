@@ -4,6 +4,7 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.UserByEmailReqDTO;
 import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
+import com.web.travel.payload.request.UpdateUserStatusRequest;
 import com.web.travel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,9 +45,9 @@ public class UserController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @PostMapping("/status/{status}")
-    private ResponseEntity<?> updateUserStatus(Principal principal, @PathVariable boolean status){
-        ResDTO response = service.updateUserStatus(principal, status);
+    @PostMapping("/status")
+    private ResponseEntity<?> updateUserStatus(Principal principal, @RequestBody UpdateUserStatusRequest request){
+        ResDTO response = service.updateUserStatus(principal, request);
         if(response.isStatus())
             return ResponseEntity.ok(response);
         return ResponseEntity.badRequest().body(response);

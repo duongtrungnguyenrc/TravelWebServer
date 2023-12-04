@@ -10,12 +10,13 @@ import com.web.travel.model.User;
 import com.web.travel.model.enumeration.ERole;
 import com.web.travel.model.enumeration.EUserStatus;
 import com.web.travel.payload.request.SignupRequest;
-import com.web.travel.payload.response.MessageResponse;
+import com.web.travel.payload.request.UpdateUserStatusRequest;
 import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.service.interfaces.FileUploadService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,19 +102,27 @@ public class UserService {
         );
     }
 
-    public ResDTO updateUserStatus(Principal principal, boolean status){
+    public ResDTO updateUserStatus(Principal principal, UpdateUserStatusRequest request){
         if(principal != null){
-            User foundUser = getUserObjectByEmail(principal.getName());
-            EUserStatus userStatus = status ? EUserStatus.STATUS_ACTIVATED : EUserStatus.STATUS_NOT_ACTIVATED;
-            foundUser.setActive(userStatus);
+            if(verifyPassword(principal, request.getPassword())){
+                User foundUser = getUserObjectByEmail(principal.getName());
+                EUserStatus userStatus = request.isStatus() ? EUserStatus.STATUS_ACTIVATED : EUserStatus.STATUS_NOT_ACTIVATED;
+                foundUser.setActive(userStatus);
 
-            UserDetailResMapper mapper = new UserDetailResMapper();
-            UserResDTO response = (UserResDTO) mapper.mapToDTO(userRepository.save(foundUser));
+                UserDetailResMapper mapper = new UserDetailResMapper();
+                UserResDTO response = (UserResDTO) mapper.mapToDTO(userRepository.save(foundUser));
+                return new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        request.isStatus() ? "Mở tài khoản thành công" : "Vô hiệu hóa tài khoản thành công!",
+                        response
+                );
+            }
             return new ResDTO(
-                    HttpServletResponse.SC_OK,
-                    true,
-                    status ? "Mở tài khoản thành công" : "Vô hiệu hóa tài khoản thành công!",
-                    response
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    false,
+                    "Mật khẩu không đúng!",
+                    null
             );
         }
         return new ResDTO(
@@ -151,5 +160,20 @@ public class UserService {
                 "Không tìm thấy người dùng!",
                 null
         );
+    }
+
+    public PasswordEncoder getPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    public boolean verifyPassword(Principal principal, String rawPassword){
+        if(principal != null){
+            User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
+            if(foundUser != null){
+                String encodedPassword = foundUser.getPassword();
+                return getPasswordEncoder().matches(rawPassword, encodedPassword);
+            }
+        }
+        return false;
     }
 }

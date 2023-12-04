@@ -94,7 +94,7 @@ public class WebSecurityConfig {
                                     "/api/rate/update",
                                     "/api/rate/delete/**",
                                     "/api/user/update",
-                                    "/api/user/status/**",
+                                    "/api/user/status",
                                     "/api/user/avatar",
                                     "/api/order/cancel/**").authenticated()
                             .requestMatchers(HttpMethod.GET, "/api/order").authenticated()
