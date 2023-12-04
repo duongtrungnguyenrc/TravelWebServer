@@ -92,8 +92,8 @@ public class BlogService {
                 .map(blog -> {
                     Mapper mapper = new DestinationBlogResMapper();
                     DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
-                    Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
-                    dto.setDescription(paragraph.getContent());
+                    Paragraph paragraph = blog.getBlog().getParagraphs().stream().findFirst().orElse(null);
+                    dto.setDescription(paragraph != null ? paragraph.getContent() : "");
                     return dto;
                 }).toList();
 
@@ -132,7 +132,11 @@ public class BlogService {
             List<DestinationBlogResDTO> relevantBlogs = customDesBlogRepository.getRelevantBlogs(foundBlogObj, 4)
                     .stream().map(blog -> {
                             Mapper mapper = new DestinationBlogResMapper();
-                            return (DestinationBlogResDTO) mapper.mapToDTO(blog);
+                            DestinationBlogResDTO eachDto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
+                            Paragraph paragraph = blog.getBlog().getParagraphs().stream().findFirst().orElse(null);
+                            eachDto.setDescription(paragraph != null ? paragraph.getContent() : "");
+
+                            return eachDto;
                         }
                     ).toList();
             response.put("relevantPosts", relevantBlogs);
