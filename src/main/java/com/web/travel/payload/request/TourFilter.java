@@ -14,9 +14,9 @@ public class TourFilter {
     private int page = 1;
     private int limit = 10;
     private Integer star;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date departDate;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date endDate;
     private Double fromPrice;
     private Double toPrice;
