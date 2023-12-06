@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RateReqDTO {
     private long tourId;
+    private long blogId;
     private String comment;
     private int star;
 }

@@ -9,6 +9,7 @@ import com.web.travel.model.Room;
 import com.web.travel.repository.HotelRepository;
 import com.web.travel.repository.RoomRepository;
 import com.web.travel.service.interfaces.FileUploadService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -136,6 +137,16 @@ public class HotelService {
                 false,
                 "Hotel not found with id: " + id,
                 null
+        );
+    }
+
+    public ResDTO getByAddress(String address){
+        List<Hotel> hotels = repository.findByAddressContaining(address);
+        return new ResDTO(
+                HttpServletResponse.SC_OK,
+                true,
+                "Hotels fetched successfully",
+                hotels
         );
     }
 }

@@ -46,8 +46,12 @@ public class BlogService {
     DesBlogDetailResMapper desBlogDetailResMapper;
     @Autowired
     FilesValidation fileValidator;
-    public Map<String, Object> getAllDestinationBlog(int page, int limit){
-        Page<DestinationBlog> list = customDesBlogRepository.findAllDestinationBlogDiffLatest(PageRequest.of(page, limit));
+    public Map<String, Object> getAllDestinationBlog(int page, int limit, boolean isAdmin){
+        Page<DestinationBlog> list;
+        if(!isAdmin)
+            list = customDesBlogRepository.findAllDestinationBlogDiffLatest(PageRequest.of(page, limit));
+        else
+            list = desRepository.findAllByOrderByPostDateDesc(PageRequest.of(page, limit));
         Map<String, Object> result = new HashMap<>();
 
         int pages = list.getTotalPages();
@@ -118,7 +122,11 @@ public class BlogService {
         return result;
     }
 
-    public ResDTO getById(long id){
+    public DestinationBlog findBlogById(long id){
+        return desRepository.findById(id).orElse(null);
+    }
+
+    public ResDTO getResById(long id){
         DesBlogDetailResDTO dto;
         Optional<DestinationBlog> foundBlog = desRepository.findById(id);
 

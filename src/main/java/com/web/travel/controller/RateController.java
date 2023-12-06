@@ -29,7 +29,7 @@ public class RateController {
             @RequestParam(defaultValue = "1", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int limit
     ){
-        Map<String, Object> response = rateService.getRatesByTour(principal, tourId, page, limit);
+        Map<String, Object> response = rateService.getRates(principal, tourId, page, limit, true);
         return ResponseEntity.ok(
             new ResDTO(
                 HttpServletResponse.SC_OK,
@@ -37,6 +37,24 @@ public class RateController {
                 response != null ? "Rates fetched successfully" : "Rate not found with tour id: " + tourId,
                 response
             )
+        );
+    }
+
+    @GetMapping("/blog/{blogId}")
+    public ResponseEntity<?> getRateByBlog(
+            Principal principal,
+            @PathVariable("blogId") long blogId,
+            @RequestParam(defaultValue = "1", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int limit
+    ){
+        Map<String, Object> response = rateService.getRates(principal, blogId, page, limit, false);
+        return ResponseEntity.ok(
+                new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        response != null,
+                        response != null ? "Rates fetched successfully" : "Rate not found with blog id: " + blogId,
+                        response
+                )
         );
     }
 

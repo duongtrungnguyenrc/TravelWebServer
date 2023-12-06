@@ -27,6 +27,9 @@ public class Rate {
     @ManyToOne
     @JoinColumn(name = "tourId")
     private Tour tour;
+    @ManyToOne
+    @JoinColumn(name = "blogId")
+    private DestinationBlog blog;
 
     public Rate(int point, String comment, Tour tour) {
         this.point = point;

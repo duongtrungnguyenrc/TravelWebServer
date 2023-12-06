@@ -8,8 +8,10 @@ import com.web.travel.dto.response.RateResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.RateReqMapper;
 import com.web.travel.mapper.response.RateResMapper;
+import com.web.travel.model.DestinationBlog;
 import com.web.travel.model.Rate;
 import com.web.travel.model.Tour;
+import com.web.travel.repository.DestinationBlogRepository;
 import com.web.travel.repository.RateRepository;
 import com.web.travel.repository.TourRepository;
 import com.web.travel.repository.UserRepository;
@@ -39,12 +41,24 @@ public class RateService {
     @Autowired
     UserRepository userRepository;
     @Autowired
+    DestinationBlogRepository desRepository;
+    @Autowired
     RateReqMapper reqMapper;
-    public Map<String, Object> getRatesByTour(Principal principal, long id, int page, int limit){
-        Tour foundTour = tourRepository.findById(id).orElse(null);
-        if (foundTour != null) {
-            Page<Rate> ratesPage = rateRepository
-                    .findByTourOrderByDateRatedDesc(foundTour, PageRequest.of(page - 1, limit));
+    public Map<String, Object> getRates(Principal principal, long id, int page, int limit, boolean isByTour){
+        Tour foundTour = null;
+        DestinationBlog foundBlog = null;
+        if(isByTour)
+            foundTour = tourRepository.findById(id).orElse(null);
+        else
+            foundBlog = desRepository.findById(id).orElse(null);
+        if (foundTour != null || foundBlog != null) {
+            Page<Rate> ratesPage;
+            if(isByTour)
+                ratesPage = rateRepository
+                        .findByTourOrderByDateRatedDesc(foundTour, PageRequest.of(page - 1, limit));
+            else
+                ratesPage = rateRepository
+                        .findByBlogOrderByDateRatedDesc(foundBlog, PageRequest.of(page - 1, limit));
 
             Map<String, Object> response = new HashMap<>();
             response.put("pages", ratesPage.getTotalPages());

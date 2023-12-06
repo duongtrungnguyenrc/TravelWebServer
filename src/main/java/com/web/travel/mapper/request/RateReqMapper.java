@@ -4,6 +4,7 @@ import com.web.travel.dto.request.common.RateReqDTO;
 import com.web.travel.dto.request.common.RateUpdateReqDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
+import com.web.travel.service.BlogService;
 import com.web.travel.service.TourService;
 import com.web.travel.service.UserService;
 import com.web.travel.utils.DateHandler;
@@ -21,6 +22,8 @@ public class RateReqMapper implements Mapper {
     private UserService userService;
     @Autowired
     private TourService tourService;
+    @Autowired
+    private BlogService blogService;
 
     @Override
     public Object mapToDTO(Object obj) {
@@ -36,6 +39,7 @@ public class RateReqMapper implements Mapper {
         rate.setComment(rateDTO.getComment());
         rate.setDateRated(DateHandler.getCurrentDateTime());
         rate.setTour(tourService.findTourById(rateDTO.getTourId()));
+        rate.setBlog(blogService.findBlogById(rateDTO.getBlogId()));
 
         return rate;
     }

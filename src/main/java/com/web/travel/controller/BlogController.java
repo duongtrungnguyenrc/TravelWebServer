@@ -26,7 +26,8 @@ public class BlogController {
                         "Blog fetched successfully",
                         blogService.getAllDestinationBlog(
                                 page - 1,
-                                limit
+                                limit,
+                                false
                         )
                 )
         );
@@ -73,7 +74,7 @@ public class BlogController {
     @GetMapping("/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> getBlogById(@PathVariable long id){
-        ResDTO response = blogService.getById(id);
+        ResDTO response = blogService.getResById(id);
         if(response.isStatus()){
             return ResponseEntity.ok(
                     response

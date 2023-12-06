@@ -18,12 +18,17 @@ public class HotelAdminController {
     @GetMapping("")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> getAllHotel(
+            @RequestParam(defaultValue = "", required = false) String address,
             @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "10") int limit
+            @RequestParam(required = false, defaultValue = "1000") int limit
     ){
-       return ResponseEntity.ok(
-               hotelService.getAllHotelRes(page - 1, limit)
-       );
+       return (address != null && !address.isEmpty()) ?
+               ResponseEntity.ok(
+                       hotelService.getByAddress(address)
+               ) :
+               ResponseEntity.ok(
+                       hotelService.getAllHotelRes(page - 1, limit)
+               );
     }
 
     @PostMapping()
