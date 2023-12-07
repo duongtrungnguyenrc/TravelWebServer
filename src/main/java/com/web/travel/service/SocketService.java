@@ -87,18 +87,7 @@ public class SocketService {
         sendSocketMessage(senderClient, savedMessage, message.getRoom(), false);
     }
 
-    public void saveInfoMessage(SocketIOClient senderClient, String message, Long room, boolean isAdmin) {
-
-        Message newMessage = new Message();
-        newMessage.setRole("ADMIN");
-        newMessage.setMessage(message);
-        newMessage.setTime(DateHandler.getCurrentDateTime());
-        newMessage.setName("Hệ thống");
-        newMessage.setAvatar("");
-        newMessage.setRoom(room);
-
-        if(!isAdmin)
-            messageService.saveMessage(newMessage);
+    public void sendConnectedMessage(SocketIOClient senderClient, Long room, boolean isAdmin) {
         List<Message> messages = messageService.getMessages(room);
         sendGetAllMessages(senderClient, messages, room);
     }

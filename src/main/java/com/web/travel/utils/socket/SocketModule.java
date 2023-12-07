@@ -6,7 +6,6 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.web.travel.model.Message;
 import com.web.travel.service.SocketService;
-import com.web.travel.utils.ServerMessagesConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +56,7 @@ public class SocketModule {
             var params = client.getHandshakeData().getUrlParams();
             String room = String.join("", params.get("room"));
             client.joinRoom(room);
-            socketService.saveInfoMessage(client, ServerMessagesConstants.WELCOME_MESSAGE, Long.valueOf(room), params.get("admin") != null);
+            socketService.sendConnectedMessage(client, Long.valueOf(room), params.get("admin") != null);
 
             log.info("Socket ID[{}] - room[{}] Connected to chat module through", client.getSessionId().toString(), room);
         };
