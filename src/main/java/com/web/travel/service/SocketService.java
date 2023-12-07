@@ -24,7 +24,7 @@ public class SocketService {
                 .getRoomOperations(String.valueOf(room))
                 .getClients()
                 .forEach(client -> {
-                    boolean isAdmin = client.getHandshakeData().getUrlParams().get("admin") != null;
+                    boolean isAdmin = client.get("isAdmin");
                     if((isOnConnected && !isAdmin) || !client.getSessionId().equals(senderClient.getSessionId())){
                         client.sendEvent("receive", message);
                     }
@@ -36,7 +36,7 @@ public class SocketService {
         senderClient.getNamespace()
                 .getAllClients()
                 .forEach(client -> {
-                    boolean isAdmin = client.getHandshakeData().getUrlParams().get("admin") != null;
+                    boolean isAdmin = client.get("isAdmin");
                     if(isAdmin)
                         client.sendEvent("new-message", message);
                 });
@@ -98,7 +98,7 @@ public class SocketService {
         sendSocketMessage(senderClient, savedMessage, message.getRoom(), false);
     }
 
-    public void sendConnectedMessage(SocketIOClient senderClient, Long room, boolean isAdmin) {
+    public void sendConnectedMessage(SocketIOClient senderClient, Long room) {
         List<Message> messages = messageService.getMessages(room);
         sendGetAllMessages(senderClient, messages, room);
     }
