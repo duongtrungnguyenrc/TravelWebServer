@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -15,7 +17,7 @@ public class SocketService {
     public final MessageService messageService;
     public final UserService userService;
 
-    public void sendSocketMessage(SocketIOClient senderClient, Message message, Long room, boolean isOnConnected){
+    public void sendSocketMessage(SocketIOClient senderClient, Object message, Long room, boolean isOnConnected){
         senderClient
                 .getNamespace()
                 .getRoomOperations(String.valueOf(room))
@@ -53,6 +55,7 @@ public class SocketService {
     }
 
     public void saveInfoMessage(SocketIOClient senderClient, String message, Long room, boolean isAdmin) {
+
         Message storedMessage = messageService.saveMessage(Message.builder()
                 .role("admin")
                 .message(message)
@@ -61,8 +64,9 @@ public class SocketService {
                 .avatar("")
                 .room(room)
                 .build());
-
+        List<Message> messages = messageService.getMessages(room);
+        messages.add(storedMessage);
         if(!isAdmin)
-            sendSocketMessage(senderClient, storedMessage, room, true);
+            sendSocketMessage(senderClient, messages, room, true);
     }
 }
