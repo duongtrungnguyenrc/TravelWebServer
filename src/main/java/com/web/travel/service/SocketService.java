@@ -3,6 +3,7 @@ package com.web.travel.service;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.web.travel.model.Message;
 import com.web.travel.model.User;
+import com.web.travel.utils.DateHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class SocketService {
                 Message.builder()
                         .message(message.getMessage())
                         .room(message.getRoom())
+                        .time(message.getTime())
                         .uid(message.getUid())
                         .role(message.getRole())
                         .avatar(avatar)
@@ -54,7 +56,9 @@ public class SocketService {
         Message storedMessage = messageService.saveMessage(Message.builder()
                 .role("admin")
                 .message(message)
+                .time(DateHandler.getCurrentDateTime())
                 .name("Hệ thống")
+                .avatar("")
                 .room(room)
                 .build());
 
