@@ -29,6 +29,17 @@ public class SocketService {
                         client.sendEvent("receive", message);
                     }
                 });
+        sendNotification(senderClient, message);
+    }
+
+    public void sendNotification(SocketIOClient senderClient, Object message){
+        senderClient.getNamespace()
+                .getAllClients()
+                .forEach(client -> {
+                    boolean isAdmin = client.getHandshakeData().getUrlParams().get("admin") != null;
+                    if(isAdmin)
+                        client.sendEvent("new-message", message);
+                });
     }
 
     public void sendGetAllMessages(SocketIOClient senderClient, Object message, Long room){
