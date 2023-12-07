@@ -1,0 +1,45 @@
+package com.web.travel.utils.socket;
+
+import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.listener.ConnectListener;
+import com.corundumstudio.socketio.listener.DataListener;
+import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.web.travel.model.Message;
+import com.web.travel.service.SocketService;
+import com.web.travel.utils.ServerMessagesConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
+
+@Component
+@Slf4j
+public class SocketModule {
+    private final SocketIOServer socketIOServer;
+    private final SocketService socketService;
+
+    public SocketModule(SocketIOServer socketIOServer, SocketService socketService) {
+        this.socketIOServer = socketIOServer;
+        this.socketService = socketService;
+        socketIOServer.addConnectListener(onConnected());
+        socketIOServer.addEventListener("send", Message.class, onChatReceived());
+    }
+
+    private DataListener<Message> onChatReceived() {
+        return (senderClient, data, ackSender) -> {
+            log.info(data.toString());
+            socketService.saveMessage(senderClient, data);
+        };
+    }
+
+    private ConnectListener onConnected() {
+        return (client) -> {
+            var params = client.getHandshakeData().getUrlParams();
+            String room = String.join("", params.get("room"));
+            client.joinRoom(room);
+            socketService.saveInfoMessage(client, ServerMessagesConstants.WELCOME_MESSAGE, Long.valueOf(room), params.get("admin") != null);
+
+            log.info("Socket ID[{}] - room[{}] Connected to chat module through", client.getSessionId().toString(), room);
+        };
+    }
+}

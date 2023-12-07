@@ -77,6 +77,10 @@ public class UserService {
     public User getUserObjectByEmail(String email){
         return userRepository.findByEmail(email).orElse(null);
     }
+    public User getUserObjectById(Long id){
+        return userRepository.findById(id).orElse(null);
+    }
+
     public ResDTO updateUserInfo(Principal principal, UserUpdateReqDTO userDto){
         if(principal != null){
             User foundUser = getUserObjectByEmail(principal.getName());
