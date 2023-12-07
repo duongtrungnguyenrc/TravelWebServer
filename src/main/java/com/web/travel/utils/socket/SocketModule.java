@@ -32,6 +32,7 @@ public class SocketModule {
             String room = String.valueOf(data.getRoom());
             client.joinRoom(room);
             client.set("isAdmin", data.getAdmin());
+            client.set("room", data.getRoom());
             socketService.sendConnectedMessage(client, Long.valueOf(room));
 
             log.info("Socket ID[{}] - room[{}] Connected to chat module through", client.getSessionId().toString(), room);
@@ -42,7 +43,7 @@ public class SocketModule {
         return (senderClient, data, ackSender) -> {
             log.info("On stop change...");
 
-            Long room = Long.valueOf(senderClient.getHandshakeData().getUrlParams().get("room").stream().collect(Collectors.joining("")));
+            Long room = senderClient.get("room");
             socketService.sendStopChangeEvent(senderClient, data, room);
         };
     }
@@ -51,7 +52,7 @@ public class SocketModule {
         return (senderClient, data, ackSender) -> {
             log.info("On change...");
 
-            Long room = Long.valueOf(senderClient.getHandshakeData().getUrlParams().get("room").stream().collect(Collectors.joining("")));
+            Long room = senderClient.get("room");
             socketService.sendChangeEvent(senderClient, data, room);
         };
     }

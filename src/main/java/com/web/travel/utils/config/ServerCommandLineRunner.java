@@ -15,6 +15,12 @@ public class ServerCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        socketIOServer.start();
+        try{
+            socketIOServer.stop();
+        }catch (NullPointerException nullPointerException){
+            log.info(nullPointerException.getMessage());
+        }finally {
+            socketIOServer.start();
+        }
     }
 }
