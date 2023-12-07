@@ -31,6 +31,18 @@ public class SocketService {
                 });
     }
 
+    public void sendGetAllMessages(SocketIOClient senderClient, Object message, Long room){
+        senderClient
+                .getNamespace()
+                .getRoomOperations(String.valueOf(room))
+                .getClients()
+                .forEach(client -> {
+                    if(client.getSessionId().equals(senderClient.getSessionId())){
+                        client.sendEvent("connected", message);
+                    }
+                });
+    }
+
     public void sendChangeEvent(SocketIOClient senderClient, Object message, Long room){
         senderClient.getNamespace()
                 .getRoomOperations(String.valueOf(room))
@@ -85,9 +97,9 @@ public class SocketService {
         newMessage.setAvatar("");
         newMessage.setRoom(room);
 
-        messageService.saveMessage(newMessage);
-        List<Message> messages = messageService.getMessages(room);
         if(!isAdmin)
-            sendSocketMessage(senderClient, messages, room, true);
+            messageService.saveMessage(newMessage);
+        List<Message> messages = messageService.getMessages(room);
+        sendGetAllMessages(senderClient, messages, room);
     }
 }
