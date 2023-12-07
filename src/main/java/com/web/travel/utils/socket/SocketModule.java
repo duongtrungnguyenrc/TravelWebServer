@@ -23,6 +23,26 @@ public class SocketModule {
         this.socketService = socketService;
         socketIOServer.addConnectListener(onConnected());
         socketIOServer.addEventListener("send", Message.class, onChatReceived());
+        socketIOServer.addEventListener("change", Message.class, onChangeReceived());
+        socketIOServer.addEventListener("stop-change", Message.class, onStopChangeReceived());
+    }
+
+    private DataListener<Message> onStopChangeReceived() {
+        return (senderClient, data, ackSender) -> {
+            log.info("On stop change...");
+
+            Long room = Long.valueOf(senderClient.getHandshakeData().getUrlParams().get("room").stream().collect(Collectors.joining("")));
+            socketService.sendStopChangeEvent(senderClient, data, room);
+        };
+    }
+
+    private DataListener<Message> onChangeReceived() {
+        return (senderClient, data, ackSender) -> {
+            log.info("On change...");
+
+            Long room = Long.valueOf(senderClient.getHandshakeData().getUrlParams().get("room").stream().collect(Collectors.joining("")));
+            socketService.sendChangeEvent(senderClient, data, room);
+        };
     }
 
     private DataListener<Message> onChatReceived() {
