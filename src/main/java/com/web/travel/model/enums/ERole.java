@@ -1,4 +1,4 @@
-package com.web.travel.model.enumeration;
+package com.web.travel.model.enums;
 
 public enum ERole {
     ROLE_ADMIN,

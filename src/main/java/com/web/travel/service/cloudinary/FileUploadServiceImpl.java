@@ -1,7 +1,7 @@
 package com.web.travel.service.cloudinary;
 
 import com.cloudinary.Cloudinary;
-import com.web.travel.model.enumeration.EStatus;
+import com.web.travel.model.enums.EStatus;
 import com.web.travel.service.interfaces.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

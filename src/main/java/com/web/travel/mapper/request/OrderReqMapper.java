@@ -4,19 +4,14 @@ import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Order;
 import com.web.travel.model.Tour;
-import com.web.travel.model.TourDate;
-import com.web.travel.model.User;
-import com.web.travel.model.enumeration.EOrderStatus;
-import com.web.travel.model.enumeration.EPaymentMethod;
+import com.web.travel.model.enums.EOrderStatus;
+import com.web.travel.model.enums.EPaymentMethod;
 import com.web.travel.repository.HotelRepository;
 import com.web.travel.repository.TourDateRepository;
 import com.web.travel.repository.TourRepository;
-import com.web.travel.repository.UserRepository;
 import com.web.travel.utils.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class OrderReqMapper implements Mapper {

@@ -1,8 +1,6 @@
 package com.web.travel.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.web.travel.model.enumeration.ETourDateType;
-import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.model.enums.ETourDateType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

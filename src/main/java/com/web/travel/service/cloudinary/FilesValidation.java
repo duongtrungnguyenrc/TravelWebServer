@@ -1,6 +1,6 @@
 package com.web.travel.service.cloudinary;
 
-import com.web.travel.model.enumeration.EStatus;
+import com.web.travel.model.enums.EStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

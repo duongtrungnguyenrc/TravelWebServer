@@ -3,7 +3,7 @@ package com.web.travel.service;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.statistic.ProfitStatisticsResDTO;
 import com.web.travel.dto.request.admin.statistic.WeekStatisticDTO;
-import com.web.travel.model.enumeration.EOrderStatus;
+import com.web.travel.model.enums.EOrderStatus;
 import com.web.travel.repository.OrderRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

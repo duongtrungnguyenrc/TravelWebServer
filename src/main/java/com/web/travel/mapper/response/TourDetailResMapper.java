@@ -5,7 +5,7 @@ import com.web.travel.utils.RateCalculator;
 import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
-import com.web.travel.model.enumeration.ETourDateType;
+import com.web.travel.model.enums.ETourDateType;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -3,8 +3,7 @@ package com.web.travel.repository;
 import com.web.travel.model.Order;
 import com.web.travel.model.Tour;
 import com.web.travel.model.User;
-import com.web.travel.model.enumeration.EOrderStatus;
-import com.web.travel.model.enumeration.EStatus;
+import com.web.travel.model.enums.EOrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Repository

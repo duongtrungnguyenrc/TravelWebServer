@@ -1,12 +1,10 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.web.travel.model.enumeration.EOrderStatus;
-import com.web.travel.model.enumeration.EPaymentMethod;
+import com.web.travel.model.enums.EOrderStatus;
+import com.web.travel.model.enums.EPaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 

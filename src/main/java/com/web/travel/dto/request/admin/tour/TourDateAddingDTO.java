@@ -1,7 +1,6 @@
 package com.web.travel.dto.request.admin.tour;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.web.travel.model.enumeration.ETourDateType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

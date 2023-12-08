@@ -4,7 +4,7 @@ import com.web.travel.dto.request.admin.hotel.HotelAddingDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Hotel;
 import com.web.travel.model.Room;
-import com.web.travel.model.enumeration.ERoom;
+import com.web.travel.model.enums.ERoom;
 
 import java.util.ArrayList;
 import java.util.List;

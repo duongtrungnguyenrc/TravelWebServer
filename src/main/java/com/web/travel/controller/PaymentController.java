@@ -4,7 +4,7 @@ import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.model.Order;
-import com.web.travel.model.enumeration.EOrderStatus;
+import com.web.travel.model.enums.EOrderStatus;
 import com.web.travel.service.OrderService;
 import com.web.travel.service.email.EmailService;
 import com.web.travel.service.paypal.PaypalService;

@@ -1,7 +1,7 @@
 package com.web.travel.repository;
 
 import com.web.travel.model.Tour;
-import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.model.enums.ETourType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

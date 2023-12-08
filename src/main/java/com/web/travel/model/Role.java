@@ -1,6 +1,6 @@
 package com.web.travel.model;
 
-import com.web.travel.model.enumeration.ERole;
+import com.web.travel.model.enums.ERole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

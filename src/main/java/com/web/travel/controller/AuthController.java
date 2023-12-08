@@ -5,7 +5,7 @@ import com.web.travel.dto.response.UserResDTO;
 import com.web.travel.mapper.response.UserDetailResMapper;
 import com.web.travel.model.Role;
 import com.web.travel.model.User;
-import com.web.travel.model.enumeration.ERole;
+import com.web.travel.model.enums.ERole;
 import com.web.travel.payload.request.*;
 import com.web.travel.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;

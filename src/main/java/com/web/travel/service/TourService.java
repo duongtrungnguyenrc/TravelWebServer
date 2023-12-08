@@ -11,9 +11,9 @@ import com.web.travel.mapper.request.TourParagraphsAddingMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourGeneralResMapper;
 import com.web.travel.model.*;
-import com.web.travel.model.enumeration.EOrderStatus;
-import com.web.travel.model.enumeration.EStatus;
-import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.model.enums.EOrderStatus;
+import com.web.travel.model.enums.EStatus;
+import com.web.travel.model.enums.ETourType;
 import com.web.travel.payload.request.TourFilter;
 import com.web.travel.payload.response.TopDestinationResponse;
 import com.web.travel.repository.*;
@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Service
 public class TourService {

@@ -1,7 +1,7 @@
 package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.web.travel.model.enumeration.ERoom;
+import com.web.travel.model.enums.ERoom;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

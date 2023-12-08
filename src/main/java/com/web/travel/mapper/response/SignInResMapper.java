@@ -2,7 +2,7 @@ package com.web.travel.mapper.response;
 
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.User;
-import com.web.travel.model.enumeration.EUserStatus;
+import com.web.travel.model.enums.EUserStatus;
 import com.web.travel.payload.response.SignInResponse;
 
 import java.util.List;

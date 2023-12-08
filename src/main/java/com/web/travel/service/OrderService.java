@@ -13,7 +13,7 @@ import com.web.travel.model.ContactInfo;
 import com.web.travel.model.Order;
 import com.web.travel.model.TourDate;
 import com.web.travel.model.User;
-import com.web.travel.model.enumeration.EOrderStatus;
+import com.web.travel.model.enums.EOrderStatus;
 import com.web.travel.repository.OrderRepository;
 import com.web.travel.repository.TourDateRepository;
 import com.web.travel.service.email.EmailService;

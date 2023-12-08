@@ -7,8 +7,8 @@ import com.web.travel.dto.response.TourGeneralResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Hotel;
 import com.web.travel.model.Order;
-import com.web.travel.model.enumeration.EOrderStatus;
-import com.web.travel.model.enumeration.EPaymentMethod;
+import com.web.travel.model.enums.EOrderStatus;
+import com.web.travel.model.enums.EPaymentMethod;
 import com.web.travel.utils.DateHandler;
 import org.springframework.stereotype.Component;
 

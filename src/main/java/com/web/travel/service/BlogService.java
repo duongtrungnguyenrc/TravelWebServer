@@ -9,7 +9,7 @@ import com.web.travel.mapper.response.DesBlogDetailResMapper;
 import com.web.travel.mapper.response.DestinationBlogResMapper;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.*;
-import com.web.travel.model.enumeration.EStatus;
+import com.web.travel.model.enums.EStatus;
 import com.web.travel.repository.BlogRepository;
 import com.web.travel.repository.DestinationBlogRepository;
 import com.web.travel.repository.ParagraphRepository;
@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class BlogService {

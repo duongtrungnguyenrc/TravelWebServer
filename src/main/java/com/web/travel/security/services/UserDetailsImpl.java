@@ -2,7 +2,7 @@ package com.web.travel.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.User;
-import com.web.travel.model.enumeration.EUserStatus;
+import com.web.travel.model.enums.EUserStatus;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

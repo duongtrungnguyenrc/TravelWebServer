@@ -1,4 +1,4 @@
-package com.web.travel.model.enumeration;
+package com.web.travel.model.enums;
 
 public enum EUserStatus {
     STATUS_ACTIVATED,

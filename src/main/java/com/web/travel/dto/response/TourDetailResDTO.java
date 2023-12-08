@@ -1,6 +1,6 @@
 package com.web.travel.dto.response;
 
-import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.model.enums.ETourType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

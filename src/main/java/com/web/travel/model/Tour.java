@@ -1,13 +1,11 @@
 package com.web.travel.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.web.travel.model.enumeration.ETourType;
+import com.web.travel.model.enums.ETourType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @Table(name = "tour")
