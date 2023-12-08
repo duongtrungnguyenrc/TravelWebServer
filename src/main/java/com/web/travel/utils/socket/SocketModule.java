@@ -31,7 +31,7 @@ public class SocketModule {
         return (client, data, ackSender) -> {
             String room = String.valueOf(data.getRoom());
             client.joinRoom(room);
-            client.set("isAdmin", data.getAdmin());
+            client.set("isAdmin", data.getAdmin() != null ? data.getAdmin() : false);
             client.set("room", data.getRoom());
             socketService.sendConnectedMessage(client, Long.valueOf(room));
 
