@@ -466,9 +466,10 @@ public class TourService {
 
     public Map<String, Object> adminGetAllTour(Principal principal, int page, int limit){
         Page<Tour> tour = tourRepository.findAll(PageRequest.of(page - 1, limit));
-        List<TourDetailResDTO> tourDetailResDTOS = tour.get().map(item -> {
-            return (TourDetailResDTO) getResponseTourById(principal, item.getId());
-        }).toList();
+        List<TourDetailResDTO> tourDetailResDTOS = tour.get().filter(item -> (item.getIsRemoved() == null || !item.getIsRemoved()))
+                .map(item -> {
+                    return (TourDetailResDTO) getResponseTourById(principal, item.getId());
+                }).toList();
 
         Map<String, Object> response = new HashMap<>();
 
