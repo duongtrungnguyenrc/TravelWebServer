@@ -52,13 +52,14 @@ public class TourAddingReqMapper implements Mapper {
         if(tourAddingDTO.getTourDate() != null)
             tourAddingDTO.getTourDate().forEach(date -> {
                 TourDate tourDate = new TourDate();
-                switch (date.getDateType()){
-                    case "essential" -> {
-                        tourDate.setDateType(ETourDateType.TYPE_ESSENTIAL);
-                    }case "plus" -> {
-                        tourDate.setDateType(ETourDateType.TYPE_PLUS);
+                if(date.getDateType() != null)
+                    switch (date.getDateType()){
+                        case "essential" -> {
+                            tourDate.setDateType(ETourDateType.TYPE_ESSENTIAL);
+                        }case "plus" -> {
+                            tourDate.setDateType(ETourDateType.TYPE_PLUS);
+                        }
                     }
-                }
 
                 tourDate.setDepartDate(date.getDepartDate());
                 tourDate.setEndDate(date.getEndDate());
