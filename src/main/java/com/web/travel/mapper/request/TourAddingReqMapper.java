@@ -75,17 +75,19 @@ public class TourAddingReqMapper implements Mapper {
         List<Schedule> schedules = new ArrayList<>();
 
         List<ScheduleAddingDTO> scheduleAddingDTOS = tourAddingDTO.getSchedules();
-        TourAddingReqMapper.sortScheduleByOrderAsc(scheduleAddingDTOS);
+        if(scheduleAddingDTOS != null){
+            TourAddingReqMapper.sortScheduleByOrderAsc(scheduleAddingDTOS);
 
-        scheduleAddingDTOS.forEach(scheduleDTO -> {
-            Schedule schedule = new Schedule();
-            schedule.setTime(scheduleDTO.getTime());
-            schedule.setContent(scheduleDTO.getContent());
-            schedule.setTour(tour);
-            schedules.add(schedule);
-        });
+            scheduleAddingDTOS.forEach(scheduleDTO -> {
+                Schedule schedule = new Schedule();
+                schedule.setTime(scheduleDTO.getTime());
+                schedule.setContent(scheduleDTO.getContent());
+                schedule.setTour(tour);
+                schedules.add(schedule);
+            });
 
-        tour.setSchedules(schedules);
+            tour.setSchedules(schedules);
+        }
 
         List<Hotel> hotels = new ArrayList<>();
         tourAddingDTO.getHotelIds().forEach(id -> {
