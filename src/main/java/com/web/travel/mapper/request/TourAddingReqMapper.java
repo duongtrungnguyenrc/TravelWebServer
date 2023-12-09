@@ -32,19 +32,7 @@ public class TourAddingReqMapper implements Mapper {
         Tour tour = new Tour();
         tour.setName(tourAddingDTO.getName());
         tour.setVehicle(tourAddingDTO.getVehicle());
-
-        if(tourAddingDTO.getTourType() != null)
-            switch (tourAddingDTO.getTourType()){
-                case "popular" -> {
-                    tour.setTourType(ETourType.TYPE_POPULAR);
-                }case "special" -> {
-                    tour.setTourType(ETourType.TYPE_SPECIAL);
-                }case "saving" -> {
-                    tour.setTourType(ETourType.TYPE_SAVING);
-                }case "normal" -> {
-                    tour.setTourType(ETourType.TYPE_NORMAL);
-                }
-            }
+        tour.setTourType(ETourType.TYPE_NORMAL);
         tour.setDepart(tourAddingDTO.getDepart());
         tour.setDestination(tourAddingDTO.getDestination());
 
