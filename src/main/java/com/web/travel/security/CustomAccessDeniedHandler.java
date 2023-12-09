@@ -29,7 +29,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         data.put("error", "Access denied");
         resDTO.setData(data);
 
-        resDTO.setMessage("You do not have permission to access this resource!");
+        resDTO.setMessage("Bạn không có quyền truy cập trang này, vui lòng đăng nhập với tài khoản Admin và thử lại!");
 
         Gson gson = new Gson();
         String responseContent = gson.toJson(resDTO);
