@@ -56,11 +56,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                 dto.setRole(roles);
 
                 User savedUser = userService.saveDefaultUser(dto);
-
+                userService.saveUserLoginHistory(request, savedUser);
                 signInResponse = (SignInResponse) new SignInResMapper().mapToDTO(savedUser);
 
             }else{
                 User foundUser = userService.getUserObjectByEmail(email);
+                userService.saveUserLoginHistory(request, foundUser);
                 signInResponse = (SignInResponse) new SignInResMapper().mapToDTO(foundUser);
 
             }
@@ -70,6 +71,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             response.setCharacterEncoding("utf-8");
             Gson gson = new Gson();
             String json = gson.toJson(signInResponse);
+
+
 
             Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
             String objectToken = encoder.encodeToString(json.getBytes());

@@ -16,7 +16,12 @@ import com.web.travel.payload.request.UpdateUserStatusRequest;
 import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.service.interfaces.FileUploadService;
+import com.web.travel.utils.DateHandler;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.sf.uadetector.ReadableUserAgent;
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +45,22 @@ public class UserService {
         return user != null ?
                 new UserByEmailResDTO(user.getFullName(), user.getEmail()) :
                 null;
+    }
+
+    public void saveUserLoginHistory(HttpServletRequest request, User user){
+        String userAgentString = request.getHeader("User-Agent");
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent userAgent = parser.parse(userAgentString);
+        String deviceName = userAgent.getName() + ", " + userAgent.getOperatingSystem().getName();
+
+        LoginHistory loginHistory = new LoginHistory();
+        loginHistory.setUser(user);
+        loginHistory.setIpAddress(request.getRemoteAddr());
+        loginHistory.setUserDevice(deviceName);
+        loginHistory.setLoggedDate(DateHandler.getCurrentDateTime());
+
+        user.getLoginHistories().add(loginHistory);
+        userRepository.save(user);
     }
     public boolean userIsExistsByEmail(String email){
         return userRepository.existsByEmail(email);

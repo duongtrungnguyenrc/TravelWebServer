@@ -164,6 +164,20 @@ public class BlogService {
         }
     }
 
+    public DesBlogDetailResDTO getBlogDetailDTOById(Long id){
+        DesBlogDetailResDTO dto;
+        Optional<DestinationBlog> foundBlog = desRepository.findById(id);
+
+        if(foundBlog.isPresent()) {
+            DestinationBlog foundBlogObj = foundBlog.get();
+            dto = (DesBlogDetailResDTO) desBlogDetailResMapper.mapToDTO(foundBlogObj);
+
+            return dto;
+        }
+        return null;
+
+    }
+
     public ResDTO addBlog(Principal principal, BlogAddingReqDTO blogDto, MultipartFile[] images){
         blogDto.setUserEmail(principal.getName());
         DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
@@ -194,8 +208,7 @@ public class BlogService {
 
         Long id = desRepository.save(blog).getId();
 
-        Map<String, Long> response = new HashMap<>();
-        response.put("id", id);
+        DesBlogDetailResDTO response = getBlogDetailDTOById(id);
 
         return new ResDTO(
             HttpServletResponse.SC_OK,
