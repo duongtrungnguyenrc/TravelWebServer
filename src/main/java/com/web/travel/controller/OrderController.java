@@ -36,7 +36,8 @@ public class OrderController {
         request.setId(id);
         request.setStatus("canceled");
 
-        return ResponseEntity.ok(
-                orderService.updateOrderStatus(principal, true, request)
-        );
+        ResDTO response = orderService.updateOrderStatus(principal, true, request);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
     }}
