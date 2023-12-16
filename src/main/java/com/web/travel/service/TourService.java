@@ -447,8 +447,10 @@ public class TourService {
             }
         });
 
-        TourGeneralResMapper mapper = new TourGeneralResMapper();
-        TourGeneralResDTO response = (TourGeneralResDTO) mapper.mapToDTO(updatedTour.get());
+//        TourGeneralResMapper mapper = new TourGeneralResMapper();
+//        TourGeneralResDTO response = (TourGeneralResDTO) mapper.mapToDTO(updatedTour.get());
+
+        TourDetailResDTO response = (TourDetailResDTO) getResponseTourById(null, updatedTour.get().getId());
 
         String message = "Chỉnh sửa tour thành thông!";
 
@@ -503,6 +505,9 @@ public class TourService {
         ResDTO response = new ResDTO();
 
         List<TopDestinationResponse> responses = customTourRepository.findTopDestinations(top);
+        responses.forEach(item -> {
+            item.setRatedStar(customTourRepository.findTopRatedByDestination(item.getName()));
+        });
 
         response.setMessage("Destination fetched successfully!");
         response.setCode(HttpServletResponse.SC_OK);

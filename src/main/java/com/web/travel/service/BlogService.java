@@ -311,4 +311,43 @@ public class BlogService {
         );
     }
 
+    public ResDTO addBlogView(long id){
+        DestinationBlog foundBlog = findBlogById(id);
+        if(foundBlog != null){
+            foundBlog.setViews(foundBlog.getViews() + 1);
+            desRepository.save(foundBlog);
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "View added successfully!",
+                    foundBlog.getViews()
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Can not found blog with id:" + id,
+                null
+        );
+    }
+
+    public ResDTO getTopBlog(){
+        List<DestinationBlog> foundBlogs = desRepository.findTop6ByOrderByViewsDesc();
+        List<DestinationBlogResDTO> resDTOS = foundBlogs
+                .stream()
+                .map(blog -> {
+                    Mapper mapper = new DestinationBlogResMapper();
+                    DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
+                    Paragraph paragraph = blog.getBlog().getParagraphs().stream().findFirst().orElse(null);
+                    dto.setDescription(paragraph != null ? paragraph.getContent() : "");
+                    return dto;
+                }).toList();
+
+        return new ResDTO(
+                HttpServletResponse.SC_OK,
+                true,
+                "Top blogs fetched successfully",
+                resDTOS
+        );
+    }
 }

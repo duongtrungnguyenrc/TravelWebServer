@@ -3,6 +3,7 @@ package com.web.travel.controller;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.service.BlogService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +83,23 @@ public class BlogController {
         }
         return ResponseEntity.badRequest().body(
                 response
+        );
+    }
+
+    @PostMapping("/add-view/{id}")
+    public ResponseEntity<ResDTO> addBlogView(@PathVariable long id){
+        ResDTO response = blogService.addBlogView(id);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(
+                response
+        );
+    }
+
+    @GetMapping("/top")
+    public ResponseEntity<ResDTO> getTopBlogs(){
+        return ResponseEntity.ok(
+                blogService.getTopBlog()
         );
     }
 }

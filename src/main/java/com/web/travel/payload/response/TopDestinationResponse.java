@@ -12,4 +12,5 @@ public class TopDestinationResponse {
     private String name;
     private Long orderQuantity;
     private String img;
+    private double ratedStar;
 }

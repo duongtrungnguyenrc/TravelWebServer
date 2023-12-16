@@ -92,28 +92,30 @@ public class TourDetailResMapper implements Mapper {
 
             List<HotelResDTO> hotels = new ArrayList<>();
             tour.getHotels().forEach(hotel -> {
-                HotelResDTO hotelResDTO = new HotelResDTO();
-                hotelResDTO.setId(hotel.getId());
-                hotelResDTO.setName(hotel.getName());
-                hotelResDTO.setIllustration(hotel.getIllustration());
-                hotelResDTO.setAddress(hotel.getAddress());
-                List<RoomResDTO> roomResDTOS = new ArrayList<>();
-                hotel.getRooms().forEach(
-                    room -> {
-                        RoomResDTO roomResDTO = new RoomResDTO();
-                        roomResDTO.setId(room.getId());
-                        switch (room.getType()){
-                            case TYPE_MEDIUM -> roomResDTO.setType("Trung bình");
-                            case TYPE_NORMAL -> roomResDTO.setType("Bình thường");
-                            case TYPE_VIP -> roomResDTO.setType("Vip");
-                        }
-                        roomResDTO.setPrice(room.getPrice());
-                        roomResDTOS.add(roomResDTO);
-                    }
-                );
-                hotelResDTO.setRooms(roomResDTOS);
+                if(hotel != null){
+                    HotelResDTO hotelResDTO = new HotelResDTO();
+                    hotelResDTO.setId(hotel.getId());
+                    hotelResDTO.setName(hotel.getName());
+                    hotelResDTO.setIllustration(hotel.getIllustration());
+                    hotelResDTO.setAddress(hotel.getAddress());
+                    List<RoomResDTO> roomResDTOS = new ArrayList<>();
+                    hotel.getRooms().forEach(
+                            room -> {
+                                RoomResDTO roomResDTO = new RoomResDTO();
+                                roomResDTO.setId(room.getId());
+                                switch (room.getType()){
+                                    case TYPE_MEDIUM -> roomResDTO.setType("Trung bình");
+                                    case TYPE_NORMAL -> roomResDTO.setType("Bình thường");
+                                    case TYPE_VIP -> roomResDTO.setType("Vip");
+                                }
+                                roomResDTO.setPrice(room.getPrice());
+                                roomResDTOS.add(roomResDTO);
+                            }
+                    );
+                    hotelResDTO.setRooms(roomResDTOS);
 
-                hotels.add(hotelResDTO);
+                    hotels.add(hotelResDTO);
+                }
             });
 
             tourDto.setHotels(hotels);

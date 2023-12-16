@@ -18,5 +18,6 @@ public class RateResDTO {
     private Date ratedDate;
     private int star;
     private String comment;
+    private String avatar;
     private boolean isActive;
 }

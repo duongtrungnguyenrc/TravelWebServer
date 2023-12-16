@@ -22,6 +22,7 @@ public class DestinationBlog {
     private String title;
     private String type;
     private String author;
+    private long views;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date postDate;
     @OneToOne(cascade = CascadeType.ALL)

@@ -15,6 +15,7 @@ public class RateResMapper implements Mapper {
         rateResDTO.setUsername(rate.getUser().getFullName());
         rateResDTO.setEmail(rate.getUser().getEmail());
         rateResDTO.setId(rate.getId());
+        rateResDTO.setAvatar(rate.getUser().getAvatar());
         return rateResDTO;
     }
 

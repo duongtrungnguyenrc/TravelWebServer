@@ -18,6 +18,7 @@ public class DestinationBlogResMapper implements Mapper {
                 dto.setAuthor(((DestinationBlog) obj).getUser().getFullName());
             dto.setType(((DestinationBlog) obj).getType());
             dto.setTitle(((DestinationBlog) obj).getTitle());
+            dto.setViews(((DestinationBlog) obj).getViews());
             dto.setImg(((DestinationBlog) obj).getBlog().getBackgroundImg());
         }
         return dto;

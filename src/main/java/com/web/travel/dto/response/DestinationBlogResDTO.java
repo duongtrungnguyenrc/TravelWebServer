@@ -16,6 +16,7 @@ public class DestinationBlogResDTO {
     private String type;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private Date time;
+    private long views;
     private String author;
     private String img;
     private String description;
