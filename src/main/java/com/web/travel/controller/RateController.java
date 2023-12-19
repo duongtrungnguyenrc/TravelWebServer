@@ -27,7 +27,7 @@ public class RateController {
             Principal principal,
             @PathVariable("tourId") long tourId,
             @RequestParam(defaultValue = "1", required = false) int page,
-            @RequestParam(defaultValue = "10", required = false) int limit
+            @RequestParam(defaultValue = "100000", required = false) int limit
     ){
         Map<String, Object> response = rateService.getRates(principal, tourId, page, limit, true);
         return ResponseEntity.ok(

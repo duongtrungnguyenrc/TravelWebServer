@@ -11,10 +11,12 @@ import com.web.travel.mapper.response.RateResMapper;
 import com.web.travel.model.DestinationBlog;
 import com.web.travel.model.Rate;
 import com.web.travel.model.Tour;
+import com.web.travel.payload.response.RateStatistic;
 import com.web.travel.repository.DestinationBlogRepository;
 import com.web.travel.repository.RateRepository;
 import com.web.travel.repository.TourRepository;
 import com.web.travel.repository.UserRepository;
+import com.web.travel.repository.custom.CustomRateRepository;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class RateService {
     @Autowired
     DestinationBlogRepository desRepository;
     @Autowired
+    CustomRateRepository customRateRepository;
+    @Autowired
     RateReqMapper reqMapper;
     public Map<String, Object> getRates(Principal principal, long id, int page, int limit, boolean isByTour){
         Tour foundTour = null;
@@ -62,6 +66,13 @@ public class RateService {
 
             Map<String, Object> response = new HashMap<>();
             response.put("pages", ratesPage.getTotalPages());
+
+            if (foundTour != null){
+                RateStatistic rateStatistic = getStarStatisticByTour(foundTour);
+                response.put("starDistribution", rateStatistic);
+                response.put("totalStar", rateStatistic.getTotalRates());
+                response.put("average", rateStatistic.getAverage());
+            }
 
             List<RateResDTO> rates;
             Stream<Rate> rateStream;
@@ -182,4 +193,10 @@ public class RateService {
         );
     }
 
+    public RateStatistic getStarStatisticByTour(Tour tour){
+        if(tour != null){
+            return customRateRepository.findRateStatisticByTour(tour);
+        }
+        return null;
+    }
 }
