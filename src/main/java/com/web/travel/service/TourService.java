@@ -516,4 +516,26 @@ public class TourService {
 
         return response;
     }
+
+    public ResDTO getTourDate(long tourId){
+        Tour foundTour = findTourById(tourId);
+        if(foundTour != null){
+            List<TourDate> tourDates = foundTour.getTourDate().stream().toList();
+            Map<String, Object> response = new HashMap<>();
+            response.put("tourName", foundTour.getName());
+            response.put("tourImage", foundTour.getImg());
+            response.put("tourDates", tourDates);
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Tour dates fetched successfully",
+                    response
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Tour not found with id:" + tourId,
+                null);
+    }
 }

@@ -1,6 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.common.ValidateTokenIdReqDTO;
 import com.web.travel.dto.response.UserResDTO;
 import com.web.travel.mapper.response.UserDetailResMapper;
 import com.web.travel.model.Role;
@@ -122,5 +123,24 @@ public class AuthController {
     public ResponseEntity<?> changePassword(Principal principal, @RequestBody ChangePasswordRequest request){
         ResDTO response = authService.changePassword(principal, request);
         return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("/validate-token-id")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<ResDTO> validateTokenId(HttpServletRequest request, @RequestBody ValidateTokenIdReqDTO body){
+        try{
+            ResDTO resDTO = authService.googleAuthWithTokenId(request, body.getToken());
+            return resDTO.isStatus() ? ResponseEntity.ok(resDTO) : ResponseEntity.badRequest().body(resDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body(
+                new ResDTO(
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        false,
+                        "Some errors occurred",
+                        null
+                )
+        );
     }
 }

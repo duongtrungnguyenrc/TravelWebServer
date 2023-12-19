@@ -1,6 +1,13 @@
 package com.web.travel.service;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.web.travel.dto.ResDTO;
+import com.web.travel.mapper.response.SignInResMapper;
 import com.web.travel.model.LoginHistory;
 import com.web.travel.model.enums.ERole;
 import com.web.travel.model.Role;
@@ -23,6 +30,7 @@ import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +40,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.*;
@@ -51,6 +61,10 @@ public class AuthService {
     EmailService emailService;
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    UserService userService;
+    @Value("${travel.app.client.registration.google.client-id}")
+    private String CLIENT_ID;
     public boolean userIsExistsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
@@ -293,6 +307,60 @@ public class AuthService {
                 false,
                 "Confirmation code is not correct",
                 response
+        );
+    }
+
+    public ResDTO googleAuthWithTokenId(HttpServletRequest request, String tokenId) throws GeneralSecurityException, IOException {
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(CLIENT_ID))
+                .build();
+
+        GoogleIdToken idToken = verifier.verify(tokenId);
+        SignInResponse signInResponse = new SignInResponse();
+        if (idToken != null) {
+            GoogleIdToken.Payload payload = idToken.getPayload();
+
+            // Get profile information from payload
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+            String pictureUrl = (String) payload.get("picture");
+
+            if(userRepository.existsByEmail(email)){
+                User foundUser = userRepository.findByEmail(email).orElse(null);
+                saveUserLoginHistory(request, foundUser);
+                signInResponse = (SignInResponse) new SignInResMapper().mapToDTO(foundUser);
+            }else{
+                SignupRequest dto = new SignupRequest();
+                dto.setPhone("");
+                dto.setEmail(email);
+                dto.setPassword("default-password");
+                dto.setAddress("");
+                dto.setFullName(name);
+                dto.setAvatar(pictureUrl);
+
+                Set<String> roles = new HashSet<>();
+                roles.add("user");
+                dto.setRole(roles);
+
+                User savedUser = userService.saveDefaultUser(dto);
+                userService.saveUserLoginHistory(request, savedUser);
+                signInResponse = (SignInResponse) new SignInResMapper().mapToDTO(savedUser);
+            }
+            String token = jwtUtils.generateJwtToken(email);
+            signInResponse.setAccessToken(token);
+
+            return new ResDTO(
+                  HttpServletResponse.SC_OK,
+                  true,
+                  "Đăng nhập thành công",
+                  signInResponse
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Token ID is not valid",
+                null
         );
     }
 }

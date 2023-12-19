@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -90,4 +91,10 @@ public class TourController {
                 tourService.getTopDestinations(6)
         );
     }
-}
+
+    @GetMapping("/{id}/tour-date")
+    public ResponseEntity<?> getTourDate(@PathVariable("id") Long id){
+        ResDTO response = tourService.getTourDate(id);
+
+        return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+    }}

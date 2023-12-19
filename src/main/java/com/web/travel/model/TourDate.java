@@ -1,5 +1,7 @@
 package com.web.travel.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.travel.model.enums.ETourDateType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +20,9 @@ public class TourDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date departDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date endDate;
     @Enumerated(EnumType.STRING)
     private ETourDateType dateType;
@@ -28,8 +32,10 @@ public class TourDate {
     private int maxPeople;
     @ManyToOne
     @JoinColumn(name = "tourId")
+    @JsonIgnore
     private Tour tour;
     @OneToMany(mappedBy = "tourDate")
+    @JsonIgnore
     private List<Order> orders;
 
     public boolean isFull(){

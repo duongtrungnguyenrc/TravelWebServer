@@ -59,7 +59,13 @@ public class UserService {
         loginHistory.setUserDevice(deviceName);
         loginHistory.setLoggedDate(DateHandler.getCurrentDateTime());
 
-        user.getLoginHistories().add(loginHistory);
+        List<LoginHistory> userLoginHistories = user.getLoginHistories();
+        if(userLoginHistories != null){
+            userLoginHistories.add(loginHistory);
+        }else {
+            userLoginHistories = new ArrayList<>();
+            userLoginHistories.add(loginHistory);
+        }
         userRepository.save(user);
     }
     public boolean userIsExistsByEmail(String email){
