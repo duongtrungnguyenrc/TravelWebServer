@@ -357,4 +357,27 @@ public class AuthService {
                 null
         );
     }
+
+    public ResDTO sendResetPasswordConfirmCode(String email){
+        User foundUser = userRepository.findByEmail(email).orElse(null);
+        if(foundUser != null){
+            String userFullName = foundUser.getFullName();
+            String confirmationCode = generateConfirmationCode();
+            String token = encodeResetPasswordToken(createConfirmationCodeToken(email, confirmationCode));
+            emailService.sendConfirmationEmail(email, userFullName, token, confirmationCode);
+
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Success",
+                    token
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Tài khoản không tồn tại trong hệ thống!",
+                null
+        );
+    }
 }

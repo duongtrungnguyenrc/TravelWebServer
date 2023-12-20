@@ -532,6 +532,7 @@ public class TourService {
             response.put("tourName", foundTour.getName());
             response.put("tourImage", foundTour.getImg());
             response.put("tourDates", tourDates);
+            response.put("tourHotels", foundTour.getHotels().stream().toList());
             return new ResDTO(
                     HttpServletResponse.SC_OK,
                     true,

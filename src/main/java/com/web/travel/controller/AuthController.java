@@ -159,4 +159,14 @@ public class AuthController {
                 )
         );
     }
+
+    @PostMapping("/send-mail/change-password-code/{email}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> sendChangePasswordCode(@PathVariable String email){
+        ResDTO response = authService.sendResetPasswordConfirmCode(email);
+
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
+    }
 }
