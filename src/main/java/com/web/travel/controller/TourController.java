@@ -78,6 +78,13 @@ public class TourController {
         );
     }
 
+    @GetMapping("/search-contain-blog")
+    public ResponseEntity<?> searching(@RequestParam(defaultValue = "") String key){
+        return ResponseEntity.ok(
+                tourService.searchContainBlog(key)
+        );
+    }
+
     @PostMapping("/filter")
     public ResponseEntity<?> filter(@RequestBody TourFilter tourFilter){
         return ResponseEntity.ok(
@@ -97,4 +104,5 @@ public class TourController {
         ResDTO response = tourService.getTourDate(id);
 
         return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
-    }}
+    }
+}

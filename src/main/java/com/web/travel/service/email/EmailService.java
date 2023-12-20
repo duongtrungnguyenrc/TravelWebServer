@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import freemarker.template.Configuration;
@@ -96,7 +97,8 @@ public class EmailService {
         return response;
     }
 
-    public MessageResponse sendConfirmationEmail(String email, String userFullName, String token, String confirmationCode){
+    @Async
+    public void sendConfirmationEmail(String email, String userFullName, String token, String confirmationCode){
         MessageResponse response = new MessageResponse();
 
         MailRequest request = new MailRequest();
@@ -139,7 +141,6 @@ public class EmailService {
             response.setMessage("Mail sent failure : " + e.getMessage());
             response.setStatus(Boolean.FALSE);
         }
-        return response;
     }
 
     public MessageResponse sendOrderedEmail(Order order, boolean isOnline){

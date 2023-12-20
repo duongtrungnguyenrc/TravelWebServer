@@ -16,6 +16,7 @@ import java.util.List;
 public interface TourRepository extends JpaRepository<Tour, Long> {
     List<Tour> findByTourType(ETourType tourType);
     Page<Tour> findByNameContainingOrDestinationContaining(String name, String destination, Pageable pageable);
+    List<Tour> findByNameContainingOrDestinationContaining(String name, String destination);
     @Query("SELECT DISTINCT t FROM Tour t " +
             "JOIN t.rates r " +
             "JOIN t.tourDate td " +

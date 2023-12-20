@@ -13,4 +13,5 @@ public interface DestinationBlogRepository extends JpaRepository<DestinationBlog
     public Page<DestinationBlog> findAllByOrderByPostDateDesc(Pageable pageable);
     public Page<DestinationBlog> findByTitleContaining(String keyword, Pageable pageable);
     public List<DestinationBlog> findTop6ByOrderByViewsDesc();
+    public List<DestinationBlog> findByTitleContaining(String keyword);
 }

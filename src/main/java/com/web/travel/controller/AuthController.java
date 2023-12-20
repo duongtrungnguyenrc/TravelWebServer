@@ -86,6 +86,22 @@ public class AuthController {
                 .body(new ResDTO(HttpServletResponse.SC_OK, true, "Xác thực đăng nhập thành công!", null));
     }
 
+    @PostMapping("/verify-header")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> loginVerify(Principal principal) {
+        return principal != null ? ResponseEntity
+                .ok()
+                .body(new ResDTO(HttpServletResponse.SC_OK, true, "Xác thực đăng nhập thành công!", null)) :
+                ResponseEntity.badRequest().body(
+                        new ResDTO(
+                                HttpServletResponse.SC_BAD_REQUEST,
+                                false,
+                                "Fail",
+                                null
+                        )
+                );
+    }
+
     @GetMapping("/sign-with-google")
     @CrossOrigin(origins = "*")
     public void googleAuthorize(HttpServletResponse httpServletResponse) throws IOException {

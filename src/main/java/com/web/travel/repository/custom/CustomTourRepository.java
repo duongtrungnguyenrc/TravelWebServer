@@ -67,22 +67,6 @@ public class CustomTourRepository {
     }
 
     public double findTopRatedByDestination(String destination){
-//        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<Tour> criteriaQuery = builder.createQuery(Tour.class);
-//        Root<Tour> root = criteriaQuery.from(Tour.class);
-//        Join<Tour, Rate> rateJoin = root.join("rates", JoinType.INNER);
-//
-//        criteriaQuery
-//                .select(root)
-//                .where(builder.equal(root.get("destination"), destination))
-//                .groupBy(rateJoin.get("tour"))
-//                .orderBy(builder.desc(builder.avg(rateJoin.get("point"))));
-//
-//        Tour tour = entityManager.createQuery(criteriaQuery).getResultList().get(0);
-//        List<Rate> rateObjects = tour.getRates().stream().toList();
-//
-//        return RateCalculator.getAverageRates(rateObjects);
-
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tour> criteriaQuery = builder.createQuery(Tour.class);
         Root<Tour> root = criteriaQuery.from(Tour.class);
@@ -91,19 +75,17 @@ public class CustomTourRepository {
         criteriaQuery
                 .select(root)
                 .where(builder.equal(root.get("destination"), destination))
-                .groupBy(root.get("id")) // Assuming "id" is the primary key of the Tour entity
+                .groupBy(root.get("id"))
                 .orderBy(builder.desc(builder.avg(rateJoin.get("point"))));
 
         List<Tour> tours = entityManager.createQuery(criteriaQuery).getResultList();
         if (!tours.isEmpty()) {
             Tour tour = tours.get(0);
-            List<Rate> rateObjects = tour.getRates().stream().toList(); // No need for stream().toList()
+            List<Rate> rateObjects = tour.getRates().stream().toList();
 
             return RateCalculator.getAverageRates(rateObjects);
-        } else {
-            // Handle case where no tours match the criteria
-            return 0; // Or handle as appropriate for your application
         }
+        return 0;
     }
 
 }

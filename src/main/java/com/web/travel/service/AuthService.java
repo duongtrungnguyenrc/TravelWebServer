@@ -97,16 +97,10 @@ public class AuthService {
         String userFullName = signUpRequest.getFullName();
         String confirmationCode = generateConfirmationCode();
         String token = encodeResetPasswordToken(createConfirmationCodeToken(signUpRequest.getEmail(), confirmationCode));
-        MessageResponse messageResponse = emailService.sendConfirmationEmail(signUpRequest.getEmail(), userFullName, token, confirmationCode);
+        emailService.sendConfirmationEmail(signUpRequest.getEmail(), userFullName, token, confirmationCode);
         Map<String, Object> result = new HashMap<>();
-
-        if(messageResponse.isStatus()){
             result.put("user", userRepository.save(user));
             result.put("token", token);
-        }else{
-            result.put("user", null);
-            result.put("token", "");
-        }
 
         return result;
     }
@@ -291,21 +285,21 @@ public class AuthService {
                 return new ResDTO(
                         HttpServletResponse.SC_BAD_REQUEST,
                         false,
-                        "Can't found user with email: " + email,
+                        "Không tìm thấy người dùng với email: " + email,
                         response
                 );
             }
             return new ResDTO(
                     HttpServletResponse.SC_BAD_REQUEST,
                     false,
-                    "Confirmation code is expired",
+                    "Mã xác nhận đã hết hạn!",
                     response
             );
         }
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 false,
-                "Confirmation code is not correct",
+                "Mã xác nhận không đúng!",
                 response
         );
     }

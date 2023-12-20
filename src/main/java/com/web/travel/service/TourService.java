@@ -2,12 +2,14 @@ package com.web.travel.service;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.tour.TourAddingDTO;
+import com.web.travel.dto.response.DestinationBlogResDTO;
 import com.web.travel.dto.response.ListTourResDTO;
 import com.web.travel.dto.response.TourDetailResDTO;
 import com.web.travel.dto.response.TourGeneralResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.TourAddingReqMapper;
 import com.web.travel.mapper.request.TourParagraphsAddingMapper;
+import com.web.travel.mapper.response.DestinationBlogResMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourGeneralResMapper;
 import com.web.travel.model.*;
@@ -56,6 +58,8 @@ public class TourService {
     TourAddingReqMapper tourAddingRequestMapper;
     @Autowired
     BlogRepository blogRepository;
+    @Autowired
+    DestinationBlogRepository desRepository;
     @Autowired
     FilesValidation filesValidation;
     public List<ListTourResDTO> getTourDTOListGroupByType(){
@@ -520,7 +524,10 @@ public class TourService {
     public ResDTO getTourDate(long tourId){
         Tour foundTour = findTourById(tourId);
         if(foundTour != null){
-            List<TourDate> tourDates = foundTour.getTourDate().stream().toList();
+            List<TourDate> tourDates = foundTour.getTourDate()
+                    .stream()
+                    .filter(date -> date.getDepartDate().getTime() >= DateHandler.getCurrentDateTime().getTime())
+                    .toList();
             Map<String, Object> response = new HashMap<>();
             response.put("tourName", foundTour.getName());
             response.put("tourImage", foundTour.getImg());
@@ -537,5 +544,35 @@ public class TourService {
                 false,
                 "Tour not found with id:" + tourId,
                 null);
+    }
+
+    public ResDTO searchContainBlog(String key){
+        List<Tour> tours = tourRepository.findByNameContainingOrDestinationContaining(key, key);
+        List<DestinationBlog> blogs = desRepository.findByTitleContaining(key);
+        List<TourGeneralResDTO> tourDTOs = tours.stream()
+                .filter(tour -> (tour.getIsRemoved() == null || !tour.getIsRemoved()))
+                .map(tour -> {
+                    Mapper mapper = new TourGeneralResMapper();
+                    return (TourGeneralResDTO) mapper.mapToDTO(tour);
+                }).toList();
+
+        List<DestinationBlogResDTO> blogDTOs = blogs.stream().map(blog -> {
+            Mapper mapper = new DestinationBlogResMapper();
+            DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
+            Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
+            dto.setDescription(paragraph.getContent());
+            return dto;
+        }).toList();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("tours", tourDTOs);
+        response.put("blogs", blogDTOs);
+
+        return new ResDTO(
+                HttpServletResponse.SC_OK,
+                true,
+                "Search result fetched successfully",
+                response
+        );
     }
 }

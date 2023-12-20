@@ -64,14 +64,8 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
             String confirmationCode = generateConfirmationCode();
             String token = encodeResetPasswordToken(createConfirmationCodeToken(email, confirmationCode));
-            MessageResponse messageResponse = emailService.sendConfirmationEmail(email, fullName, token, confirmationCode);
-
-            if(messageResponse.isStatus()){
-                body.put("activateToken", token);
-            }else{
-                body.put("error", "Đã có lỗi trong quá trình gửi mail, vui lòng thử lại!");
-                body.put("activateToken", null);
-            }
+            emailService.sendConfirmationEmail(email, fullName, token, confirmationCode);
+            body.put("activateToken", token);
         }
 
         ResDTO authResponse = new ResDTO(
