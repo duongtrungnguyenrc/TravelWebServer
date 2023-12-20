@@ -169,4 +169,12 @@ public class AuthController {
                 response
         ) : ResponseEntity.badRequest().body(response);
     }
+
+    @PostMapping("/change-password-with-email")
+    @CrossOrigin(originPatterns = "*")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassWithEmailRequest request){
+        ResDTO response = authService.changePassword(request.getEmail(), request.getPassword());
+        return response.isStatus() ? ResponseEntity.ok(response)
+                : ResponseEntity.badRequest().body(response);
+    }
 }

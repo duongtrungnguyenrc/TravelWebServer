@@ -380,4 +380,24 @@ public class AuthService {
                 null
         );
     }
+
+    public ResDTO changePassword(String email, String newPassword){
+        User foundUser = userRepository.findByEmail(email).orElse(null);
+        if(foundUser != null){
+            foundUser.setPassword(encoder.encode(newPassword));
+            userRepository.save(foundUser);
+            return new ResDTO(
+                    HttpServletResponse.SC_OK,
+                    true,
+                    "Đổi mật khẩu thành công!",
+                    null
+            );
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Tài khoản không tồn tại trong hệ thống!",
+                null
+        );
+    }
 }

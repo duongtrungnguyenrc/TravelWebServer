@@ -21,7 +21,12 @@ public class RateStatistic {
     }
     @JsonIgnore
     public double getAverage(){
-        long sum = 5*fiveStar + 4*fourStar + 3*threeStar + 2*twoStar + oneStar;
-        return sum*1.0/getTotalRates();
+        long totalRates = getTotalRates();
+        if (totalRates != 0) {
+            long sum = 5 * fiveStar + 4 * fourStar + 3 * threeStar + 2 * twoStar + oneStar;
+            return sum * 1.0 / totalRates;
+        } else {
+            return 0.0;
+        }
     }
 }
