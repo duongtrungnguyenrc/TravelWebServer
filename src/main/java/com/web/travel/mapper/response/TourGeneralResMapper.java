@@ -1,5 +1,6 @@
 package com.web.travel.mapper.response;
 
+import com.web.travel.model.enums.ETourType;
 import com.web.travel.utils.DateHandler;
 import com.web.travel.utils.RateCalculator;
 import com.web.travel.dto.response.TourGeneralResDTO;
@@ -39,28 +40,30 @@ public class TourGeneralResMapper implements Mapper {
             }
             tourGeneralResDTO.setPrice(price);
             tourGeneralResDTO.setDuration(duration);
-            String typeDto = "";
-            String typeTitle = "";
-            switch (((Tour) obj).getTourType().toString()) {
-                case "TYPE_SAVING" -> {
-                    typeDto = "saving";
-                    typeTitle = "Tour tiết kiệm";
+            String typeDto = "saving";
+            String typeTitle = "Tour tiết kiệm";
+            ETourType tourType = ((Tour) obj).getTourType();
+            if(tourType != null)
+                switch (((Tour) obj).getTourType().toString()) {
+                    case "TYPE_SAVING" -> {
+                        typeDto = "saving";
+                        typeTitle = "Tour tiết kiệm";
+                    }
+                    case "TYPE_SPECIAL" -> {
+                        typeDto = "special";
+                        typeTitle = "Tour đặc biệt";
+                    }
+                    case "TYPE_NORMAL" -> {
+                        typeTitle = "Tour thông thường";
+                        typeDto = "normal";
+                    }
+                    case "TYPE_POPULAR" -> {
+                        typeTitle = "Tour phổ biến";
+                        typeDto = "popular";
+                    }
+                    default -> {
+                    }
                 }
-                case "TYPE_SPECIAL" -> {
-                    typeDto = "special";
-                    typeTitle = "Tour đặc biệt";
-                }
-                case "TYPE_NORMAL" -> {
-                    typeTitle = "Tour thông thường";
-                    typeDto = "normal";
-                }
-                case "TYPE_POPULAR" -> {
-                    typeTitle = "Tour phổ biến";
-                    typeDto = "popular";
-                }
-                default -> {
-                }
-            }
             tourGeneralResDTO.setType(typeDto);
             tourGeneralResDTO.setTypeTitle(typeTitle);
 
