@@ -71,7 +71,31 @@ public class UserController {
 
     @GetMapping("activity")
     public ResponseEntity<?> getRecentActivity(Principal principal){
-        ResDTO response = service.getRecentActivity(principal);
+        ResDTO response = service.getRecentActivity(principal, false);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
+    }
+
+    @GetMapping("activity/all")
+    public ResponseEntity<?> getAllRecentActivity(Principal principal){
+        ResDTO response = service.getRecentActivity(principal, true);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("activity/clear")
+    public ResponseEntity<?> clearAllRecentActivity(Principal principal){
+        ResDTO response = service.clearRecentActivity(principal);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("activity/delete/{id}")
+    public ResponseEntity<?> deleteRecentActivity(Principal principal, @PathVariable("id") Long id){
+        ResDTO response = service.deleteRecentActivity(principal, id);
         return response.isStatus() ? ResponseEntity.ok(
                 response
         ) : ResponseEntity.badRequest().body(response);

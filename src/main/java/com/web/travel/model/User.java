@@ -58,7 +58,7 @@ public class User {
     @JsonIgnore
     private List<LoginHistory> loginHistories;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonIgnore
     private List<RecentActivity> recentActivities;
     public User(String fullName, String address, String email, String password, String phone) {

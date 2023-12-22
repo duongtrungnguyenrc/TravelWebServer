@@ -98,11 +98,14 @@ public class WebSecurityConfig {
                                     "/api/user/avatar",
                                     "/api/order/cancel/**",
                                     "/api/auth/change-password",
-                                    "/api/user/record").authenticated()
+                                    "/api/user/record",
+                                    "/api/user/activity/clear",
+                                    "/api/user/activity/delete/**").authenticated()
                             .requestMatchers(HttpMethod.GET,
                                     "/api/order",
                                     "/api/user/login-history",
-                                    "/api/user/activity").authenticated()
+                                    "/api/user/activity",
+                                    "/api/user/activity/all").authenticated()
                             .anyRequest().permitAll()
                 ).oauth2Login(oAuth2LoginConfigurer -> {
                     oAuth2LoginConfigurer.successHandler(successHandler);

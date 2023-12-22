@@ -20,4 +20,7 @@ public class DestinationBlogResDTO {
     private String author;
     private String img;
     private String description;
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date activityTime;
+    private Long activityId;
 }

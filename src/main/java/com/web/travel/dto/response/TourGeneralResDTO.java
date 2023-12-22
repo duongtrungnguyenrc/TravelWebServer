@@ -1,7 +1,10 @@
 package com.web.travel.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.Date;
 
 @AllArgsConstructor
 @Data
@@ -17,6 +20,9 @@ public class TourGeneralResDTO {
     private String img;
     private String type;
     private String typeTitle;
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date activityTime;
+    private Long activityId;
 
     public TourGeneralResDTO(){
         id = 1L;
