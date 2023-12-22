@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "tour")
@@ -53,4 +54,7 @@ public class Tour {
     )
     @JsonIgnore
     private Collection<Hotel> hotels;
+    @OneToMany(mappedBy = "tour")
+    @JsonIgnore
+    private List<RecentActivity> recentActivities;
 }

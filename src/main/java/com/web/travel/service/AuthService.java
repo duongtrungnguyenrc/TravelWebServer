@@ -176,11 +176,14 @@ public class AuthService {
         String userAgentString = request.getHeader("User-Agent");
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
         ReadableUserAgent userAgent = parser.parse(userAgentString);
-        String deviceName = userAgent.getName() + ", " + userAgent.getOperatingSystem().getName();
+        String application = !userAgent.getName().equals("unknown") ? userAgent.getName() : "Travel VN";
+        String operatingSystem = !userAgent.getOperatingSystem().getName().equals("unknown") ? userAgent.getOperatingSystem().getName() : "Android";
+
+        String deviceName = application + ", " + operatingSystem;
 
         LoginHistory loginHistory = new LoginHistory();
         loginHistory.setUser(user);
-        loginHistory.setIpAddress(request.getRemoteAddr());
+        loginHistory.setIpAddress(request.getRemoteAddr().equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : request.getRemoteAddr());
         loginHistory.setUserDevice(deviceName);
         loginHistory.setLoggedDate(DateHandler.getCurrentDateTime());
 
@@ -321,6 +324,10 @@ public class AuthService {
 
             if(userRepository.existsByEmail(email)){
                 User foundUser = userRepository.findByEmail(email).orElse(null);
+                if(foundUser.getAvatar() == null){
+                    foundUser.setAvatar(pictureUrl);
+                    userRepository.save(foundUser);
+                }
                 saveUserLoginHistory(request, foundUser);
                 signInResponse = (SignInResponse) new SignInResMapper().mapToDTO(foundUser);
             }else{

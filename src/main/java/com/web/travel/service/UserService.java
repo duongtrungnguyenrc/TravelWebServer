@@ -1,20 +1,20 @@
 package com.web.travel.service;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.common.SaveRecentActivityRequestDTO;
 import com.web.travel.dto.request.common.UserUpdateReqDTO;
-import com.web.travel.dto.response.UserByEmailResDTO;
-import com.web.travel.dto.response.UserResDTO;
+import com.web.travel.dto.response.*;
 import com.web.travel.mapper.Mapper;
+import com.web.travel.mapper.response.DestinationBlogResMapper;
+import com.web.travel.mapper.response.TourGeneralResMapper;
 import com.web.travel.mapper.response.UserDetailResMapper;
-import com.web.travel.model.LoginHistory;
-import com.web.travel.model.Role;
-import com.web.travel.model.User;
+import com.web.travel.model.*;
+import com.web.travel.model.enums.ERecentActivityType;
 import com.web.travel.model.enums.ERole;
 import com.web.travel.model.enums.EUserStatus;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.request.UpdateUserStatusRequest;
-import com.web.travel.repository.RoleRepository;
-import com.web.travel.repository.UserRepository;
+import com.web.travel.repository.*;
 import com.web.travel.service.interfaces.FileUploadService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +38,12 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    TourRepository tourRepository;
+    @Autowired
+    DestinationBlogRepository destinationBlogRepository;
+    @Autowired
+    RecentActivityRepository recentActivityRepository;
     @Autowired
     FileUploadService fileUploadService;
     public UserByEmailResDTO getUserByEmail(String email){
@@ -219,12 +225,154 @@ public class UserService {
                         public int compare(LoginHistory o1, LoginHistory o2) {
                             return (int) (o2.getLoggedDate().getTime() - o1.getLoggedDate().getTime());
                         }
+                    }).map(history -> {
+                        LoginHistory loginHistory = new LoginHistory(history);
+                        loginHistory.setAvatar(history.getUser().getAvatar());
+                        return loginHistory;
                     }).toList()
             );
         return new ResDTO(
                 HttpServletResponse.SC_BAD_REQUEST,
                 false,
                 "User not found!",
+                null
+        );
+    }
+
+    public ResDTO saveRecentActivity(Principal principal, SaveRecentActivityRequestDTO requestDTO){
+        if(principal != null){
+            User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
+            if(foundUser != null){
+                RecentActivity recentActivity = new RecentActivity();
+                recentActivity.setUser(foundUser);
+                recentActivity.setTime(DateHandler.getCurrentDateTime());
+
+                if(requestDTO.getBlogId() != null){
+                    recentActivity.setType(ERecentActivityType.BLOG);
+                    DestinationBlog blog = destinationBlogRepository.findById(requestDTO.getBlogId()).orElse(null);
+                    if(blog != null){
+                        if(!recentActivityRepository.existsByBlog(blog)){
+                            recentActivity.setBlog(blog);
+                            recentActivity.setTour(null);
+
+                            recentActivityRepository.save(recentActivity);
+                        }else{
+                            recentActivityRepository.findByBlog(blog).ifPresent(activity -> {
+                                activity.setTime(DateHandler.getCurrentDateTime());
+                                recentActivityRepository.save(activity);
+                            });
+                        }
+                        return new ResDTO(
+                                HttpServletResponse.SC_OK,
+                                true,
+                                "Lưu hoạt động thành công",
+                                null
+                        );
+                    }
+                    return new ResDTO(
+                            HttpServletResponse.SC_BAD_REQUEST,
+                            false,
+                            "Không tìm thấy bài viết",
+                            null
+                    );
+                }
+                if(requestDTO.getTourId() != null){
+                    recentActivity.setType(ERecentActivityType.TOUR);
+                    Tour tour = tourRepository.findById(requestDTO.getTourId()).orElse(null);
+                    if(tour != null){
+                        if(!recentActivityRepository.existsByTour(tour)){
+                            recentActivity.setBlog(null);
+                            recentActivity.setTour(tour);
+
+                            recentActivityRepository.save(recentActivity);
+                        }else{
+                            recentActivityRepository.findByTour(tour).ifPresent(activity -> {
+                                activity.setTime(DateHandler.getCurrentDateTime());
+                                recentActivityRepository.save(activity);
+                            });
+                        }
+                        return new ResDTO(
+                                HttpServletResponse.SC_OK,
+                                true,
+                                "Lưu hoạt động thành công",
+                                null
+                        );
+                    }
+                    return new ResDTO(
+                            HttpServletResponse.SC_BAD_REQUEST,
+                            false,
+                            "Không tìm thấy tour",
+                            null
+                    );
+                }
+            }
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Không tìm thấy tài khoản",
+                null
+        );
+    }
+
+    public ResDTO getRecentActivity(Principal principal){
+        if(principal != null){
+            User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
+            if(foundUser != null){
+                List<RecentActivity> recentActivities = foundUser.getRecentActivities();
+                List<RecentActivityResDTO> tourTypeActivities = recentActivities
+                        .stream()
+                        .filter(activity -> activity.getType().equals(ERecentActivityType.TOUR))
+                        .map(activity -> {
+                            Mapper mapper = new TourGeneralResMapper();
+                            RecentActivityResDTO resDTO = new RecentActivityResDTO();
+                            resDTO.setTour((TourGeneralResDTO) mapper.mapToDTO(activity.getTour()));
+                            resDTO.setActivityTime(activity.getTime());
+                            resDTO.setBlog(null);
+                            return resDTO;
+                        })
+                        .sorted(new Comparator<RecentActivityResDTO>() {
+                            @Override
+                            public int compare(RecentActivityResDTO o1, RecentActivityResDTO o2) {
+                                return (int) o2.getActivityTime().getTime() - (int) o1.getActivityTime().getTime();
+                            }
+                        })
+                        .toList();
+                List<RecentActivityResDTO> blogTypeActivities = recentActivities
+                        .stream()
+                        .filter(activity -> activity.getType().equals(ERecentActivityType.BLOG))
+                        .map(activity -> {
+                            Mapper mapper = new DestinationBlogResMapper();
+                            RecentActivityResDTO resDTO = new RecentActivityResDTO();
+                            resDTO.setTour(null);
+                            resDTO.setActivityTime(activity.getTime());
+                            resDTO.setBlog((DestinationBlogResDTO) mapper.mapToDTO(activity.getBlog()));
+                            return resDTO;
+                        })
+                        .sorted(new Comparator<RecentActivityResDTO>() {
+                            @Override
+                            public int compare(RecentActivityResDTO o1, RecentActivityResDTO o2) {
+                                return (int) o2.getActivityTime().getTime() - (int) o1.getActivityTime().getTime();
+                            }
+                        })
+                        .toList();
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("recentTours", tourTypeActivities);
+                response.put("recentPosts", blogTypeActivities);
+
+                return new ResDTO(
+                        HttpServletResponse.SC_OK,
+                        true,
+                        "Recent activities fetched successfully",
+                        response
+                );
+            }
+        }
+        return new ResDTO(
+                HttpServletResponse.SC_BAD_REQUEST,
+                false,
+                "Không tìm thấy tài khoản",
                 null
         );
     }

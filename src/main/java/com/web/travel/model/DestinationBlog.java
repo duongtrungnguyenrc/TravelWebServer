@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -31,6 +32,9 @@ public class DestinationBlog {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany(mappedBy = "blog")
+    @JsonIgnore
+    private List<RecentActivity> recentActivities;
 
     public DestinationBlog(String title, Date postDate, Blog blog) {
         this.title = title;

@@ -233,7 +233,8 @@ public class EmailService {
         return response;
     }
 
-    public MessageResponse sendCanceledEmail(Order order){
+    @Async
+    public void sendCanceledEmail(Order order){
         MessageResponse response = new MessageResponse();
 
         MailRequest request = new MailRequest();
@@ -268,6 +269,5 @@ public class EmailService {
             response.setMessage("Mail sent failure : " + e.getMessage());
             response.setStatus(Boolean.FALSE);
         }
-        return response;
     }
 }

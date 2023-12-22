@@ -1,6 +1,7 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
+import com.web.travel.dto.request.common.SaveRecentActivityRequestDTO;
 import com.web.travel.dto.request.common.UserByEmailReqDTO;
 import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
@@ -68,4 +69,21 @@ public class UserController {
         return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 
+    @GetMapping("activity")
+    public ResponseEntity<?> getRecentActivity(Principal principal){
+        ResDTO response = service.getRecentActivity(principal);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("record")
+    public ResponseEntity<?> saveRecentActivity(Principal principal, @RequestBody SaveRecentActivityRequestDTO requestDTO){
+        ResDTO response = service.saveRecentActivity(principal, requestDTO);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(
+                response
+        );
+    }
 }

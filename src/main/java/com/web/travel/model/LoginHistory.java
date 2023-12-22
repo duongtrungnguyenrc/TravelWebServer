@@ -21,8 +21,18 @@ public class LoginHistory {
     private Date loggedDate;
     private String userDevice;
     private String ipAddress;
+    private String avatar;
     @ManyToOne
     @JoinColumn(name = "userId")
     @JsonIgnore
     private User user;
+
+    public LoginHistory(LoginHistory loginHistory){
+        this.id = loginHistory.getId();
+        this.loggedDate = loginHistory.getLoggedDate();
+        this.userDevice = loginHistory.getUserDevice();
+        this.ipAddress = loginHistory.getIpAddress();
+        this.avatar = loginHistory.getAvatar();
+        this.user = loginHistory.getUser();
+    }
 }
