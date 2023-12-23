@@ -68,15 +68,18 @@ public class RateController {
 
     @PostMapping("/update")
     public ResponseEntity<?> updateRate(Principal principal, @RequestBody RateUpdateReqDTO rating){
-        return ResponseEntity.ok(
-                rateService.updateRate(principal, rating)
-        );
+        ResDTO response = rateService.updateRate(principal, rating);
+        return response.isStatus() ? ResponseEntity.ok(
+                response
+        ) : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteRate(Principal principal, @PathVariable long id){
-        return ResponseEntity.ok(
-            rateService.deleteRate(principal, id)
-        );
+        ResDTO response = rateService.deleteRate(principal, id);
+
+        return response.isStatus() ? ResponseEntity.ok(
+            response
+        ) : ResponseEntity.badRequest().body(response);
     }
 }
