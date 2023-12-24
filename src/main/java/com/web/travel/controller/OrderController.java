@@ -29,6 +29,13 @@ public class OrderController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrderById(@PathVariable Long id){
+        ResDTO response = orderService.getOrderResById(id);
+        return response.isStatus() ? ResponseEntity.ok(response) :
+                ResponseEntity.badRequest().body(response);
+    }
+
     @PostMapping("/cancel/{id}")
     public ResponseEntity<?> cancelOrder(Principal principal, @PathVariable long id){
 
@@ -40,4 +47,5 @@ public class OrderController {
         return response.isStatus() ? ResponseEntity.ok(
                 response
         ) : ResponseEntity.badRequest().body(response);
-    }}
+    }
+}

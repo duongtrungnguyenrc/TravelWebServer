@@ -7,6 +7,7 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.dto.request.common.OrderUpdateReqDTO;
 import com.web.travel.dto.response.OrderDetailResDTO;
+import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.OrderReqMapper;
 import com.web.travel.mapper.response.OrderResMapper;
 import com.web.travel.model.ContactInfo;
@@ -75,6 +76,27 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
+    public ResDTO getOrderResById(Long id){
+        Order foundOrder = orderRepository.findById(id).orElse(null);
+        OrderDetailResDTO responseData = null;
+        int statusCode = HttpServletResponse.SC_BAD_REQUEST;
+        boolean status = false;
+        String message = "Không tìm thấy đơn hàng có mã: " + id;
+        if(foundOrder != null){
+            Mapper mapper = new OrderResMapper();
+            responseData = (OrderDetailResDTO) mapper.mapToDTO(foundOrder);
+            statusCode = HttpServletResponse.SC_OK;
+            status = true;
+            message = "Lấy đơn hàng thành công!";
+        }
+        return new ResDTO(
+                statusCode,
+                status,
+                message,
+                responseData
+        );
+    }
+
     public Map<String, Object> getAllResponse(int page, int limit){
         Page<Order> orders = orderRepository.findAllByOrderByOrderDateDesc(PageRequest.of(page - 1, limit));
 
@@ -91,7 +113,7 @@ public class OrderService {
         return response;
     }
 
-    public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
+    public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body, boolean isApp) throws UnsupportedEncodingException {
         long amount = (long) Math.round(body.getAmount());
         String ipAddress = request.getRemoteAddr();
 
@@ -131,7 +153,7 @@ public class OrderService {
                         idParams.put("tourDateId", savedTourDate.getId());
                         idParams.put("tourId", savedTourDate.getTour().getId());
 
-                        response = vnPayService.createPayment(amount, ipAddress, idParams, body.getSessionToken());
+                        response = vnPayService.createPayment(amount, ipAddress, idParams, body.getSessionToken(), isApp);
 
                     }else if(paymentMethod.equals("paypal")){
                         Payment payment = null;
@@ -141,7 +163,7 @@ public class OrderService {
                             idParams.put("tourDateId", savedTourDate.getId());
                             idParams.put("tourId", savedTourDate.getTour().getId());
 
-                            payment = paypalService.createPayment(convertVNDtoUSD(amount), idParams, body.getSessionToken());
+                            payment = paypalService.createPayment(convertVNDtoUSD(amount), idParams, body.getSessionToken(), isApp);
 
                         } catch (PayPalRESTException e) {
                             return new ResDTO(

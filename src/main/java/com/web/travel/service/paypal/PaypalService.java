@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.paypal.api.payments.Amount;
@@ -22,9 +23,11 @@ import com.paypal.base.rest.PayPalRESTException;
 public class PaypalService {
     public static String SUCCESS_URL = "http://localhost:8080/api/payment/success";
     public static String CANCEL_URL = "http://localhost:8080/api/payment/cancel";
+    @Value("${travel.app.server.ip}")
+    public String ANDROID_SERVER_IP;
     @Autowired
     private APIContext apiContext;
-    public Payment createPayment(Double total, Map<String, Long> idParams, String sessionToken) throws PayPalRESTException{
+    public Payment createPayment(Double total, Map<String, Long> idParams, String sessionToken, boolean isApp) throws PayPalRESTException{
         Amount amount = new Amount();
         amount.setCurrency("USD");
         total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -45,8 +48,8 @@ public class PaypalService {
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl(CANCEL_URL + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId"));
-        redirectUrls.setReturnUrl(SUCCESS_URL + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId"));
+        redirectUrls.setCancelUrl((!isApp ? CANCEL_URL : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/cancel") + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
+        redirectUrls.setReturnUrl((!isApp ? SUCCESS_URL : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/success") + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
         payment.setRedirectUrls(redirectUrls);
 
         return payment.create(apiContext);

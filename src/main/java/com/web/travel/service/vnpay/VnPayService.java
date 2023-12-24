@@ -3,6 +3,7 @@ package com.web.travel.service.vnpay;
 import com.web.travel.utils.config.VnPayConfig;
 import com.web.travel.dto.ResDTO;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -21,7 +22,9 @@ import java.util.TimeZone;
 
 @Service
 public class VnPayService {
-    public ResDTO createPayment(long amount, String remoteAddress, HashMap<String, Long> idParams, String sessionToken) throws UnsupportedEncodingException {
+    @Value("${travel.app.server.ip}")
+    public String ANDROID_SERVER_IP;
+    public ResDTO createPayment(long amount, String remoteAddress, HashMap<String, Long> idParams, String sessionToken, boolean isApp) throws UnsupportedEncodingException {
         amount *= 100;
 
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
@@ -35,7 +38,7 @@ public class VnPayService {
         vnp_Params.put("vnp_BankCode", "");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-        vnp_Params.put("vnp_ReturnUrl", "http://localhost:8080/api/payment/return/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId"));
+        vnp_Params.put("vnp_ReturnUrl", (!isApp ? "http://localhost:8080/api/payment/return/" : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/return/") + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
         vnp_Params.put("vnp_IpAddr", remoteAddress);
         vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Locale", "vn");
