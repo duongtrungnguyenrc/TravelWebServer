@@ -23,7 +23,7 @@ public class OrderReqDTO {
     private double totalPrice;
     private long tourDateId;
     private String roomType;
-    private long hotelId;
+    private Long hotelId;
     private String specialRequest;
     private ContactInfo contactInfo;
 }

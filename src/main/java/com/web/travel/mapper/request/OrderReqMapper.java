@@ -35,17 +35,18 @@ public class OrderReqMapper implements Mapper {
         }
         Order order = new Order();
         order.setAdults(orderReqDTO.getAdults());
-        order.setRoomType("normal");
-        switch (orderReqDTO.getRoomType()){
-            case "Trung bình" -> order.setRoomType("medium");
-            case "Bình thường" -> order.setRoomType("normal");
-            case "Vip" -> order.setRoomType("vip");
+        if(orderReqDTO.getHotelId() != null && orderReqDTO.getRoomType() != null) {
+            switch (orderReqDTO.getRoomType()){
+                case "Trung bình" -> order.setRoomType("medium");
+                case "Bình thường" -> order.setRoomType("normal");
+                case "Vip" -> order.setRoomType("vip");
+            }
+            order.setHotel(hotelRepository.findById(orderReqDTO.getHotelId()).orElse(null));
         }
         order.setChildren(orderReqDTO.getChildren());
         order.setContactInfo(orderReqDTO.getContactInfo());
         order.setSpecialRequest(orderReqDTO.getSpecialRequest());
         order.setOrderDate(DateHandler.getCurrentDateTime());
-        order.setHotel(hotelRepository.findById(orderReqDTO.getHotelId()).orElse(null));
 
         tourDateRepository.findById(orderReqDTO.getTourDateId()).ifPresent(
             tourDate -> {
