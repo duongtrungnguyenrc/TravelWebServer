@@ -1,13 +1,19 @@
 package com.web.travel.service;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
 import com.web.travel.model.Message;
 import com.web.travel.model.User;
-import com.web.travel.utils.DateHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -27,8 +33,32 @@ public class SocketService {
                     boolean isAdmin = client.get("isAdmin") != null ? client.get("isAdmin") : false;
                     if((isOnConnected && !isAdmin) || !client.getSessionId().equals(senderClient.getSessionId())){
                         client.sendEvent("receive", message);
+
                     }
                 });
+
+
+        JSONObject content = new JSONObject();
+        content.put("app_id", "a0f4fabe-9b2a-432e-8233-c944f2edcfcb");
+        content.put("included_segments", "Total Subscriptions");
+        JSONObject contents = new JSONObject();
+        contents.put("en", ((Message) message).getMessage());
+        content.put("small_icon", "https://lh3.google.com/u/0/d/1TreLyjVQA8XPV85rkydhMRdmiCQRgGxY=w1920-h959-iv2");
+        content.put("contents", contents);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Basic NDc5YTVhNTktYmE2Yy00NmFhLWE2ZGQtZDgwY2IwZjE0ODQ1");
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<JSONObject> requestEntity = new HttpEntity<>(content, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("https://onesignal.com/api/v1/notifications", requestEntity, String.class);
+        String responseBody = responseEntity.getBody();
+        System.out.println("Response body: " + responseBody);
+
+
+
         sendNotification(senderClient, message);
     }
 
