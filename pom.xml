@@ -45,6 +45,7 @@
 <!--			<version>42.6.0</version>-->
 <!--		</dependency>-->
 
+		<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
