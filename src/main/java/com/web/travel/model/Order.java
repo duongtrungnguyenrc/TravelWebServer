@@ -40,7 +40,7 @@ public class Order {
     @OneToOne
     @JoinColumn(name = "contactInfoId")
     private ContactInfo contactInfo;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotelId")
     private Hotel hotel;
 

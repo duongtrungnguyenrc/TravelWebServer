@@ -143,7 +143,9 @@ public class EmailService {
         }
     }
 
-    public MessageResponse sendOrderedEmail(Order order, boolean isOnline){
+
+    @Async
+    public void sendOrderedEmail(Order order, boolean isOnline){
         MessageResponse response = new MessageResponse();
 
         MailRequest request = new MailRequest();
@@ -163,7 +165,7 @@ public class EmailService {
         model.put("address", order.getContactInfo().getCustomerAddress());
         model.put("amount", order.getTotalPrice());
         model.put("adults", order.getAdults());
-        model.put("specialRequest", order.getSpecialRequest());
+        model.put("specialRequest", order.getSpecialRequest() != null ? order.getSpecialRequest() : "Không");
         model.put("children", order.getChildren());
 
         TourDate tourDate = order.getTourDate();
@@ -185,11 +187,7 @@ public class EmailService {
             );
         }
 
-
-        blogRepository.findByTour(order.getTour()).ifPresent((blog) -> {
-            model.put("tourImage", blog.getBlog().getBackgroundImg());
-        });
-
+        model.put("tourImage", order.getTour().getImg());
         model.put("tourName", order.getTour().getName());
         model.put("departDate", formatter.format(order.getTourDate().getDepartDate()).split(" ")[0]);
         model.put("endDate", formatter.format(order.getTourDate().getEndDate()).split(" ")[0]);
@@ -230,7 +228,6 @@ public class EmailService {
             response.setMessage("Mail sent failure : " + e.getMessage());
             response.setStatus(Boolean.FALSE);
         }
-        return response;
     }
 
     @Async

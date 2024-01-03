@@ -2,6 +2,7 @@ package com.web.travel.controller;
 
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.model.Order;
 import com.web.travel.model.enums.EOrderStatus;
@@ -37,17 +38,17 @@ public class PaymentController {
     @PostMapping("/create_payment")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
-        return ResponseEntity.ok(
-                orderService.createPayment(principal, request, body, false)
-        );
+        ResDTO response = orderService.createPayment(principal, request, body, false);
+
+        return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/app/create_payment")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> createAppPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {
-        return ResponseEntity.ok(
-                orderService.createPayment(principal, request, body, true)
-        );
+        ResDTO response = orderService.createPayment(principal, request, body, true);
+
+        return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 
     //TODO: Waiting for thank you page url from client and change vnp_ReturnUrl to it
@@ -85,6 +86,7 @@ public class PaymentController {
                     "S.status="+ status +";" +
                     "end";
 
+        System.out.println(responseCode);
         response.setHeader("Location", url);
         response.setStatus(HttpServletResponse.SC_FOUND);
         response.sendRedirect(url);

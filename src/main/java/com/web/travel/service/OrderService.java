@@ -143,7 +143,7 @@ public class OrderService {
                             HttpServletResponse.SC_OK,
                             true,
                             "Đặt tour thành công!",
-                            null
+                            orderId
                     );
 
                     String paymentMethod = body.getPaymentMethod();
@@ -168,7 +168,7 @@ public class OrderService {
                         } catch (PayPalRESTException e) {
                             return new ResDTO(
                                 HttpServletResponse.SC_BAD_REQUEST,
-                                false,
+                                true,
                                 "Có lỗi xảy ra, vui lòng thử lại sau!",
                                 null
                             );
@@ -177,7 +177,7 @@ public class OrderService {
                             if(link.getRel().equals("approval_url")) {
                                 return new ResDTO(
                                     HttpServletResponse.SC_OK,
-                                    false,
+                                    true,
                                     "Đặt tour thành công!",
                                     link.getHref()
                                 );

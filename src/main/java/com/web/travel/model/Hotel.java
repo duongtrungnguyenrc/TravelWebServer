@@ -20,7 +20,7 @@ public class Hotel {
     private String name;
     private String address;
     private String illustration;
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Collection<Room> rooms;
     @OneToMany(mappedBy = "hotel")
     @JsonIgnore

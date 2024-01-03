@@ -73,6 +73,8 @@ public class OrderResMapper implements Mapper {
 
         if(order.getPaymentMethod() == EPaymentMethod.METHOD_VNPAY)
             dto.setPaymentMethod("Thanh toán bằng VNPay");
+        else if(order.getPaymentMethod() == EPaymentMethod.METHOD_PAYPAL)
+            dto.setPaymentMethod("Thanh toán bằng Paypal");
         else
             dto.setPaymentMethod("Thanh toán bằng tiền mặt");
 

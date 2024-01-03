@@ -2,6 +2,7 @@ package com.web.travel.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.web.travel.model.enums.ETourDateType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class TourDate {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date endDate;
     @Enumerated(EnumType.STRING)
+    @JsonProperty("type")
     private ETourDateType dateType;
     private double adultPrice;
     private double childPrice;

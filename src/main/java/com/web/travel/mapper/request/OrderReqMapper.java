@@ -37,9 +37,9 @@ public class OrderReqMapper implements Mapper {
         order.setAdults(orderReqDTO.getAdults());
         if(orderReqDTO.getHotelId() != null && orderReqDTO.getRoomType() != null) {
             switch (orderReqDTO.getRoomType()){
-                case "Trung bình" -> order.setRoomType("medium");
-                case "Bình thường" -> order.setRoomType("normal");
-                case "Vip" -> order.setRoomType("vip");
+                case "TYPE_MEDIUM" -> order.setRoomType("medium");
+                case "TYPE_NORMAL" -> order.setRoomType("normal");
+                case "TYPE_VIP" -> order.setRoomType("vip");
             }
             order.setHotel(hotelRepository.findById(orderReqDTO.getHotelId()).orElse(null));
         }
